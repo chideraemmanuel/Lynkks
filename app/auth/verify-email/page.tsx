@@ -12,6 +12,7 @@ import { RiArrowLeftLine } from '@remixicon/react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import OTPInput from '@/components/otp-input';
 
 interface Props {}
 
@@ -64,21 +65,7 @@ const EmailVerificationPage: FC<Props> = () => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="pb-12">
-            <FormInput
-              label="Email address"
-              placeholder="Enter your email address"
-              {...register('email', {
-                required: {
-                  value: true,
-                  message: 'Please enter your email address',
-                },
-                pattern: {
-                  value: emailRegex,
-                  message: 'Invalid email format',
-                },
-              })}
-              error={errors.email?.message}
-            />
+            <OTPInput onOTPChange={(otp) => {}} />
           </div>
 
           <Button className="w-full h-12">

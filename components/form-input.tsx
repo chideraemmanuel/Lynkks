@@ -57,7 +57,7 @@ const FormInput = React.forwardRef<FormInputRef, FormInputProps>(
               type={type === 'password' ? currentType : type}
               className={cn(
                 `${error && 'border-destructive'}`,
-                'bg-white shadow-[0_1px_2px_rgba(16,_24,_40,_0.05)] text-[#344054] text-base leading-[140%] tracking-[-0.4%] h-12',
+                'bg-white shadow-[0_1px_2px_rgba(16,_24,_40,_0.05)] text-[#344054] text-base leading-[140%] tracking-[-0.4%] h-12 mt-1',
                 className
               )}
               ref={ref}
