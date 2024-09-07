@@ -95,7 +95,8 @@ const OTPInput: FC<Props> = ({ length = 6, onOTPChange }) => {
               }
               onChange={(e) => handleChange(e, index)}
               onKeyUp={(e) => handleKeyUp(e, index)}
-              className="h-[64px] sm:h-20 p-2 text-[36px] sm:text-[48px] tracking-[-2%] placeholder:text-[#D0D5DD] rounded-[8px] text-center focus-visible:outline focus-visible:outline-primary"
+              // className="h-[64px] sm:h-20 p-2 text-[36px] sm:text-[48px] tracking-[-2%] placeholder:text-[#D0D5DD] rounded-[8px] text-center focus-visible:outline focus-visible:outline-primary"
+              className="h-[64px] sm:h-20 p-2 text-[36px] sm:text-[48px] tracking-[-2%] placeholder:text-[#D0D5DD] rounded-[8px] text-center"
             />
           ))}
         </div>
