@@ -72,13 +72,13 @@ const DashboardHeaderAccountDropdown: FC = () => {
           <button className="p-1 lg:p-2 rounded-full flex items-center gap-2 bg-secondary">
             <Avatar className="w-8 md:w-10 md:h-10 h-8">
               <AvatarFallback className="bg-primary text-white font-CircularStdMedium text-lg md:text-2xl tracking-[-3.44%]">
-                E{/* {getInitials(user.first_name, user.last_name)} */}
+                C{/* {getInitials(user.first_name, user.last_name)} */}
               </AvatarFallback>
             </Avatar>
 
             <div className="hidden lg:flex items-center gap-3">
               <span className="text-[#123633] font-CircularStdMedium text-sm leading-[140%] tracking-[-0.44%]">
-                Emmanuel Ogbu
+                Chidera Emmanuel
               </span>
 
               <span>
@@ -98,7 +98,7 @@ const DashboardHeaderAccountDropdown: FC = () => {
 
           <DropdownMenuItem asChild>
             <Link
-              href={`/profile/settings`}
+              href={`/dashboard/profile/settings`}
               className="flex items-center gap-2 p-4 rounded-[8px] text-[#667085] hover:text-black focus:text-black transition-colors"
             >
               <RiUserLine className="h-4 w-4" />
@@ -141,13 +141,13 @@ const CurrentUser: FC = () => {
       </Avatar>
 
       <div className="flex flex-col">
-        <span className="font-AeonikProMedium text-sm leading-[140%] tracking-[0.3%] text-black">
-          Emmanuel Ogbu
+        <span className="font-medium text-sm leading-[140%] tracking-[0.3%] text-black">
+          Chidera Emmanuel
           {/* {first_name} {last_name} */}
         </span>
 
-        <span className="font-AeonikProRegular leading-[140%] text-xs text-[#667085]">
-          emmanuel123@gmail.com
+        <span className="leading-[140%] text-xs text-[#667085]">
+          chidera@gmail.com
           {/* {email} */}
         </span>
       </div>

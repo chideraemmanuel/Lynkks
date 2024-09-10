@@ -11,6 +11,82 @@ import { ReactSortable } from 'react-sortablejs';
 
 interface Props {}
 
+// const DashboardLinksPage: FC<Props> = () => {
+//   const router = useRouter();
+
+//   const searchParams = useSearchParams();
+//   const currentTab = searchParams.get('tab');
+
+//   useEffect(() => {
+//     if (currentTab !== 'links' && currentTab !== 'social_links') {
+//       const newSearchParams = new URLSearchParams(searchParams.toString());
+//       newSearchParams.delete('tab');
+//       router.replace(`?${newSearchParams}`);
+//     }
+//   }, [currentTab]);
+
+//   const updateSearchParam = (value: string) => {
+//     const newSearchParams = new URLSearchParams(searchParams.toString());
+
+//     // console.log('passed value', value);
+
+//     if (value === '' || !value) {
+//       newSearchParams.delete('tab');
+//     } else {
+//       newSearchParams.set('tab', value);
+//     }
+
+//     router.replace(`?${newSearchParams}`);
+//   };
+
+//   return (
+//     <>
+//       <div className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] grid grid-cols-1 lg:grid-cols-[1fr,_500px]">
+//         <div className="sm:px-6 px-4 py-6">
+//           <div className="pb-5">
+//             <span className="inline-block pb-2 font-bold text-[#98A1B3] text-[20px] leading-[140%] tracking-[-0.44%]">
+//               Welcome, Chidera. 👋🏾
+//             </span>
+
+//             <h1 className="text-[#101828] font-medium text-base leading-[140%] tracking-[0%]">
+//               Your Links
+//             </h1>
+//           </div>
+
+//           <Tabs value={currentTab || 'links'} onValueChange={updateSearchParam}>
+//             <TabsList className="w-full mb-2">
+//               <TabsTrigger value="links" className="w-full">
+//                 Links
+//               </TabsTrigger>
+//               <TabsTrigger value="social_links" className="w-full">
+//                 Social Links
+//               </TabsTrigger>
+//             </TabsList>
+
+//             <>
+//               <LinksTabContent />
+//               <SocialLinksTabContent />
+//             </>
+//           </Tabs>
+//         </div>
+
+//         <div className="lg:flex hidden flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l">
+//           <Alert className="flex justify-between items-center p-2">
+//             <AlertDescription>linknest.vercel.app/chidera</AlertDescription>
+
+//             <Button size={'sm'}>Copy</Button>
+//           </Alert>
+
+//           {/* <div className='w-[428px] h-[926px]'> */}
+//           {/* <div className="w-[414px] h-[896px] bg-slate-500 rounded-[50px]"></div> */}
+//           {/* <div className="w-[375px] h-[812px] bg-slate-500 rounded-[50px]"></div> */}
+//           <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto bg-slate-500 rounded-[50px]"></div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
 const DashboardLinksPage: FC<Props> = () => {
   const router = useRouter();
 
@@ -41,50 +117,45 @@ const DashboardLinksPage: FC<Props> = () => {
 
   return (
     <>
-      {/* <div className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex flex-col"> */}
-      <div className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] grid grid-cols-1 lg:grid-cols-[1fr,_500px]">
-        <div className="sm:px-6 px-4 py-6">
-          <div className="pb-5">
-            <span className="inline-block pb-2 font-bold text-[#98A1B3] text-[20px] leading-[140%] tracking-[-0.44%]">
-              Welcome, Chidera. 👋🏾
-            </span>
+      {/* <div className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] grid grid-cols-1 lg:grid-cols-[1fr,_500px]"> */}
+      <div className="sm:px-6 px-4 py-6 lg:mr-[500px]">
+        <div className="pb-5">
+          <span className="inline-block pb-2 font-bold text-[#98A1B3] text-[20px] leading-[140%] tracking-[-0.44%]">
+            Welcome, Chidera. 👋🏾
+          </span>
 
-            <h1 className="text-[#101828] font-medium text-base leading-[140%] tracking-[0%]">
-              Your Links
-            </h1>
-          </div>
-
-          <Tabs value={currentTab || 'links'} onValueChange={updateSearchParam}>
-            <TabsList className="w-full mb-2">
-              <TabsTrigger value="links" className="w-full">
-                Links
-              </TabsTrigger>
-              <TabsTrigger value="social_links" className="w-full">
-                Social Links
-              </TabsTrigger>
-            </TabsList>
-
-            <>
-              <LinksTabContent />
-              <SocialLinksTabContent />
-            </>
-          </Tabs>
+          <h1 className="text-[#101828] font-medium text-base leading-[140%] tracking-[0%]">
+            Your Links
+          </h1>
         </div>
 
-        {/* <div className="bg-blue-400 lg:block hidden"> */}
-        <div className="lg:flex hidden flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l">
-          <Alert className="flex justify-between items-center p-2">
-            <AlertDescription>linknest.vercel.app/chidera</AlertDescription>
+        <Tabs value={currentTab || 'links'} onValueChange={updateSearchParam}>
+          <TabsList className="w-full mb-2">
+            <TabsTrigger value="links" className="w-full">
+              Links
+            </TabsTrigger>
+            <TabsTrigger value="social_links" className="w-full">
+              Social Links
+            </TabsTrigger>
+          </TabsList>
 
-            <Button size={'sm'}>Copy</Button>
-          </Alert>
-
-          {/* <div className='w-[428px] h-[926px]'> */}
-          {/* <div className="w-[414px] h-[896px] bg-slate-500 rounded-[50px]"></div> */}
-          {/* <div className="w-[375px] h-[812px] bg-slate-500 rounded-[50px]"></div> */}
-          <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto bg-slate-500 rounded-[50px]"></div>
-        </div>
+          <>
+            <LinksTabContent />
+            <SocialLinksTabContent />
+          </>
+        </Tabs>
       </div>
+
+      <div className="fixed right-0 top-[80px] w-[500px] lg:flex hidden flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l">
+        <Alert className="flex justify-between items-center p-2">
+          <AlertDescription>linknest.vercel.app/chidera</AlertDescription>
+
+          <Button size={'sm'}>Copy</Button>
+        </Alert>
+
+        <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto bg-slate-500 rounded-[50px]"></div>
+      </div>
+      {/* </div> */}
     </>
   );
 };
