@@ -12,7 +12,8 @@ const DashboardLayout: FC<Props> = ({ children }) => {
       {/* sidenav and header */}
       <DashboardSideNavigation />
       <DashboardHeader />
-      <div className="xl:ml-[min(270px,_30vw)] bg-red-300">{children}</div>
+      {/* <div className="xl:ml-[min(270px,_30vw)] bg-red-300">{children}</div> */}
+      <div className="xl:ml-[min(270px,_30vw)] bg-[#fdfdfd]">{children}</div>
     </>
   );
 };

@@ -41,7 +41,7 @@ const MobileNavigation: FC<Props> = () => {
             </Button>
           </SheetTrigger>
 
-          <SheetContent side={'left'} className="block lg:hidden">
+          <SheetContent side={'left'} className="block xl:hidden">
             <SheetHeader className="text-start items-start">
               <Logo />
             </SheetHeader>
