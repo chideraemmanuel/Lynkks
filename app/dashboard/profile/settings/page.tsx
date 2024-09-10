@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Inter } from 'next/font/google';
 // import { Badge } from '@/components/ui/badge';
 import { RiCheckLine } from '@remixicon/react';
 // import {
@@ -20,8 +19,6 @@ import { RiCheckLine } from '@remixicon/react';
 //   BreadcrumbSeparator,
 // } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
-
-const inter = Inter({ subsets: ['latin'] });
 
 interface Props {}
 

@@ -54,48 +54,52 @@ const MobileNavigation: FC<Props> = () => {
                   </span>
                   <ul className="flex flex-col gap-1">
                     <li>
-                      <Link
-                        href="/dashboard"
-                        className={cn(
-                          'group flex items-center gap-[14px] py-[10px] px-3 rounded-lg text-[#667085] font-CircularStdMedium text-sm leading-[140%] tracking-[-0.44%] transition-colors hover:bg-[#F0F2F5] hover:text-primary',
-                          pathname === '/dashboard' &&
-                            'bg-[#F0F2F5] text-primary'
-                        )}
-                      >
-                        <RiHome7Line
+                      <SheetClose asChild>
+                        <Link
+                          href="/dashboard"
                           className={cn(
-                            'text-[#98A1B3] w-6 h-6 transition-colors group-hover:text-primary',
-                            pathname === '/dashboard' && 'text-primary'
+                            'group flex items-center gap-[14px] py-[10px] px-3 rounded-lg text-[#667085] font-CircularStdMedium text-sm leading-[140%] tracking-[-0.44%] transition-colors hover:bg-[#F0F2F5] hover:text-primary',
+                            pathname === '/dashboard' &&
+                              'bg-[#F0F2F5] text-primary'
                           )}
-                        />
-                        Links
-                      </Link>
+                        >
+                          <RiHome7Line
+                            className={cn(
+                              'text-[#98A1B3] w-6 h-6 transition-colors group-hover:text-primary',
+                              pathname === '/dashboard' && 'text-primary'
+                            )}
+                          />
+                          Links
+                        </Link>
+                      </SheetClose>
                     </li>
 
                     <li>
-                      <Link
-                        href="/dashboard/analytics"
-                        className={cn(
-                          'group flex items-center gap-[14px] py-[10px] px-3 rounded-lg text-[#667085] font-CircularStdMedium text-sm leading-[140%] tracking-[-0.44%] transition-colors hover:bg-[#F0F2F5] hover:text-primary',
-                          pathname.includes('/dashboard/analytics') &&
-                            'bg-[#F0F2F5] text-primary'
-                        )}
-                      >
-                        <RiBarChart2Line
+                      <SheetClose asChild>
+                        <Link
+                          href="/dashboard/analytics"
                           className={cn(
-                            'text-[#98A1B3] w-6 h-6 transition-colors group-hover:text-primary',
+                            'group flex items-center gap-[14px] py-[10px] px-3 rounded-lg text-[#667085] font-CircularStdMedium text-sm leading-[140%] tracking-[-0.44%] transition-colors hover:bg-[#F0F2F5] hover:text-primary',
                             pathname.includes('/dashboard/analytics') &&
-                              'text-primary'
+                              'bg-[#F0F2F5] text-primary'
                           )}
-                        />
-                        Analytics
-                        {/* <Badge
+                        >
+                          <RiBarChart2Line
+                            className={cn(
+                              'text-[#98A1B3] w-6 h-6 transition-colors group-hover:text-primary',
+                              pathname.includes('/dashboard/analytics') &&
+                                'text-primary'
+                            )}
+                          />
+                          Analytics
+                          {/* <Badge
                       variant={'destructive'}
                       className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
                     >
                       34
                     </Badge> */}
-                      </Link>
+                        </Link>
+                      </SheetClose>
                     </li>
                   </ul>
                 </div>
@@ -108,29 +112,31 @@ const MobileNavigation: FC<Props> = () => {
                   </span>
                   <ul>
                     <li>
-                      <Link
-                        href="/dashboard/profile/settings"
-                        className={cn(
-                          'group flex items-center gap-[14px] py-[10px] px-3 rounded-lg text-[#667085] font-CircularStdMedium text-sm leading-[140%] tracking-[-0.44%] transition-colors hover:bg-[#F0F2F5] hover:text-primary',
-                          pathname === '/dashboard/profile/settings' &&
-                            'bg-[#F0F2F5] text-primary'
-                        )}
-                      >
-                        <RiSettings2Line
+                      <SheetClose asChild>
+                        <Link
+                          href="/dashboard/profile/settings"
                           className={cn(
-                            'text-[#98A1B3] w-6 h-6 transition-colors group-hover:text-primary',
+                            'group flex items-center gap-[14px] py-[10px] px-3 rounded-lg text-[#667085] font-CircularStdMedium text-sm leading-[140%] tracking-[-0.44%] transition-colors hover:bg-[#F0F2F5] hover:text-primary',
                             pathname === '/dashboard/profile/settings' &&
-                              'text-primary'
+                              'bg-[#F0F2F5] text-primary'
                           )}
-                        />
-                        Settings
-                        {/* <Badge
+                        >
+                          <RiSettings2Line
+                            className={cn(
+                              'text-[#98A1B3] w-6 h-6 transition-colors group-hover:text-primary',
+                              pathname === '/dashboard/profile/settings' &&
+                                'text-primary'
+                            )}
+                          />
+                          Settings
+                          {/* <Badge
                       variant={'destructive'}
                       className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
                     >
                       4
                     </Badge> */}
-                      </Link>
+                        </Link>
+                      </SheetClose>
                     </li>
                   </ul>
                 </div>

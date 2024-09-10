@@ -23,7 +23,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-import { Inter } from 'next/font/google';
 import { Input } from '@/components/ui/input';
 import { SearchIcon } from 'lucide-react';
 
@@ -136,17 +135,17 @@ const CurrentUser: FC = () => {
         <AvatarFallback
           className={`flex items-center justify-center p-[10px] w-10 h-10 rounded-full bg-white border border-[#EAECF0] text-black font-semibold text-2xl tracking-[-3.44%]`}
         >
-          {/* {first_name.charAt(0).toUpperCase()} */}E
+          {/* {first_name.charAt(0).toUpperCase()} */}C
         </AvatarFallback>
       </Avatar>
 
       <div className="flex flex-col">
-        <span className="font-medium text-sm leading-[140%] tracking-[0.3%] text-black">
+        <span className="font-medium text-sm leading-[140%] tracking-[0.3%] text-black truncate w-[87%]">
           Chidera Emmanuel
           {/* {first_name} {last_name} */}
         </span>
 
-        <span className="leading-[140%] text-xs text-[#667085]">
+        <span className="leading-[140%] text-xs text-[#667085] truncate w-[87%]">
           chidera@gmail.com
           {/* {email} */}
         </span>
