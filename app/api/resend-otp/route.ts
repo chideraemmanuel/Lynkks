@@ -1,40 +1,21 @@
-import { passwordRegex } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
 import generateOTP from '@/lib/generateOTP';
 import sendEmail from '@/lib/sendEmail';
 import Account, { AccountInterface } from '@/models/account';
-import EmailVerification from '@/models/email-verification';
-import Session from '@/models/session';
+import EmailVerification, {
+  EmailVerificationInterface,
+} from '@/models/email-verification';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const bodySchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
-  username: z.string(),
   email: z.string().email(),
-  password: z
-    .string()
-    .refine(
-      (value) => passwordRegex.test(value),
-      'Password must be 8-16 characters long, and contain at least one numeric digit, and special character'
-    ),
 });
 
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
-  // const { first_name, last_name, username, email, password } = body;
-
-  // if (!first_name || !last_name || !username || !email || !password) {
-  //   return NextResponse.json(
-  //     { error: 'Please supply the required fields' },
-  //     { status: 400 }
-  //   );
-  // }
 
   const returnObject = bodySchema.safeParse(body);
-
-  console.log('returnObject', returnObject.error?.message);
 
   if (!returnObject.success) {
     return NextResponse.json(
@@ -43,48 +24,44 @@ export const POST = async (request: NextRequest) => {
     );
   }
 
-  const { first_name, last_name, username, email, password } =
-    returnObject.data;
+  const { email } = returnObject.data;
 
   try {
     console.log('connecting to database...');
     await connectToDatabase();
     console.log('connected to database!');
 
-    const emailInUse = await Account.findOne<AccountInterface>({
-      email: email.toLowerCase().trim(),
-    });
+    // check if email has an account in database
+    const accountExists = await Account.findOne<AccountInterface>({ email });
 
-    if (emailInUse) {
+    if (!accountExists) {
       return NextResponse.json(
-        { error: 'Email is already in use' },
+        { error: 'No account with the supplied email' },
         { status: 400 }
       );
     }
 
-    const usernameTaken = await Account.findOne<AccountInterface>({
-      username: username.toLowerCase().trim(),
-    });
-
-    if (usernameTaken) {
+    if (accountExists.email_verified) {
       return NextResponse.json(
-        { error: 'Username is already taken' },
+        { error: 'Email has already been verified' },
         { status: 400 }
       );
     }
 
-    const account = await Account.create({
-      first_name,
-      last_name,
-      username,
-      email,
-      password,
-    });
+    // check if email verification record exists
+    const emailVerificationRecord =
+      await EmailVerification.findOne<EmailVerificationInterface>({
+        account: accountExists._id,
+      });
+
+    if (emailVerificationRecord) {
+      await EmailVerification.deleteOne({ account: accountExists._id });
+    }
 
     const OTP = generateOTP();
 
     await EmailVerification.create({
-      account: account._id,
+      account: accountExists._id,
       otp: OTP,
     });
 
@@ -100,7 +77,6 @@ export const POST = async (request: NextRequest) => {
       { message: `Verification email has been sent to ${email}.` },
       { status: 201 }
     );
-    // return NextResponse.json(account);
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(

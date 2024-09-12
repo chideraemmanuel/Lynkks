@@ -80,6 +80,8 @@ accountSchema.pre('save', async function (next) {
       next(error);
     }
   }
+
+  next();
 });
 
 const Account = models.Account || model('Account', accountSchema);

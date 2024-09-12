@@ -52,7 +52,7 @@ export const POST = async (request: NextRequest) => {
 
     if (!returnObject.success) {
       return NextResponse.json(
-        { error: 'Missing or Invalid required fields.' },
+        { error: 'Missing or Invalid body data' },
         { status: 400 }
       );
     }
