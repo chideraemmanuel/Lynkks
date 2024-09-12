@@ -31,7 +31,7 @@ export const POST = async (request: NextRequest) => {
 
   const returnObject = bodySchema.safeParse(body);
 
-  console.log('returnObject', returnObject);
+  console.log('returnObject', returnObject.error?.message);
 
   if (!returnObject.success) {
     return NextResponse.json(

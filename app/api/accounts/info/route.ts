@@ -29,9 +29,13 @@ export const GET = async (request: NextRequest) => {
       );
 
       response.cookies.set('sid', '', { maxAge: 0 });
+
+      return response;
     }
 
-    const account = await Account.findById(sessionExists?._id);
+    // console.log('sessionExists', sessionExists);
+
+    const account = await Account.findById(sessionExists?.account);
 
     if (!account) {
       return NextResponse.json({ error: 'Account Not Found' }, { status: 404 });

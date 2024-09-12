@@ -12,34 +12,52 @@ const bodySchema = z.object({
 });
 
 export const POST = async (request: NextRequest) => {
+  const session_id = request.cookies.get('sid')?.value;
   const body = await request.json();
-
-  // const { email, password } = body;
-
-  // if (!email || !password) {
-  //   return NextResponse.json(
-  //     { error: 'Please supply the required fields' },
-  //     { status: 400 }
-  //   );
-  // }
-
-  const returnObject = bodySchema.safeParse(body);
-
-  console.log('returnObject', returnObject);
-
-  if (!returnObject.success) {
-    return NextResponse.json(
-      { error: 'Missing or Invalid required fields.' },
-      { status: 400 }
-    );
-  }
-
-  const { email, password } = returnObject.data;
 
   try {
     console.log('connecting to database...');
     await connectToDatabase();
     console.log('connected to database!');
+
+    if (session_id) {
+      const sessionExists = await Session.findOne<SessionInterface>({
+        session_id,
+      });
+
+      if (sessionExists) {
+        const account = await Account.findById(sessionExists?.account);
+
+        if (account) {
+          return NextResponse.json(
+            { error: 'User already logged in - An active session was found' },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    // const { email, password } = body;
+
+    // if (!email || !password) {
+    //   return NextResponse.json(
+    //     { error: 'Please supply the required fields' },
+    //     { status: 400 }
+    //   );
+    // }
+
+    const returnObject = bodySchema.safeParse(body);
+
+    console.log('returnObject', returnObject);
+
+    if (!returnObject.success) {
+      return NextResponse.json(
+        { error: 'Missing or Invalid required fields.' },
+        { status: 400 }
+      );
+    }
+
+    const { email, password } = returnObject.data;
 
     const accountExists = await Account.findOne<AccountInterface>({
       email: email.toLowerCase().trim(),
@@ -52,9 +70,23 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    const { password: hashedPassword, _id, ...accountDetails } = accountExists;
+    const {
+      password: hashedPassword,
+      _id,
+      first_name,
+      last_name,
+      username,
+      // email: storedEmail,
+      email_verified,
+      links,
+    } = accountExists;
 
-    const passwordMatches = await bcrypt.compare(hashedPassword, password);
+    console.log('accountExists', accountExists);
+    console.log('hashedPassword', hashedPassword);
+
+    console.log('password', password);
+
+    const passwordMatches = await bcrypt.compare(password, hashedPassword);
 
     if (!passwordMatches) {
       return NextResponse.json(
@@ -63,16 +95,24 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    const session_id = nanoid();
+    const new_session_id = nanoid();
 
     const session = await Session.create<SessionInterface>({
       account: _id,
-      session_id,
+      session_id: new_session_id,
     });
 
-    const response = NextResponse.json({ _id, ...accountDetails });
+    const response = NextResponse.json({
+      _id,
+      first_name,
+      last_name,
+      username,
+      email,
+      email_verified,
+      links,
+    });
 
-    response.cookies.set('sid', session_id, {
+    response.cookies.set('sid', new_session_id, {
       maxAge: 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
     });
