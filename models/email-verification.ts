@@ -23,7 +23,8 @@ const emailVerificationSchema: Schema<EmailVerificationInterface> = new Schema(
       type: Date,
       // default: () => Date.now(),
       // expires: 60 * 5
-      default: () => Date.now() + 300000 /* 5 minutes in milliseconds */,
+      // default: () => Date.now() + 300000 /* 5 minutes in milliseconds */,
+      default: () => Date.now() + 1000 * 60 * 5 /* 5 minutes in milliseconds */,
       expires: 0,
       immutable: true,
     },

@@ -32,7 +32,9 @@ export const POST = async (request: NextRequest) => {
     console.log('connected to database!');
 
     // check if email has an account in database
-    const accountExists = await Account.findOne<AccountInterface>({ email });
+    const accountExists = await Account.findOne<AccountInterface>({
+      email: email.toLowerCase().trim(),
+    });
 
     if (!accountExists) {
       return NextResponse.json(
@@ -68,13 +70,15 @@ export const POST = async (request: NextRequest) => {
     // TODO: build email templates
 
     await sendEmail({
-      receipent: email,
+      receipent: accountExists.email,
       subject: 'Email Verification',
       html: `<p>${OTP}</p>`,
     });
 
     return NextResponse.json(
-      { message: `Verification email has been sent to ${email}.` },
+      {
+        message: `Verification email has been sent to ${accountExists.email}.`,
+      },
       { status: 201 }
     );
   } catch (error: any) {
