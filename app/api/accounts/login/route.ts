@@ -6,7 +6,7 @@ import Session, { SessionInterface } from '@/models/session';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
-const bodySchema = z.object({
+const BodySchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
@@ -46,7 +46,7 @@ export const POST = async (request: NextRequest) => {
     //   );
     // }
 
-    const returnObject = bodySchema.safeParse(body);
+    const returnObject = BodySchema.safeParse(body);
 
     console.log('returnObject', returnObject);
 

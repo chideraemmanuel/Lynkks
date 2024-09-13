@@ -8,10 +8,10 @@ import Session from '@/models/session';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-const bodySchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
-  username: z.string(),
+const BodySchema = z.object({
+  first_name: z.string().min(3),
+  last_name: z.string().min(3),
+  username: z.string().min(3),
   email: z.string().email(),
   password: z
     .string()
@@ -32,7 +32,7 @@ export const POST = async (request: NextRequest) => {
   //   );
   // }
 
-  const returnObject = bodySchema.safeParse(body);
+  const returnObject = BodySchema.safeParse(body);
 
   console.log('returnObject', returnObject.error?.message);
 

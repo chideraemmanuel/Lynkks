@@ -1,6 +1,25 @@
 import { Document, model, models, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 
+interface Header {
+  type: 'header';
+  title: string;
+}
+
+interface Hyperlink {
+  type: 'link';
+  title: string;
+  href: string;
+}
+
+export type CustomLink = Header | Hyperlink;
+
+export interface SocialLink {
+  title: string;
+  platform: string;
+  href: string;
+}
+
 export interface AccountInterface extends Document {
   first_name: string;
   last_name: string;
@@ -8,10 +27,18 @@ export interface AccountInterface extends Document {
   email: string;
   email_verified: boolean;
   password: string;
-  links: {
-    custom_links: any[];
-    social_links: any[];
+  profile: {
+    title: string;
+    bio: string;
+    image: string | null;
   };
+  links: {
+    custom_links: CustomLink[];
+    social_links: SocialLink[];
+  };
+  completed_onboarding: boolean;
+  // TODO: add role field..?
+  // TODO: add disabled field..?
 }
 
 const accountSchema: Schema<AccountInterface> = new Schema(
@@ -46,15 +73,66 @@ const accountSchema: Schema<AccountInterface> = new Schema(
       required: true,
       select: false,
     },
+    profile: {
+      title: {
+        type: String,
+        default: '',
+      },
+      bio: {
+        type: String,
+        default: '',
+      },
+      image: {
+        type: String,
+        default: null,
+      },
+    },
     links: {
+      // custom_links: {
+      //   type: Array,
+      //   default: [],
+      // },
+      // social_links: {
+      //   type: Array,
+      //   default: [],
+      // },
       custom_links: {
-        type: Array,
+        type: [
+          {
+            type: {
+              type: String,
+              enum: ['header', 'link'],
+            },
+            title: {
+              type: String,
+            },
+            href: {
+              type: String,
+            },
+          },
+        ],
         default: [],
       },
       social_links: {
-        type: Array,
+        type: [
+          {
+            title: {
+              type: String,
+            },
+            platform: {
+              type: String,
+            },
+            href: {
+              type: String,
+            },
+          },
+        ],
         default: [],
       },
+    },
+    completed_onboarding: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

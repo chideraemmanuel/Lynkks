@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
 
-const bodySchema = z.object({
+const BodySchema = z.object({
   email: z.string().email(),
   OTP: z.string().min(6).max(6),
 });
@@ -15,7 +15,7 @@ const bodySchema = z.object({
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
 
-  const returnObject = bodySchema.safeParse(body);
+  const returnObject = BodySchema.safeParse(body);
 
   if (!returnObject.success) {
     return NextResponse.json(

@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-const bodySchema = z.object({
+const BodySchema = z.object({
   email: z.string().email(),
   reset_page_path: z.string(),
 });
@@ -14,7 +14,7 @@ const bodySchema = z.object({
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
 
-  const returnObject = bodySchema.safeParse(body);
+  const returnObject = BodySchema.safeParse(body);
 
   if (!returnObject.success) {
     return NextResponse.json(

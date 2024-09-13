@@ -8,9 +8,9 @@ import bcrypt from 'bcrypt';
 
 // TODO: CREATE A ROUTE TO CHECK IF USER WITH A SUPPLIED EMAIL EXISTS; TO BE USED IN CLIENT ON PASSWORD RESET PAGE
 
-const bodySchema = z.object({
+const BodySchema = z.object({
   email: z.string().email(),
-  reset_string: z.string(),
+  reset_string: z.string().min(1),
   new_password: z
     .string()
     .refine(
@@ -22,7 +22,7 @@ const bodySchema = z.object({
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
 
-  const returnObject = bodySchema.safeParse(body);
+  const returnObject = BodySchema.safeParse(body);
 
   if (!returnObject.success) {
     return NextResponse.json(
