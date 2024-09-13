@@ -6,6 +6,8 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+// TODO: add route for profile picture deletion!
+
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
 
@@ -180,31 +182,35 @@ export const PUT = async (request: NextRequest) => {
     //   console.log('params', params);
     //   const body = await request.json();
 
-    const formData = await request.formData();
+    // const formData = await request.formData();
 
-    const profile_image = formData.get('profile_image');
+    // const profile_image = formData.get('profile_image');
 
-    const formDataObject: Record<
-      string,
-      FormDataEntryValue | FormDataEntryValue[]
-    > = {};
+    // const formDataObject: Record<
+    //   string,
+    //   FormDataEntryValue | FormDataEntryValue[]
+    // > = {};
 
-    formData.forEach((value, key) => {
-      // If the key already exists, convert it to an array and append the value
-      if (formDataObject[key]) {
-        if (Array.isArray(formDataObject[key])) {
-          formDataObject[key].push(value);
-        } else {
-          formDataObject[key] = [formDataObject[key], value];
-        }
-      } else {
-        formDataObject[key] = value;
-      }
-    });
+    // formData.forEach((value, key) => {
+    //   // If the key already exists, convert it to an array and append the value
+    //   if (formDataObject[key]) {
+    //     if (Array.isArray(formDataObject[key])) {
+    //       formDataObject[key].push(value);
+    //     } else {
+    //       formDataObject[key] = [formDataObject[key], value];
+    //     }
+    //   } else {
+    //     formDataObject[key] = value;
+    //   }
+    // });
 
-    console.log('formDataObject', formDataObject);
+    // console.log('formDataObject', formDataObject);
 
-    const returnObject = BodySchema.safeParse(formDataObject);
+    const body = await request.json();
+
+    const { profile_image } = body;
+
+    const returnObject = BodySchema.safeParse(body);
     console.log('returnObject', returnObject);
 
     if (!returnObject.success) {

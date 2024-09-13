@@ -70,6 +70,16 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    if (accountExists && accountExists.auth_type === 'manual') {
+      return NextResponse.json(
+        {
+          error:
+            'Account already verified with Google. Sign in with Google instead.',
+        },
+        { status: 400 }
+      );
+    }
+
     const {
       password: hashedPassword,
       _id,
@@ -78,6 +88,8 @@ export const POST = async (request: NextRequest) => {
       username,
       // email: storedEmail,
       email_verified,
+      auth_type,
+      profile,
       links,
     } = accountExists;
 
@@ -86,7 +98,10 @@ export const POST = async (request: NextRequest) => {
 
     console.log('password', password);
 
-    const passwordMatches = await bcrypt.compare(password, hashedPassword);
+    const passwordMatches = await bcrypt.compare(
+      password,
+      hashedPassword as string
+    );
 
     if (!passwordMatches) {
       return NextResponse.json(
@@ -109,6 +124,8 @@ export const POST = async (request: NextRequest) => {
       username,
       email,
       email_verified,
+      auth_type,
+      profile,
       links,
     });
 

@@ -26,7 +26,8 @@ export interface AccountInterface extends Document {
   username: string;
   email: string;
   email_verified: boolean;
-  password: string;
+  password?: string;
+  auth_type: 'manual' | 'google';
   profile: {
     title: string;
     bio: string;
@@ -70,8 +71,16 @@ const accountSchema: Schema<AccountInterface> = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
+      required: function () {
+        return this.auth_type === 'manual';
+      },
       select: false,
+    },
+    auth_type: {
+      type: String,
+      required: true,
+      enum: ['manual', 'google'],
     },
     profile: {
       title: {
@@ -140,22 +149,26 @@ const accountSchema: Schema<AccountInterface> = new Schema(
 
 accountSchema.pre('save', async function (next) {
   if (this.isNew) {
-    try {
-      const salt = await bcrypt.genSalt(10);
-      const hashed_password = await bcrypt.hash(this.password, salt);
-      this.password = hashed_password;
-    } catch (error: any) {
-      next(error);
+    if (this.password) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const hashed_password = await bcrypt.hash(this.password, salt);
+        this.password = hashed_password;
+      } catch (error: any) {
+        next(error);
+      }
     }
   }
 
   if (!this.isNew && this.isModified('password')) {
-    try {
-      const salt = await bcrypt.genSalt(10);
-      const hashed_password = await bcrypt.hash(this.password, salt);
-      this.password = hashed_password;
-    } catch (error: any) {
-      next(error);
+    if (this.password) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const hashed_password = await bcrypt.hash(this.password, salt);
+        this.password = hashed_password;
+      } catch (error: any) {
+        next(error);
+      }
     }
   }
 

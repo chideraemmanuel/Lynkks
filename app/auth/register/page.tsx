@@ -2,6 +2,7 @@
 
 import FormInput from '@/components/form-input';
 import FullScreenSpinner from '@/components/full-screen-spinner';
+import GoogleSignInButton from '@/components/google-sign-in-button';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { emailRegex, passwordRegex } from '@/constants';
@@ -121,10 +122,7 @@ const RegistrationPage: FC<Props> = () => {
 
             <Separator />
 
-            <Button type="button" variant={'outline'} className="w-full">
-              <FcGoogle className="mr-2 h-4 w-4" />
-              Continue with Google
-            </Button>
+            <GoogleSignInButton />
           </div>
         </form>
 

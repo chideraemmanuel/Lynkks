@@ -79,6 +79,7 @@ export const POST = async (request: NextRequest) => {
       username,
       email,
       password,
+      auth_type: 'manual',
     });
 
     const OTP = generateOTP();
