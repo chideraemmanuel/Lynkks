@@ -6,10 +6,12 @@ import GoogleSignInButton from '@/components/google-sign-in-button';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { emailRegex, passwordRegex } from '@/constants';
+import useRegister from '@/hooks/useRegister';
 // import useRegistration from '@/hooks/auth/useRegistration';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { FC } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
 
@@ -22,7 +24,27 @@ interface RegistrationFormTypes {
 }
 
 const RegistrationPage: FC<Props> = () => {
-  // const { mutate: registration, isLoading: isLoggingIn } = useRegister();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const username = params.get('username');
+
+  const [usernameState, setUsernameState] = useState<string>('');
+
+  // console.log('usernameState', usernameState);
+  // console.log('username', username);
+
+  useEffect(() => {
+    if (!username) {
+      router.replace('/auth/username-select');
+    } else {
+      setUsernameState(username);
+      router.replace(pathname);
+    }
+  }, []);
+
+  const { mutate: createAccount, isLoading: isCreatingAccount } = useRegister();
+
   const form = useForm<RegistrationFormTypes>();
 
   const {
@@ -35,7 +57,10 @@ const RegistrationPage: FC<Props> = () => {
   const onSubmit: SubmitHandler<RegistrationFormTypes> = (data, e) => {
     console.log('data: ', data);
 
-    // register(data);
+    createAccount({
+      ...data,
+      username: usernameState,
+    });
   };
 
   return (
@@ -66,7 +91,7 @@ const RegistrationPage: FC<Props> = () => {
                 },
               })}
               error={errors.email?.message}
-              // disabled={isLoggingIn}
+              disabled={isCreatingAccount}
             />
 
             <FormInput
@@ -86,7 +111,7 @@ const RegistrationPage: FC<Props> = () => {
                 },
               })}
               error={errors.password?.message}
-              // disabled={isLoggingIn}
+              disabled={isCreatingAccount}
             />
 
             <FormInput
@@ -107,22 +132,20 @@ const RegistrationPage: FC<Props> = () => {
                   );
                 },
               })}
-              // disabled={isLoggingIn}
+              disabled={isCreatingAccount}
             />
           </div>
 
-          <div className="flex flex-col gap-5">
-            <Button
-              className="w-full h-12"
-              // disabled={isLoggingIn}
-            >
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <div className="flex flex-col gap-3">
+            <Button className="w-full h-12" disabled={isCreatingAccount}>
+              {isCreatingAccount && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Sign up
             </Button>
-
-            <Separator />
-
-            <GoogleSignInButton />
+            {/* <Separator /> */}
+            <FormBreak />
+            <GoogleSignInButton /> {/* disable while creating account */}
           </div>
         </form>
 
@@ -140,3 +163,13 @@ const RegistrationPage: FC<Props> = () => {
 };
 
 export default RegistrationPage;
+
+const FormBreak: FC = () => {
+  return (
+    <div className="relative w-full grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+      <div className="bg-border h-[1px]"></div>
+      <span className="text-muted-foreground">or</span>
+      <div className="bg-border h-[1px]"></div>
+    </div>
+  );
+};

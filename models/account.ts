@@ -8,21 +8,57 @@ interface Header {
 
 interface Hyperlink {
   type: 'link';
+  id: string;
   title: string;
   href: string;
 }
 
 export type CustomLink = Header | Hyperlink;
 
+// Instagram;
+// Facebook;
+// Twitter / X;
+// TikTok;
+// YouTube;
+// LinkedIn;
+// Pinterest;
+// Snapchat;
+// WhatsApp;
+// Telegram;
+// Reddit;
+// Tumblr;
+// Twitch;
+// Discord;
+// Clubhouse;
+// BeReal;
+// Medium;
+// Substack;
+// SoundCloud;
+// Spotify;
+
 export interface SocialLink {
   title: string;
-  platform: string;
+  platform:
+    | 'Instagram'
+    | 'Facebook'
+    | 'X'
+    | 'TikTok'
+    | 'YouTube'
+    | 'LinkedIn'
+    | 'Pinterest'
+    | 'Snapchat'
+    | 'WhatsApp'
+    | 'Telegram'
+    | 'Reddit'
+    | 'Tumblr'
+    | 'Twitch'
+    | 'Discord';
   href: string;
 }
 
 export interface AccountInterface extends Document {
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
   username: string;
   email: string;
   email_verified: boolean;
@@ -46,11 +82,13 @@ const accountSchema: Schema<AccountInterface> = new Schema(
   {
     first_name: {
       type: String,
-      required: true,
+      // required: true,
+      default: null,
     },
     last_name: {
       type: String,
-      required: true,
+      // required: true,
+      default: null,
     },
     username: {
       type: String,
@@ -97,14 +135,6 @@ const accountSchema: Schema<AccountInterface> = new Schema(
       },
     },
     links: {
-      // custom_links: {
-      //   type: Array,
-      //   default: [],
-      // },
-      // social_links: {
-      //   type: Array,
-      //   default: [],
-      // },
       custom_links: {
         type: [
           {
@@ -130,6 +160,22 @@ const accountSchema: Schema<AccountInterface> = new Schema(
             },
             platform: {
               type: String,
+              enum: [
+                'Instagram',
+                'Facebook',
+                'X',
+                'TikTok',
+                'YouTube',
+                'LinkedIn',
+                'Pinterest',
+                'Snapchat',
+                'WhatsApp',
+                'Telegram',
+                'Reddit',
+                'Tumblr',
+                'Twitch',
+                'Discord',
+              ],
             },
             href: {
               type: String,

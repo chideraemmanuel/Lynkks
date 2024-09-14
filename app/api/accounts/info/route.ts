@@ -45,7 +45,15 @@ export const GET = async (request: NextRequest) => {
     );
 
     if (!account) {
-      return NextResponse.json({ error: 'Account Not Found' }, { status: 404 });
+      // TODO: delete session from database..?
+      const response = NextResponse.json(
+        { error: 'Account Not Found' },
+        { status: 404 }
+      );
+
+      response.cookies.set('sid', '', { maxAge: 0 });
+
+      return response;
     }
 
     return NextResponse.json(account);

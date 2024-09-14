@@ -4,14 +4,15 @@ import generateOTP from '@/lib/generateOTP';
 import sendEmail from '@/lib/sendEmail';
 import Account, { AccountInterface } from '@/models/account';
 import EmailVerification from '@/models/email-verification';
-import Session from '@/models/session';
+import Session, { SessionInterface } from '@/models/session';
+import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const BodySchema = z.object({
-  first_name: z.string().min(3),
-  last_name: z.string().min(3),
-  username: z.string().min(3),
+  // first_name: z.string().min(3),
+  // last_name: z.string().min(3),
+  username: z.string().min(3).max(10),
   email: z.string().email(),
   password: z
     .string()
@@ -43,8 +44,9 @@ export const POST = async (request: NextRequest) => {
     );
   }
 
-  const { first_name, last_name, username, email, password } =
-    returnObject.data;
+  // const { first_name, last_name, username, email, password } =
+  //   returnObject.data;
+  const { username, email, password } = returnObject.data;
 
   try {
     console.log('connecting to database...');
@@ -74,8 +76,8 @@ export const POST = async (request: NextRequest) => {
     }
 
     const account = await Account.create({
-      first_name,
-      last_name,
+      // first_name,
+      // last_name,
       username,
       email,
       password,
@@ -86,22 +88,36 @@ export const POST = async (request: NextRequest) => {
 
     await EmailVerification.create({
       account: account._id,
-      otp: OTP,
+      OTP,
     });
 
     // TODO: build email templates
 
-    await sendEmail({
-      receipent: email,
-      subject: 'Email Verification',
-      html: `<p>${OTP}</p>`,
-    });
+    // await sendEmail({
+    //   receipent: email,
+    //   subject: 'Email Verification',
+    //   html: `<p>${OTP}</p>`,
+    // });
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: `Verification email has been sent to ${email}.` },
       { status: 201 }
     );
-    // return NextResponse.json(account);
+
+    const new_session_id = nanoid();
+
+    const session = await Session.create<SessionInterface>({
+      account: account._id,
+      session_id: new_session_id,
+    });
+
+    response.cookies.set('sid', new_session_id, {
+      // maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60, // 1 hour
+      httpOnly: true,
+    });
+
+    return response;
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(

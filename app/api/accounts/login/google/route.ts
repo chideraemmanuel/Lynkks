@@ -4,7 +4,7 @@ import { connectToDatabase } from '@/lib/database';
 import Account, { AccountInterface } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
 import { nanoid } from 'nanoid';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 
 interface GoogleResponse {
   id_token: string;
@@ -47,13 +47,6 @@ export const GET = async (request: NextRequest) => {
     }
 
     // !!! Auth logic starts !!!
-    if (!username || username.length < 3) {
-      return NextResponse.json(
-        { error: 'Missing or Invalid "username" query parameter' },
-        { status: 400 }
-      );
-    }
-
     if (!success_redirect_path || !error_redirect_path) {
       return NextResponse.json({
         error: `Missing 'success_redirect_path' or 'error_redirect_path' in query parameters`,
@@ -127,6 +120,16 @@ export const GET = async (request: NextRequest) => {
       }
 
       // create new account and session, and redirect to success path
+      if (!username || username.length < 3) {
+        return NextResponse.json(
+          {
+            error:
+              'Missing or Invalid "username" query parameter for new account',
+          },
+          { status: 400 }
+        );
+      }
+
       const usernameTaken = await Account.findOne<AccountInterface>({
         username: username.toLowerCase().trim(),
       });

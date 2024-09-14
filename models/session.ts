@@ -23,6 +23,7 @@ const sessionSchema: Schema<SessionInterface> = new Schema(
       type: Date,
       default: () => Date.now(),
       expires: 60 * 60,
+      immutable: true,
     },
     //   device/useragent
   },
