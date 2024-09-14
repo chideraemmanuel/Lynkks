@@ -7,11 +7,12 @@ import { Separator } from '@/components/ui/separator';
 import { emailRegex } from '@/constants';
 import { RiGoogleLine } from '@remixicon/react';
 import { FcGoogle } from 'react-icons/fc';
-// import useLogin from '@/hooks/auth/useLogin';
+import useLogin from '@/hooks/auth/useLogin';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import GoogleSignInButton from '@/components/google-sign-in-button';
 
 interface Props {}
 
@@ -21,7 +22,7 @@ interface LoginFormTypes {
 }
 
 const LoginPage: FC<Props> = () => {
-  // const { mutate: login, isLoading: isLoggingIn } = useLogin();
+  const { mutate: login, isLoading: isLoggingIn } = useLogin();
   const form = useForm<LoginFormTypes>();
 
   const {
@@ -33,7 +34,7 @@ const LoginPage: FC<Props> = () => {
   const onSubmit: SubmitHandler<LoginFormTypes> = (data, e) => {
     console.log('data: ', data);
 
-    // login(data);
+    login(data);
   };
 
   return (
@@ -64,7 +65,7 @@ const LoginPage: FC<Props> = () => {
                 },
               })}
               error={errors.email?.message}
-              // disabled={isLoggingIn}
+              disabled={isLoggingIn}
             />
 
             <FormInput
@@ -78,27 +79,20 @@ const LoginPage: FC<Props> = () => {
                 },
               })}
               error={errors.password?.message}
-              // disabled={isLoggingIn}
+              disabled={isLoggingIn}
               addForgotPassword
               passwordResetInitiationHref="/auth/reset-password/initiate"
             />
           </div>
 
-          <div className="flex flex-col gap-5">
-            <Button
-              className="w-full h-12"
-              // disabled={isLoggingIn}
-            >
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <div className="flex flex-col gap-3">
+            <Button className="w-full h-12" disabled={isLoggingIn}>
+              {isLoggingIn && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Login
             </Button>
-
-            <Separator />
-
-            <Button type="button" variant={'outline'} className="w-full">
-              <FcGoogle className="mr-2 h-4 w-4" />
-              Continue with Google
-            </Button>
+            {/* <Separator /> */}
+            <FormBreak />
+            <GoogleSignInButton /> {/* disable while creating account */}
           </div>
         </form>
 

@@ -6,7 +6,7 @@ import GoogleSignInButton from '@/components/google-sign-in-button';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { emailRegex, passwordRegex } from '@/constants';
-import useRegister from '@/hooks/useRegister';
+import useRegister from '@/hooks/auth/useRegister';
 // import useRegistration from '@/hooks/auth/useRegistration';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';

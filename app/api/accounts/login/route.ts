@@ -70,7 +70,7 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    if (accountExists && accountExists.auth_type === 'manual') {
+    if (accountExists && accountExists.auth_type === 'google') {
       return NextResponse.json(
         {
           error:

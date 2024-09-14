@@ -129,6 +129,7 @@ const UsernameSelectionPage: FC<Props> = () => {
                   },
                 })}
                 className="flex-1 text-[#344054] text-base leading-[140%] tracking-[-0.4%] placeholder:text-muted-foreground outline-none focus-visible:outline-none disabled:cursor-not-allowed"
+                autoComplete="off"
               />
               {/* <FormInput
               // label="Email address"

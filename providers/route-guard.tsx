@@ -1,7 +1,7 @@
 'use client';
 
 import ErrorComponent from '@/components/error-component';
-import useSession from '@/hooks/useSession';
+import useSession from '@/hooks/auth/useSession';
 import { usePathname, useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
@@ -29,7 +29,7 @@ const RouteGuard: FC<Props> = ({ children }) => {
       // @ts-ignore
       error?.response?.status < 500
     ) {
-      // router.replace(`/auth/login?redirect_to=${pathname}`);
+      // router.replace(`/auth/login?return_to=${pathname}`);
       router.replace(`/auth/login`);
     }
 

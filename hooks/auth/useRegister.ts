@@ -11,7 +11,7 @@ interface Credentials {
 }
 
 const register = async (credentials: Credentials) => {
-  const response = await axios.post<AccountInterface>(
+  const response = await axios.post<Omit<AccountInterface, 'password'>>(
     '/api/accounts/create',
     credentials
   );
