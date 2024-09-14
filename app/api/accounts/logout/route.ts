@@ -5,6 +5,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export const DELETE = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
 
+  if (!session_id) {
+    return NextResponse.json(
+      { error: 'Not Authorized - No Session Token' },
+      { status: 403 }
+    );
+  }
+
   try {
     console.log('connecting to database...');
     await connectToDatabase();

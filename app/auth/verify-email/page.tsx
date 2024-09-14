@@ -16,6 +16,8 @@ import OTPInput from '@/components/otp-input';
 import useSession from '@/hooks/auth/useSession';
 import ErrorComponent from '@/components/error-component';
 import useVerifyEmail from '@/hooks/auth/useVerifyEmail';
+import useResendVerificationOTP from '@/hooks/auth/useResendVeificationOTP';
+import useLogout from '@/hooks/auth/useLogout';
 
 interface Props {}
 
@@ -26,8 +28,30 @@ const EmailVerificationPage: FC<Props> = () => {
   const pathname = usePathname();
 
   const { mutate: verifyEmail, isLoading: isVerifyingEmail } = useVerifyEmail();
+  const {
+    mutate: resendVerificationOTP,
+    isLoading: isResendingVerificationOTP,
+  } = useResendVerificationOTP();
 
-  const { data: account, isLoading, isSuccess, isError, error } = useSession();
+  const {
+    data: account,
+    isLoading: isFetchingSession,
+    isSuccess,
+    isError,
+    error,
+  } = useSession();
+
+  const {
+    mutate: logout,
+    isLoading: isLoggingOut,
+    isSuccess: isSuccessLoggingOut,
+  } = useLogout();
+
+  useEffect(() => {
+    if (isSuccessLoggingOut) {
+      router.back();
+    }
+  }, [isSuccessLoggingOut]);
 
   useEffect(() => {
     if (account && account.email_verified) {
@@ -52,7 +76,7 @@ const EmailVerificationPage: FC<Props> = () => {
     // }
   }, [error, account]);
 
-  if (isLoading) {
+  if (isFetchingSession) {
     return <FullScreenSpinner />;
   }
 
@@ -80,12 +104,14 @@ const EmailVerificationPage: FC<Props> = () => {
   return (
     <>
       {/* {isLoggingOut && <FullScreenSpinner />} */}
+      {isResendingVerificationOTP && <FullScreenSpinner />}
 
-      {!isLoading && account && (
+      {!isFetchingSession && account && (
         <div className="bg-white">
           {/* <span>Back Button</span> */}
           <button
-            onClick={() => router.back()}
+            // onClick={() => router.back()}
+            onClick={() => logout()}
             className="p-4 rounded-full bg-secondary text-secondary-foreground mb-9 md:mb-6"
           >
             <RiArrowLeftLine />
@@ -123,7 +149,13 @@ const EmailVerificationPage: FC<Props> = () => {
             <p className="text-base text-muted-foreground leading-[140%] tracking-[-0.4%]">
               {/* OTP will expire in 1:00. Didn't receive mail?{' '} */}
               Didn't receive mail?{' '}
-              <button className="text-primary underline">Resend</button>
+              <button
+                className="text-primary underline disabled:pointer-events-none disabled:opacity-50"
+                disabled={isResendingVerificationOTP}
+                onClick={() => resendVerificationOTP(account.email)}
+              >
+                Resend
+              </button>
             </p>
           </div>
         </div>
