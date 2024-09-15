@@ -108,8 +108,23 @@ const BodySchema = z.object({
         .array(
           z
             .object({
-              title: z.string().min(1),
-              platform: z.string().min(1),
+              // title: z.string().min(1),
+              platform: z.enum([
+                'Instagram',
+                'Facebook',
+                'X',
+                'TikTok',
+                'YouTube',
+                'LinkedIn',
+                'Pinterest',
+                'Snapchat',
+                'WhatsApp',
+                'Telegram',
+                'Reddit',
+                'Tumblr',
+                'Twitch',
+                'Discord',
+              ]),
               href: z.string().url(),
             })
             .optional()
@@ -124,7 +139,7 @@ const BodySchema = z.object({
     .optional(),
 });
 
-type Updates = z.infer<typeof BodySchema>;
+export type Updates = z.infer<typeof BodySchema>;
 
 export const PUT = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;

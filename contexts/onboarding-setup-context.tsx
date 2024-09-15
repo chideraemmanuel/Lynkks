@@ -1,20 +1,46 @@
 'use client';
 
-import { createContext, FC, useContext, useState } from 'react';
+import { Link } from '@/constants';
+import {
+  createContext,
+  Dispatch,
+  FC,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react';
 
-const onBoardingSetupContext = createContext<any>(null);
+const onBoardingSetupContext = createContext<{
+  step: number;
+  setStep: Dispatch<SetStateAction<number>>;
+  selectedLinks: Link[];
+  setSelectedLinks: Dispatch<SetStateAction<Link[]>>;
+  populatedLinks: PopulatedLinks[];
+  setPopulatedLinks: Dispatch<SetStateAction<PopulatedLinks[]>>;
+} | null>(null);
 
-interface PopulatedLinks {}
+type PopulatedLinks = Pick<Link, 'name'> & {
+  href: string;
+};
 
 const OnboardingContextProvider: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [step, setStep] = useState(3);
-  //   const [selectedLinks, setSelectedLinks] = useState<string[]>([]);
-  //   const [populatedLinks, setPopulatedLinks] = useState<>([]);
+  const [step, setStep] = useState(1);
+  const [selectedLinks, setSelectedLinks] = useState<Link[]>([]);
+  const [populatedLinks, setPopulatedLinks] = useState<PopulatedLinks[]>([]);
 
   return (
-    <onBoardingSetupContext.Provider value={{ step, setStep }}>
+    <onBoardingSetupContext.Provider
+      value={{
+        step,
+        setStep,
+        selectedLinks,
+        setSelectedLinks,
+        populatedLinks,
+        setPopulatedLinks,
+      }}
+    >
       {children}
     </onBoardingSetupContext.Provider>
   );

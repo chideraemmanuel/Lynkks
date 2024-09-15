@@ -106,7 +106,7 @@ const EmailVerificationPage: FC<Props> = () => {
       {/* {isLoggingOut && <FullScreenSpinner />} */}
       {isResendingVerificationOTP && <FullScreenSpinner />}
 
-      {!isFetchingSession && account && (
+      {!isFetchingSession && account && !account.email_verified && (
         <div className="bg-white">
           {/* <span>Back Button</span> */}
           <button

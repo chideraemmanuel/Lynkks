@@ -23,7 +23,7 @@ const useLogout = () => {
       // WILL BE REDIRECTED TO APPROPRIATE ROUTE FROM ROUTE GUARD ONCE SESSION QUERY IS INVALIDATED
 
       //  router.replace('/login');
-      //   await queryClient.invalidateQueries('get current session');
+      // await queryClient.invalidateQueries('get current session');
 
       toast.success('Logout Successful');
     },

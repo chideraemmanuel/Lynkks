@@ -37,7 +37,7 @@ export type CustomLink = Header | Hyperlink;
 // Spotify;
 
 export interface SocialLink {
-  title: string;
+  // title: string;
   platform:
     | 'Instagram'
     | 'Facebook'
@@ -155,9 +155,9 @@ const accountSchema: Schema<AccountInterface> = new Schema(
       social_links: {
         type: [
           {
-            title: {
-              type: String,
-            },
+            // title: {
+            //   type: String,
+            // },
             platform: {
               type: String,
               enum: [

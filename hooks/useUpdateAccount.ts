@@ -1,48 +1,50 @@
+import { Updates } from '@/app/api/accounts/info/route';
 import { AccountInterface } from '@/models/account';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
 
-interface Credentials {
-  email: string;
-  password: string;
-}
+// interface Updates {
 
-const login = async (credentials: Credentials) => {
-  const response = await axios.post<Omit<AccountInterface, 'password'>>(
-    '/api/accounts/login',
-    credentials
+// }
+
+const updateAccount = async (updates: Updates & { profile_image?: File }) => {
+  const response = await axios.put<AccountInterface>(
+    '/api/accounts/info',
+    updates,
+    { withCredentials: true }
   );
 
-  console.log('response from use login hook', response);
+  console.log('response from update account hook', response);
 
   return response.data;
 };
 
-const useLogin = () => {
+const useUpdateAccount = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ['login'],
-    mutationFn: login,
+    mutationKey: ['update account'],
+    mutationFn: updateAccount,
     onSuccess: async (data) => {
-      toast.success('Login Successful');
-      // WILL BE REDIRECTED TO APPROPRIATE ROUTE FROM AUTH ROUTES GUARD ONCE SESSION QUERY IS INVALIDATED
       await queryClient.invalidateQueries('get current session');
-      router.replace('/dashboard'); // redundant..?
+
+      // toast.success('Update Successful')
     },
     onError: (error: AxiosError<{ error: string }>) => {
+      console.log('errorrr', error);
+
       toast.error(
         `${
           error?.response?.data?.error ||
           error?.message ||
-          'Login failed - Something went wrong'
+          'Something went wrong'
         }`
       );
     },
   });
 };
 
-export default useLogin;
+export default useUpdateAccount;

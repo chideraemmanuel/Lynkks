@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
+// import { Toaster } from '@/components/ui/toaster';
 import { Toaster } from 'sonner';
 
 interface Props {
@@ -13,6 +14,7 @@ const Providers: FC<Props> = ({ children }) => {
   return (
     <>
       <QueryClientProvider client={client}>
+        {/* <Toaster richColors /> */}
         <Toaster richColors />
         {children}
       </QueryClientProvider>
