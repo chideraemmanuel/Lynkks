@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 export interface SessionInterface extends Document {
   account: ObjectId;
   session_id: string;
-  lastAccessed: Date;
+  expiresAt: Date;
 }
 
 const sessionSchema: Schema<SessionInterface> = new Schema(
@@ -19,11 +19,13 @@ const sessionSchema: Schema<SessionInterface> = new Schema(
       required: true,
       // default: () => nanoid()
     },
-    lastAccessed: {
+    expiresAt: {
       type: Date,
-      default: () => Date.now(),
-      expires: 60 * 60,
-      immutable: true,
+      // default: () => Date.now(),
+      // expires: 60 * 60,
+      default: () => Date.now() + 1000 * 60 * 60,
+      expires: 0,
+      // immutable: true,
     },
     //   device/useragent
   },

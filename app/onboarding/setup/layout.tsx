@@ -5,6 +5,7 @@ import FullScreenSpinner from '@/components/full-screen-spinner';
 import Logo from '@/components/logo';
 import OnboardingContextProvider from '@/contexts/onboarding-setup-context';
 import useSession from '@/hooks/auth/useSession';
+import useAccount from '@/hooks/useAccount';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
@@ -21,7 +22,7 @@ const OnboardingSetupLayout: FC<Props> = ({ children }) => {
     isSuccess,
     isError,
     error,
-  } = useSession();
+  } = useAccount();
 
   useEffect(() => {
     if (account && account.completed_onboarding) {

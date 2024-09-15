@@ -17,16 +17,17 @@ const AuthRoutesGuard: FC<Props> = ({ children }) => {
   const searchParams = useSearchParams();
   const return_to = searchParams.get('return_to');
 
-  const { data: account, isLoading, error, isError } = useSession();
+  const { data: session, isLoading, error, isError } = useSession();
 
   useEffect(() => {
     // NAVIGATE TO DASHBOARD IF FETCH IS SUCCESSFUL (A USER IS LOGGED IN)
-    // THERE WILL BE NO NEED TO PROGRAMMATICALLY REDIRECT USER AFTER LOGIN (ON LOGIN PAGE) AS THIS EFFECT HAS 'account' AS A DEPENDENCY AND WOULD RE-RUN AS SOON AS A USER LOGS IN, THEREBY CAUSING THIS IF BLOCK TO BE BE ACTIVATED :)
-    if (account) {
+    // THERE WILL BE NO NEED TO PROGRAMMATICALLY REDIRECT USER AFTER LOGIN (ON LOGIN PAGE) AS THIS EFFECT HAS 'session' AS A DEPENDENCY AND WOULD RE-RUN AS SOON AS A USER LOGS IN, THEREBY CAUSING THIS IF BLOCK TO BE BE ACTIVATED :)
+    if (session) {
+      console.log('session', session);
       console.log('redirect from auth routes guard');
       router.replace(return_to || '/dashboard', { scroll: false });
     }
-  }, [account]);
+  }, [session]);
 
   if (isLoading) {
     return <FullScreenSpinner />;
@@ -51,10 +52,15 @@ const AuthRoutesGuard: FC<Props> = ({ children }) => {
     return <ErrorComponent error={error} />;
   }
 
+  console.log('isLoading', isLoading);
+  console.log('session', session);
+  console.log('isError', isError);
+  console.log('error', error);
+
   // ONLY RENDER AUTH PAGE IF SERVER SENDS BACK ERROR (USER NOT AUTHENTICATED), OTHERWISE, PAGE WILL BE REDIRECTED (FROM USE EFFECT)
   return (
     <>
-      {!account &&
+      {!session &&
         !isLoading &&
         isError &&
         error?.message !== 'Network Error' &&

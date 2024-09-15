@@ -76,12 +76,8 @@ const LinkSelection: FC = () => {
   } = useLogout();
 
   useEffect(() => {
-    // const invalidateSession = async () => {
-    //   await queryClient.invalidateQueries('get current session');
-    //   console.log('q invalidated');
-    // };
     if (isSuccessLoggingOut) {
-      router.back();
+      // router.back();
     }
   }, [isSuccessLoggingOut]);
 

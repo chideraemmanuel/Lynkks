@@ -2,13 +2,14 @@ import { Document, model, models, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 interface Header {
+  _id: string;
   type: 'header';
   title: string;
 }
 
 interface Hyperlink {
+  _id: string;
   type: 'link';
-  id: string;
   title: string;
   href: string;
 }
@@ -38,6 +39,7 @@ export type CustomLink = Header | Hyperlink;
 
 export interface SocialLink {
   // title: string;
+  _id: string;
   platform:
     | 'Instagram'
     | 'Facebook'
@@ -56,7 +58,7 @@ export interface SocialLink {
   href: string;
 }
 
-export interface AccountInterface extends Document {
+export interface AccountInterface extends Pick<Document, '_id'> {
   first_name: string | null;
   last_name: string | null;
   username: string;

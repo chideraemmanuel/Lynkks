@@ -105,7 +105,7 @@ const ProfileSettingsPage: FC<Props> = () => {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-80px)] flex flex-col sm:px-6 px-4 py-6">
+      <div className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex flex-col sm:px-6 px-4 py-6">
         <div className="pb-5">
           <h1 className="pb-3 pt-2 text-[#101828] font-bold text-[24px] leading-[140%] tracking-[0%]">
             Manage Profile

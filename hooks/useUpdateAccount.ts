@@ -29,7 +29,7 @@ const useUpdateAccount = () => {
     mutationKey: ['update account'],
     mutationFn: updateAccount,
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries('get current session');
+      await queryClient.invalidateQueries('get current account');
 
       // toast.success('Update Successful')
     },

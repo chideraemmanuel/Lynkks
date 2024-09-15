@@ -2,6 +2,7 @@
 
 import ErrorComponent from '@/components/error-component';
 import useSession from '@/hooks/auth/useSession';
+import useAccount from '@/hooks/useAccount';
 import { usePathname, useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
@@ -13,7 +14,7 @@ const RouteGuard: FC<Props> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { data: account, isLoading, isSuccess, isError, error } = useSession();
+  const { data: account, isLoading, isSuccess, isError, error } = useAccount();
 
   // console.log('isLoading', isLoading);
   // console.log('isError', isError);

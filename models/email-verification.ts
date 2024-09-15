@@ -2,7 +2,7 @@ import mongoose, { Document, model, models, ObjectId } from 'mongoose';
 import { Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-export interface EmailVerificationInterface extends Document {
+export interface EmailVerificationInterface extends Pick<Document, '_id'> {
   account: ObjectId;
   OTP: string;
   expiresAt: Date;

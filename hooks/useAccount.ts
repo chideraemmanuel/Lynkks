@@ -1,22 +1,24 @@
 import { AccountInterface } from '@/models/account';
-import { SessionInterface } from '@/models/session';
 import axios, { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 
-const getSession = async () => {
-  const response = await axios.get<SessionInterface>('/api/session', {
-    withCredentials: true,
-  });
+const getAccount = async () => {
+  const response = await axios.get<Omit<AccountInterface, 'password'>>(
+    '/api/accounts/info',
+    {
+      withCredentials: true,
+    }
+  );
 
-  console.log('response from use session hook', response);
+  console.log('response from use account hook', response);
 
   return response.data;
 };
 
-const useSession = () => {
+const useAccount = () => {
   return useQuery({
-    queryKey: ['get current session'],
-    queryFn: getSession,
+    queryKey: ['get current account'],
+    queryFn: getAccount,
     onSuccess: (data) => {},
     onError: (error: AxiosError<{ error: string }>) => {
       console.log('error', error);
@@ -27,4 +29,4 @@ const useSession = () => {
   });
 };
 
-export default useSession;
+export default useAccount;

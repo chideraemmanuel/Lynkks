@@ -1,4 +1,4 @@
-import mongoose, { model, models, ObjectId, Schema } from 'mongoose';
+import mongoose, { Document, model, models, ObjectId, Schema } from 'mongoose';
 
 interface View {
   visitor_id: string;
@@ -44,7 +44,7 @@ interface Click {
   as: string;
 }
 
-export interface AnalyticsInterface {
+export interface AnalyticsInterface extends Pick<Document, '_id'> {
   account: ObjectId;
   views: View[];
   clicks: Click[];

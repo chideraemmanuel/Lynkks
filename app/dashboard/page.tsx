@@ -1,91 +1,20 @@
 'use client';
 
+import FullScreenSpinner from '@/components/full-screen-spinner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SOCIAL_MEDIA_PLATFORMS } from '@/constants';
+import useAccount from '@/hooks/useAccount';
+import { AccountInterface, CustomLink, SocialLink } from '@/models/account';
 import { RiPencilFill, RiWhatsappLine } from '@remixicon/react';
 import { EyeIcon, GripVertical, Trash2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
+import { toast } from 'sonner';
 
 interface Props {}
-
-// const DashboardLinksPage: FC<Props> = () => {
-//   const router = useRouter();
-
-//   const searchParams = useSearchParams();
-//   const currentTab = searchParams.get('tab');
-
-//   useEffect(() => {
-//     if (currentTab !== 'links' && currentTab !== 'social_links') {
-//       const newSearchParams = new URLSearchParams(searchParams.toString());
-//       newSearchParams.delete('tab');
-//       router.replace(`?${newSearchParams}`);
-//     }
-//   }, [currentTab]);
-
-//   const updateSearchParam = (value: string) => {
-//     const newSearchParams = new URLSearchParams(searchParams.toString());
-
-//     // console.log('passed value', value);
-
-//     if (value === '' || !value) {
-//       newSearchParams.delete('tab');
-//     } else {
-//       newSearchParams.set('tab', value);
-//     }
-
-//     router.replace(`?${newSearchParams}`);
-//   };
-
-//   return (
-//     <>
-//       <div className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] grid grid-cols-1 lg:grid-cols-[1fr,_500px]">
-//         <div className="sm:px-6 px-4 py-6">
-//           <div className="pb-5">
-//             <span className="inline-block pb-2 font-bold text-[#98A1B3] text-[20px] leading-[140%] tracking-[-0.44%]">
-//               Welcome, Chidera. 👋🏾
-//             </span>
-
-//             <h1 className="text-[#101828] font-medium text-base leading-[140%] tracking-[0%]">
-//               Your Links
-//             </h1>
-//           </div>
-
-//           <Tabs value={currentTab || 'links'} onValueChange={updateSearchParam}>
-//             <TabsList className="w-full mb-2">
-//               <TabsTrigger value="links" className="w-full">
-//                 Links
-//               </TabsTrigger>
-//               <TabsTrigger value="social_links" className="w-full">
-//                 Social Links
-//               </TabsTrigger>
-//             </TabsList>
-
-//             <>
-//               <LinksTabContent />
-//               <SocialLinksTabContent />
-//             </>
-//           </Tabs>
-//         </div>
-
-//         <div className="lg:flex hidden flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l">
-//           <Alert className="flex justify-between items-center p-2">
-//             <AlertDescription>linknest.vercel.app/chidera</AlertDescription>
-
-//             <Button size={'sm'}>Copy</Button>
-//           </Alert>
-
-//           {/* <div className='w-[428px] h-[926px]'> */}
-//           {/* <div className="w-[414px] h-[896px] bg-slate-500 rounded-[50px]"></div> */}
-//           {/* <div className="w-[375px] h-[812px] bg-slate-500 rounded-[50px]"></div> */}
-//           <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto bg-slate-500 rounded-[50px]"></div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
 
 const DashboardLinksPage: FC<Props> = () => {
   const router = useRouter();
@@ -115,59 +44,89 @@ const DashboardLinksPage: FC<Props> = () => {
     router.replace(`?${newSearchParams}`);
   };
 
+  const { data: account, isLoading: isFetchingAccount } = useAccount();
+
   return (
     <>
-      {/* <div className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] grid grid-cols-1 lg:grid-cols-[1fr,_500px]"> */}
-      <div className="sm:px-6 px-4 py-6 lg:mr-[500px]">
-        <div className="pb-5">
-          <span className="inline-block pb-2 font-bold text-[#98A1B3] text-[20px] leading-[140%] tracking-[-0.44%]">
-            Welcome, Chidera. 👋🏾
-          </span>
+      {isFetchingAccount && <FullScreenSpinner />}
 
-          <h1 className="text-[#101828] font-medium text-base leading-[140%] tracking-[0%]">
-            Your Links
-          </h1>
-        </div>
+      {!isFetchingAccount && account && (
+        <>
+          <div className="sm:px-6 px-4 py-6 lg:mr-[500px]">
+            <div className="pb-5">
+              <span className="inline-block pb-2 font-bold text-[#98A1B3] text-[20px] leading-[140%] tracking-[-0.44%]">
+                {/* Welcome, Chidera. 👋🏾 */}
+                Welcome, {account.first_name}. 👋🏾
+              </span>
 
-        <Tabs value={currentTab || 'links'} onValueChange={updateSearchParam}>
-          <TabsList className="w-full mb-2">
-            <TabsTrigger value="links" className="w-full">
-              Links
-            </TabsTrigger>
-            <TabsTrigger value="social_links" className="w-full">
-              Social Links
-            </TabsTrigger>
-          </TabsList>
+              <h1 className="text-[#101828] font-medium text-base leading-[140%] tracking-[0%]">
+                Your Links
+              </h1>
+            </div>
 
-          <>
-            <LinksTabContent />
-            <SocialLinksTabContent />
-          </>
-        </Tabs>
-      </div>
+            <Tabs
+              value={currentTab || 'links'}
+              onValueChange={updateSearchParam}
+            >
+              <TabsList className="w-full mb-2">
+                <TabsTrigger value="links" className="w-full">
+                  Links
+                </TabsTrigger>
+                <TabsTrigger value="social_links" className="w-full">
+                  Social Links
+                </TabsTrigger>
+              </TabsList>
 
-      <div className="fixed right-0 top-[80px] w-[500px] lg:flex hidden flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l">
-        <Alert className="flex justify-between items-center p-2">
-          <AlertDescription>linknest.vercel.app/chidera</AlertDescription>
+              <>
+                <LinksTabContent account={account} />
+                <SocialLinksTabContent account={account} />
+              </>
+            </Tabs>
+          </div>
 
-          <Button size={'sm'}>Copy</Button>
-        </Alert>
+          <div className="fixed right-0 top-[80px] w-[500px] lg:flex hidden flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l">
+            <Alert className="flex justify-between items-center p-2">
+              {/* <AlertDescription>linknest.vercel.app/chidera</AlertDescription> */}
+              <AlertDescription>
+                linknest.vercel.app/{account.username}
+              </AlertDescription>
 
-        <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto bg-slate-500 rounded-[50px]"></div>
-      </div>
-      {/* </div> */}
+              <Button
+                size={'sm'}
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    ` linknest.vercel.app/${account.username}`
+                  );
+                  toast('Link copied successfully');
+                }}
+              >
+                Copy
+              </Button>
+            </Alert>
+
+            <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto bg-slate-500 rounded-[50px]"></div>
+          </div>
+        </>
+      )}
     </>
   );
 };
 
 export default DashboardLinksPage;
 
-const LinksTabContent: FC<{}> = () => {
-  const [list, setList] = useState([
-    { id: 1, name: 'chidera' },
-    { id: 2, name: 'shrek' },
-    { id: 2, name: 'fiona' },
-  ]);
+// CustomLink;
+// SocialLink;
+
+type CustomLinkWithId = CustomLink & { id: string };
+
+const LinksTabContent: FC<{ account: AccountInterface }> = ({ account }) => {
+  const customLinkListWithId = account?.links?.custom_links.map((link) => {
+    return { ...link, id: link._id };
+  });
+
+  const [list, setList] = useState<CustomLinkWithId[]>(
+    customLinkListWithId || []
+  );
 
   // console.log('list', list);
 
@@ -187,8 +146,8 @@ const LinksTabContent: FC<{}> = () => {
           className="flex flex-col gap-3"
           animation={150}
         >
-          {list.map((item, index) => (
-            <LinkCard key={index} item={item} />
+          {list.map((link, index) => (
+            <LinkCard key={link.id} link={link} />
           ))}
         </ReactSortable>
         {/* </div> */}
@@ -197,12 +156,16 @@ const LinksTabContent: FC<{}> = () => {
   );
 };
 
-const SocialLinksTabContent: FC<{}> = () => {
-  const [list, setList] = useState([
-    { id: 1, name: 'chidera' },
-    { id: 2, name: 'shrek' },
-    { id: 2, name: 'fiona' },
-  ]);
+type SocialLinkWithId = SocialLink & { id: string };
+
+const SocialLinksTabContent: FC<{ account: AccountInterface }> = ({
+  account,
+}) => {
+  const socialLinkListWithId = account?.links?.social_links.map((link) => {
+    return { ...link, id: link._id };
+  });
+
+  const [list, setList] = useState<SocialLinkWithId[]>(socialLinkListWithId);
 
   return (
     <>
@@ -217,8 +180,8 @@ const SocialLinksTabContent: FC<{}> = () => {
           className="flex flex-col gap-3"
           animation={150}
         >
-          {list.map((item, index) => (
-            <SocialLinkCard key={index} item={item} />
+          {list.map((link, index) => (
+            <SocialLinkCard key={link.id} link={link} />
           ))}
         </ReactSortable>
       </TabsContent>
@@ -226,8 +189,8 @@ const SocialLinksTabContent: FC<{}> = () => {
   );
 };
 
-// TODO: make LinkCard accomodate for headers too. Use a `type` prop
-const LinkCard: FC<{ item: { id: number; name: string } }> = ({ item }) => {
+// // TODO: make LinkCard accomodate for headers too. Use a `type` prop
+const LinkCard: FC<{ link: CustomLinkWithId }> = ({ link }) => {
   return (
     <>
       <div className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3">
@@ -237,8 +200,11 @@ const LinkCard: FC<{ item: { id: number; name: string } }> = ({ item }) => {
           </div>
 
           <div className="bg-lime-200 flex flex-col gap-0">
-            <span className="font-medium">Link Title {item.name}</span>
-            <span className="text-sm">https://localhost:3000</span>
+            <span className="font-medium">{link.title}</span>
+            {/* <span className="text-sm">https://localhost:3000</span> */}
+            {link.type === 'link' && (
+              <span className="text-sm">{link.href}</span>
+            )}
           </div>
         </div>
 
@@ -264,9 +230,17 @@ const LinkCard: FC<{ item: { id: number; name: string } }> = ({ item }) => {
   );
 };
 
-const SocialLinkCard: FC<{ item: { id: number; name: string } }> = ({
-  item,
-}) => {
+const SocialLinkCard: FC<{ link: SocialLinkWithId }> = ({ link }) => {
+  const showIcon = () => {
+    const res = SOCIAL_MEDIA_PLATFORMS.find((platform) => {
+      return platform.name === link.platform;
+    });
+
+    return res?.icon;
+  };
+
+  const Icon = showIcon();
+
   return (
     <>
       <div className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3">
@@ -277,12 +251,14 @@ const SocialLinkCard: FC<{ item: { id: number; name: string } }> = ({
 
           <div className="flex items-center gap-2">
             <div>
-              <RiWhatsappLine />
+              {/* <RiWhatsappLine /> */}
+              {Icon ? <Icon size={24} /> : null}
             </div>
 
             <div className="bg-lime-200 flex flex-col gap-0">
-              <span className="font-medium">Link Title {item.name}</span>
-              <span className="text-sm">https://localhost:3000</span>
+              <span className="font-medium">{link.platform}</span>
+              {/* <span className="text-sm">https://localhost:3000</span> */}
+              <span className="text-sm">{link.href}</span>
             </div>
           </div>
         </div>

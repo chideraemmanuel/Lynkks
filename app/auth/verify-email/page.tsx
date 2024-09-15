@@ -18,6 +18,7 @@ import ErrorComponent from '@/components/error-component';
 import useVerifyEmail from '@/hooks/auth/useVerifyEmail';
 import useResendVerificationOTP from '@/hooks/auth/useResendVeificationOTP';
 import useLogout from '@/hooks/auth/useLogout';
+import useAccount from '@/hooks/useAccount';
 
 interface Props {}
 
@@ -39,7 +40,7 @@ const EmailVerificationPage: FC<Props> = () => {
     isSuccess,
     isError,
     error,
-  } = useSession();
+  } = useAccount();
 
   const {
     mutate: logout,
@@ -49,7 +50,7 @@ const EmailVerificationPage: FC<Props> = () => {
 
   useEffect(() => {
     if (isSuccessLoggingOut) {
-      router.back();
+      // router.back();
     }
   }, [isSuccessLoggingOut]);
 

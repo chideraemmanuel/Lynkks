@@ -25,9 +25,9 @@ const useVerifyEmail = () => {
     mutationKey: ['verify email'],
     mutationFn: verifyEmail,
     onSuccess: async (data) => {
-      // WILL BE REDIRECTED TO APPROPRIATE ROUTE FROM EMAIL VERIFICATION PAGE ONCE SESSION QUERY IS INVALIDATED
+      // WILL BE REDIRECTED TO APPROPRIATE ROUTE FROM EMAIL VERIFICATION PAGE ONCE ACCOUNT QUERY IS INVALIDATED
       //  router.replace('/dashboard');
-      await queryClient.invalidateQueries('get current session');
+      await queryClient.invalidateQueries('get current account');
     },
     onError: (error: AxiosError<{ error: string }>) => {
       toast.error(
