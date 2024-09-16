@@ -5,6 +5,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SOCIAL_MEDIA_PLATFORMS } from '@/constants';
+import CustomLinksTabContent from '@/containers/dashboard/links/custom-links-tab-content';
+import SocialLinksTabContent from '@/containers/dashboard/links/social-links-tab-content';
 import useAccount from '@/hooks/useAccount';
 import { AccountInterface, CustomLink, SocialLink } from '@/models/account';
 import { RiPencilFill, RiWhatsappLine } from '@remixicon/react';
@@ -78,7 +80,7 @@ const DashboardLinksPage: FC<Props> = () => {
               </TabsList>
 
               <>
-                <LinksTabContent account={account} />
+                <CustomLinksTabContent account={account} />
                 <SocialLinksTabContent account={account} />
               </>
             </Tabs>
@@ -113,182 +115,3 @@ const DashboardLinksPage: FC<Props> = () => {
 };
 
 export default DashboardLinksPage;
-
-// CustomLink;
-// SocialLink;
-
-type CustomLinkWithId = CustomLink & { id: string };
-
-const LinksTabContent: FC<{ account: AccountInterface }> = ({ account }) => {
-  const customLinkListWithId = account?.links?.custom_links.map((link) => {
-    return { ...link, id: link._id };
-  });
-
-  const [list, setList] = useState<CustomLinkWithId[]>(
-    customLinkListWithId || []
-  );
-
-  // console.log('list', list);
-
-  return (
-    <>
-      <TabsContent value="links">
-        <div className="flex items-center gap-2 mb-5">
-          <Button className="w-full">Add Link</Button>
-
-          <Button className="w-full">Add Header</Button>
-        </div>
-
-        {/* <div className="flex flex-col gap-3"> */}
-        <ReactSortable
-          list={list}
-          setList={setList}
-          className="flex flex-col gap-3"
-          animation={150}
-        >
-          {list.map((link, index) => (
-            <LinkCard key={link.id} link={link} />
-          ))}
-        </ReactSortable>
-        {/* </div> */}
-      </TabsContent>
-    </>
-  );
-};
-
-type SocialLinkWithId = SocialLink & { id: string };
-
-const SocialLinksTabContent: FC<{ account: AccountInterface }> = ({
-  account,
-}) => {
-  const socialLinkListWithId = account?.links?.social_links.map((link) => {
-    return { ...link, id: link._id };
-  });
-
-  const [list, setList] = useState<SocialLinkWithId[]>(socialLinkListWithId);
-
-  return (
-    <>
-      <TabsContent value="social_links">
-        <div className="mb-5">
-          <Button className="w-full">Add Social Link</Button>
-        </div>
-
-        <ReactSortable
-          list={list}
-          setList={setList}
-          className="flex flex-col gap-3"
-          animation={150}
-        >
-          {list.map((link, index) => (
-            <SocialLinkCard key={link.id} link={link} />
-          ))}
-        </ReactSortable>
-      </TabsContent>
-    </>
-  );
-};
-
-// // TODO: make LinkCard accomodate for headers too. Use a `type` prop
-const LinkCard: FC<{ link: CustomLinkWithId }> = ({ link }) => {
-  return (
-    <>
-      <div className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3">
-        <div className="flex-1 flex items-center gap-3 bg-red-200">
-          <div className="bg-blue-200 cursor-grab active:cursor-grabbing">
-            <GripVertical />
-          </div>
-
-          <div className="bg-lime-200 flex flex-col gap-0">
-            <span className="font-medium">{link.title}</span>
-            {/* <span className="text-sm">https://localhost:3000</span> */}
-            {link.type === 'link' && (
-              <span className="text-sm">{link.href}</span>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <Button size={'icon'} variant={'ghost'} className="h-9 w-9">
-            <RiPencilFill className="w-5 h-5" />
-          </Button>
-
-          <Button size={'icon'} variant={'ghost'} className="h-9 w-9">
-            <EyeIcon className="w-5 h-5" />
-          </Button>
-
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="text-destructive hover:bg-red-100 hover:text-destructive h-9 w-9"
-          >
-            <Trash2 className="w-5 h-5" />
-          </Button>
-        </div>
-      </div>
-    </>
-  );
-};
-
-const SocialLinkCard: FC<{ link: SocialLinkWithId }> = ({ link }) => {
-  const showIcon = () => {
-    const res = SOCIAL_MEDIA_PLATFORMS.find((platform) => {
-      return platform.name === link.platform;
-    });
-
-    return res?.icon;
-  };
-
-  const Icon = showIcon();
-
-  return (
-    <>
-      <div className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3">
-        <div className="flex-1 flex items-center gap-3 bg-red-200">
-          <div className="bg-blue-200 cursor-grab active:cursor-grabbing">
-            <GripVertical />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div>
-              {/* <RiWhatsappLine /> */}
-              {Icon ? <Icon size={24} /> : null}
-            </div>
-
-            <div className="bg-lime-200 flex flex-col gap-0">
-              <span className="font-medium">{link.platform}</span>
-              {/* <span className="text-sm">https://localhost:3000</span> */}
-              <span className="text-sm">{link.href}</span>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="sm:h-9 h-8 sm:w-9 w-8"
-          >
-            <RiPencilFill className="w-5 h-5" />
-          </Button>
-
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="sm:h-9 h-8 sm:w-9 w-8"
-          >
-            <EyeIcon className="w-5 h-5" />
-          </Button>
-
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="text-destructive hover:bg-red-100 hover:text-destructive sm:h-9 w-8 sm:w-9 h-8"
-          >
-            <Trash2 className="w-5 h-5" />
-          </Button>
-        </div>
-      </div>
-    </>
-  );
-};

@@ -2,7 +2,7 @@ import mongoose, { model, models, ObjectId, Schema } from 'mongoose';
 import { Document } from 'mongoose';
 
 export interface SessionInterface extends Document {
-  account: ObjectId;
+  account: mongoose.Types.ObjectId;
   session_id: string;
   expiresAt: Date;
 }

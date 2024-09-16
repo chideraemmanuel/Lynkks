@@ -2,11 +2,6 @@ import axios, { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
 
-interface Params {
-  successCallback?: () => void;
-}
-
-// const logout = async ({ successCallback }: Params) => {
 const logout = async () => {
   const response = await axios.delete<{ message: string }>(
     '/api/accounts/logout',
@@ -16,7 +11,6 @@ const logout = async () => {
   console.log('response from use logout hook', response);
 
   return response.data;
-  // return { data: response.data, successCallback };
 };
 
 const useLogout = () => {
@@ -26,9 +20,6 @@ const useLogout = () => {
     mutationKey: ['logout'],
     mutationFn: logout,
     onSuccess: (data) => {
-      // const { data, successCallback } = returnValue;
-      // WILL BE REDIRECTED TO APPROPRIATE ROUTE FROM ROUTE GUARD ONCE SESSION QUERY IS INVALIDATED
-
       queryClient.setQueryData('get current session', (oldSessionData: any) => {
         return null;
       });
@@ -38,10 +29,6 @@ const useLogout = () => {
       });
 
       toast.success('Logout Successful');
-
-      // if (successCallback) {
-      //   successCallback();
-      // }
     },
     onError: (error: AxiosError<{ error: string }>) => {
       toast.error(
@@ -51,12 +38,20 @@ const useLogout = () => {
           'Logout failed - Something went wrong'
         }`
       );
-      // toast.error('Something went wrong');
     },
     onSettled: async () => {
       await queryClient.invalidateQueries('get current session');
       await queryClient.invalidateQueries('get current account');
-      console.log('queries INVALIDATED!');
+
+      const sessionQuery = queryClient.getQueryState('get current session');
+      const accountQuery = queryClient.getQueryState('get current account');
+
+      console.log('Session query state after invalidation:', sessionQuery);
+      console.log('Account query state after invalidation:', accountQuery);
+
+      await queryClient.refetchQueries('get current session');
+
+      console.log('queries INVALIDATED and refetched!');
     },
   });
 };

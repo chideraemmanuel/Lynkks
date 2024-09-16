@@ -2,7 +2,7 @@ import mongoose, { Document, model, models, ObjectId, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 export interface PasswordResetInterface extends Pick<Document, '_id'> {
-  account: ObjectId;
+  account: mongoose.Types.ObjectId;
   reset_string: string;
   expiresAt: Date;
 }

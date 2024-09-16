@@ -1,14 +1,15 @@
-import { Document, model, models, Schema } from 'mongoose';
+import { Document, model, models, ObjectId, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 
 interface Header {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   type: 'header';
   title: string;
 }
 
 interface Hyperlink {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   type: 'link';
   title: string;
   href: string;
@@ -39,7 +40,7 @@ export type CustomLink = Header | Hyperlink;
 
 export interface SocialLink {
   // title: string;
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   platform:
     | 'Instagram'
     | 'Facebook'

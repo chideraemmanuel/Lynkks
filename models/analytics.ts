@@ -45,7 +45,7 @@ interface Click {
 }
 
 export interface AnalyticsInterface extends Pick<Document, '_id'> {
-  account: ObjectId;
+  account: mongoose.Types.ObjectId;
   views: View[];
   clicks: Click[];
 }

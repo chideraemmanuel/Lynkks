@@ -1,5 +1,5 @@
-import DashboardHeader from '@/containers/dashboard-header';
-import DashboardSideNavigation from '@/containers/dashboard-side-navigation';
+import DashboardHeader from '@/containers/dashboard/dashboard-header';
+import DashboardSideNavigation from '@/containers/dashboard/dashboard-side-navigation';
 import { FC } from 'react';
 
 interface Props {
