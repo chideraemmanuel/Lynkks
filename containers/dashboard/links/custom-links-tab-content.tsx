@@ -1,5 +1,7 @@
 'use client';
 
+import FormInput from '@/components/form-input';
+import SelectInput from '@/components/select-input';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -12,10 +14,13 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { TabsContent } from '@/components/ui/tabs';
+import { URLRegex } from '@/constants';
+import useAddLinkOrHeader from '@/hooks/links/useAddLinkOrHeader';
 import { AccountInterface, CustomLink } from '@/models/account';
 import { RiDeleteBin5Line, RiPencilFill } from '@remixicon/react';
-import { EyeIcon, GripVerticalIcon, Trash2 } from 'lucide-react';
-import { FC, useState } from 'react';
+import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
+import { FC, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { ReactSortable } from 'react-sortablejs';
 
 interface Props {
@@ -30,6 +35,15 @@ const CustomLinksTabContent: FC<Props> = ({ account }) => {
   });
 
   const [list, setList] = useState<CustomLinkWithId[]>(customLinkListWithId);
+
+  useEffect(() => {
+    console.log('account changed', account);
+    const customLinkListWithId = account?.links?.custom_links.map((link) => {
+      return { ...link, id: link._id.toString() };
+    });
+
+    setList(customLinkListWithId);
+  }, [account]);
 
   return (
     <>
@@ -93,8 +107,51 @@ const CustomLinkCard: FC<{ link: CustomLinkWithId }> = ({ link }) => {
   );
 };
 
+interface AddLinkFormData {
+  // type: 'header' | 'link';
+  title: string;
+  href: string;
+}
+
 const AddLink: FC<{}> = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { mutateAsync: addLink, isLoading: isAddingLink } =
+    useAddLinkOrHeader();
+
+  const form = useForm<AddLinkFormData>();
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    clearErrors,
+    setValue,
+    reset,
+    resetField,
+  } = form;
+
+  const onSubmit: SubmitHandler<AddLinkFormData> = async (data, e) => {
+    const { title, href } = data;
+
+    // await addLink({
+    //   type: 'link',
+    //   title,
+    //   href,
+    // });
+
+    await addLink({
+      section: 'custom_links',
+      link: {
+        type: 'link',
+        title,
+        href,
+      },
+    });
+
+    reset();
+    setDialogOpen(false);
+  };
 
   return (
     <>
@@ -104,42 +161,116 @@ const AddLink: FC<{}> = () => {
         </AlertDialogTrigger>
 
         <AlertDialogContent className="px-6 py-12 rounded-[16px] bg-white w-[min(480px,_90%)]">
-          <div className="flex flex-col gap-9 text-center">
-            <AlertDialogHeader className="!text-center">
-              <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
-                Add new link
-              </AlertDialogTitle>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col">
+              <AlertDialogHeader className="!text-center mb-5">
+                <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
+                  Add new link
+                </AlertDialogTitle>
 
-              {/* <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
+                {/* <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
               Are you sure you want to disable this admin? Doing so will suspend
               the admin access.
             </AlertDialogDescription> */}
-            </AlertDialogHeader>
+              </AlertDialogHeader>
 
-            <AlertDialogFooter className="flex">
-              <AlertDialogCancel className="w-full h-14 border-black rounded-full text-black font-bold text-base leading-[150%] tracking-[-0.44%]">
-                Cancel
-              </AlertDialogCancel>
-              <Button
-                className="w-full rounded-full py-4 px-6 h-14 font-medium text-base tracking-[-1%] text-white bg-primary text-center"
-                onClick={async () => {
-                  // await addLink();
-                  setDialogOpen(false);
-                }}
-                // disabled={isAddingLink}
-              >
-                Add link
-              </Button>
-            </AlertDialogFooter>
-          </div>
+              <div className="flex flex-col gap-3 mb-10">
+                <FormInput
+                  label="Title"
+                  placeholder="e.g My website"
+                  id="title"
+                  {...register('title', {
+                    required: {
+                      value: true,
+                      message: 'Link title is required',
+                    },
+                  })}
+                  error={errors.title?.message}
+                />
+
+                <FormInput
+                  label="URL"
+                  placeholder="e.g https://mywebsite.com"
+                  id="href"
+                  {...register('href', {
+                    required: { value: true, message: 'URL is required' },
+                    pattern: {
+                      value: URLRegex,
+                      message: 'Invalid URL',
+                    },
+                  })}
+                  error={errors.href?.message}
+                />
+              </div>
+
+              <AlertDialogFooter className="flex">
+                <AlertDialogCancel
+                  type="button"
+                  className="w-full h-14 border-primary text-primary font-bold text-base leading-[150%] tracking-[-0.44%]"
+                  disabled={isAddingLink}
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <Button
+                  className="w-full py-4 px-6 h-14 font-medium text-base tracking-[-1%] text-white bg-primary text-center"
+                  disabled={isAddingLink}
+                >
+                  {isAddingLink && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Add link
+                </Button>
+              </AlertDialogFooter>
+            </div>
+          </form>
         </AlertDialogContent>
       </AlertDialog>
     </>
   );
 };
 
+interface AddHeaderFormData {
+  // type: 'header' | 'link';
+  title: string;
+}
+
 const AddHeader: FC<{}> = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { mutateAsync: addLink, isLoading: isAddingLink } =
+    useAddLinkOrHeader();
+
+  const form = useForm<AddHeaderFormData>();
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    clearErrors,
+    setValue,
+    reset,
+    resetField,
+  } = form;
+
+  const onSubmit: SubmitHandler<AddHeaderFormData> = async (data, e) => {
+    const { title } = data;
+
+    // await addLink({
+    //   type: 'header',
+    //   title,
+    // });
+
+    await addLink({
+      section: 'custom_links',
+      link: {
+        type: 'header',
+        title,
+      },
+    });
+
+    reset();
+    setDialogOpen(false);
+  };
 
   return (
     <>
@@ -149,33 +280,53 @@ const AddHeader: FC<{}> = () => {
         </AlertDialogTrigger>
 
         <AlertDialogContent className="px-6 py-12 rounded-[16px] bg-white w-[min(480px,_90%)]">
-          <div className="flex flex-col gap-9 text-center">
-            <AlertDialogHeader className="!text-center">
-              <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
-                Add new header
-              </AlertDialogTitle>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col">
+              <AlertDialogHeader className="!text-center mb-5">
+                <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
+                  Add new header
+                </AlertDialogTitle>
 
-              <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
-                Headers can be used to split your links into sections.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
+                <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
+                  Headers can be used to split your links into sections.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
 
-            <AlertDialogFooter className="flex">
-              <AlertDialogCancel className="w-full h-14 border-black rounded-full text-black font-bold text-base leading-[150%] tracking-[-0.44%]">
-                Cancel
-              </AlertDialogCancel>
-              <Button
-                className="w-full rounded-full py-4 px-6 h-14 font-medium text-base tracking-[-1%] text-white bg-primary text-center"
-                onClick={async () => {
-                  // await addHeader();
-                  setDialogOpen(false);
-                }}
-                // disabled={isAddingHeader}
-              >
-                Add header
-              </Button>
-            </AlertDialogFooter>
-          </div>
+              <div className="flex flex-col gap-3 mb-10">
+                <FormInput
+                  label="Title"
+                  placeholder="e.g Projects Section"
+                  id="title"
+                  {...register('title', {
+                    required: {
+                      value: true,
+                      message: 'Header title is required',
+                    },
+                  })}
+                  error={errors.title?.message}
+                />
+              </div>
+
+              <AlertDialogFooter className="flex">
+                <AlertDialogCancel
+                  type="button"
+                  className="w-full h-14 border-primary text-primary font-bold text-base leading-[150%] tracking-[-0.44%]"
+                  disabled={isAddingLink}
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <Button
+                  className="w-full py-4 px-6 h-14 font-medium text-base tracking-[-1%] text-white bg-primary text-center"
+                  disabled={isAddingLink}
+                >
+                  {isAddingLink && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Add header
+                </Button>
+              </AlertDialogFooter>
+            </div>
+          </form>
         </AlertDialogContent>
       </AlertDialog>
     </>
