@@ -10,8 +10,8 @@ const LinkedInIcon: FC<Props> = ({ size = 48 }) => {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 48 48"
-        width={48}
-        height={48}
+        width={size}
+        height={size}
       >
         <path
           fill="#0288D1"
