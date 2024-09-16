@@ -1,23 +1,23 @@
-import { AccountInterface, CustomLink } from '@/models/account';
+import { AccountInterface } from '@/models/account';
 import axios, { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
 
 interface Header {
   type: 'header';
-  title: string;
+  title?: string;
 }
 
 interface Link {
   type: 'link';
-  title: string;
-  href: string;
+  title?: string;
+  href?: string;
 }
 
 type CustomType = Header | Link;
 
 interface SocialType {
-  platform:
+  platform?:
     | 'Instagram'
     | 'Facebook'
     | 'X'
@@ -32,7 +32,7 @@ interface SocialType {
     | 'Tumblr'
     | 'Twitch'
     | 'Discord';
-  href: string;
+  href?: string;
 }
 
 interface Custom {
@@ -47,24 +47,29 @@ interface Social {
 
 type Details = Custom | Social;
 
-const addLinkOrHeader = async (details: Details) => {
-  const response = await axios.put<AccountInterface>(
-    '/api/accounts/info/links',
-    details,
+interface Params {
+  link_id: string;
+  update_details: Details;
+}
+
+const editLink = async ({ link_id, update_details }: Params) => {
+  const response = await axios.put<Omit<AccountInterface, 'password'>>(
+    `/api/accounts/info/links/${link_id}`,
+    update_details,
     { withCredentials: true }
   );
 
-  console.log('response from add custom hook', response);
+  console.log('response from edit link hook', response);
 
   return response.data;
 };
 
-const useAddLinkOrHeader = () => {
+const useEditLink = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ['add custom'],
-    mutationFn: addLinkOrHeader,
+    mutationKey: ['edit link'],
+    mutationFn: editLink,
     onSuccess: async (data) => {
       await queryClient.invalidateQueries('get current account');
       // await queryClient.refetchQueries('get current account');
@@ -82,4 +87,4 @@ const useAddLinkOrHeader = () => {
   });
 };
 
-export default useAddLinkOrHeader;
+export default useEditLink;

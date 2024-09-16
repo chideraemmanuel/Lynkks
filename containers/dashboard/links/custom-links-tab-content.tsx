@@ -1,5 +1,6 @@
 'use client';
 
+import CustomLinkCard from '@/components/dashboards/links/custom-link-card';
 import FormInput from '@/components/form-input';
 import SelectInput from '@/components/select-input';
 import {
@@ -22,12 +23,13 @@ import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ReactSortable } from 'react-sortablejs';
+import { toast } from 'sonner';
 
 interface Props {
-  account: AccountInterface;
+  account: Omit<AccountInterface, 'password'>;
 }
 
-type CustomLinkWithId = CustomLink & { id: string };
+export type CustomLinkWithId = CustomLink & { id: string };
 
 const CustomLinksTabContent: FC<Props> = ({ account }) => {
   const customLinkListWithId = account?.links?.custom_links.map((link) => {
@@ -73,40 +75,6 @@ const CustomLinksTabContent: FC<Props> = ({ account }) => {
 
 export default CustomLinksTabContent;
 
-const CustomLinkCard: FC<{ link: CustomLinkWithId }> = ({ link }) => {
-  return (
-    <>
-      <div className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3">
-        <div className="flex-1 flex items-center gap-3 bg-red-200">
-          <div className="bg-blue-200 cursor-grab active:cursor-grabbing">
-            <GripVerticalIcon />
-          </div>
-
-          <div className="bg-lime-200 flex-1 flex flex-col gap-0">
-            <span className="font-medium truncate w-[90%]">{link.title}</span>
-            {/* <span className="text-sm">https://localhost:3000</span> */}
-            {link.type === 'link' && (
-              <span className="text-sm truncate w-[90%]">{link.href}</span>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <Button size={'icon'} variant={'ghost'} className="h-9 w-9">
-            <RiPencilFill className="w-5 h-5" />
-          </Button>
-
-          <Button size={'icon'} variant={'ghost'} className="h-9 w-9">
-            <EyeIcon className="w-5 h-5" />
-          </Button>
-
-          <DeleteLinkOrHeader />
-        </div>
-      </div>
-    </>
-  );
-};
-
 interface AddLinkFormData {
   // type: 'header' | 'link';
   title: string;
@@ -116,8 +84,11 @@ interface AddLinkFormData {
 const AddLink: FC<{}> = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { mutateAsync: addLink, isLoading: isAddingLink } =
-    useAddLinkOrHeader();
+  const {
+    mutateAsync: addLink,
+    isLoading: isAddingLink,
+    isSuccess: linkCreationSuccess,
+  } = useAddLinkOrHeader();
 
   const form = useForm<AddLinkFormData>();
 
@@ -152,6 +123,12 @@ const AddLink: FC<{}> = () => {
     reset();
     setDialogOpen(false);
   };
+
+  useEffect(() => {
+    if (linkCreationSuccess) {
+      toast.success('Link added successfully');
+    }
+  }, [linkCreationSuccess]);
 
   return (
     <>
@@ -237,8 +214,11 @@ interface AddHeaderFormData {
 const AddHeader: FC<{}> = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { mutateAsync: addLink, isLoading: isAddingLink } =
-    useAddLinkOrHeader();
+  const {
+    mutateAsync: addLink,
+    isLoading: isAddingLink,
+    isSuccess: headerCreationSuccess,
+  } = useAddLinkOrHeader();
 
   const form = useForm<AddHeaderFormData>();
 
@@ -271,6 +251,12 @@ const AddHeader: FC<{}> = () => {
     reset();
     setDialogOpen(false);
   };
+
+  useEffect(() => {
+    if (headerCreationSuccess) {
+      toast.success('Header added successfully');
+    }
+  }, [headerCreationSuccess]);
 
   return (
     <>
@@ -332,69 +318,3 @@ const AddHeader: FC<{}> = () => {
     </>
   );
 };
-
-const DeleteLinkOrHeader: FC<{}> = () => {
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  return (
-    <>
-      <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <AlertDialogTrigger asChild>
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="text-destructive hover:bg-red-100 hover:text-destructive h-9 w-9"
-          >
-            <Trash2 className="w-5 h-5" />
-          </Button>
-        </AlertDialogTrigger>
-
-        <AlertDialogContent className="px-6 py-12 rounded-[16px] bg-white w-[min(480px,_90%)]">
-          <div className="flex flex-col gap-9 text-center">
-            <AlertDialogHeader className="!text-center">
-              <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
-                Delete Link
-              </AlertDialogTitle>
-
-              <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
-                Are you sure you want to delete this link | header? This action
-                cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <AlertDialogFooter className="flex">
-              <AlertDialogCancel className="w-full h-14 border-black rounded-full text-black font-bold text-base leading-[150%] tracking-[-0.44%]">
-                No, cancel
-              </AlertDialogCancel>
-              <Button
-                variant={'destructive'}
-                className="w-full h-14 rounded-full bg-[#C94A4A] "
-                onClick={async () => {
-                  // await delete(id);
-                  setDialogOpen(false);
-                }}
-                // disabled={isDeleting}
-              >
-                Yes, delete
-              </Button>
-            </AlertDialogFooter>
-          </div>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
-  );
-};
-
-//   <AlertDialogContent>
-//     <AlertDialogHeader>
-//       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-//       <AlertDialogDescription>
-//         This action cannot be undone. This will permanently delete your account
-//         and remove your data from our servers.
-//       </AlertDialogDescription>
-//     </AlertDialogHeader>
-//     <AlertDialogFooter>
-//       <AlertDialogCancel>Cancel</AlertDialogCancel>
-//       <AlertDialogAction>Continue</AlertDialogAction>
-//     </AlertDialogFooter>
-//   </AlertDialogContent>;

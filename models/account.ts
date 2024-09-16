@@ -2,13 +2,13 @@ import { Document, model, models, ObjectId, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 
-interface Header {
+export interface Header {
   _id: mongoose.Types.ObjectId;
   type: 'header';
   title: string;
 }
 
-interface Hyperlink {
+export interface Hyperlink {
   _id: mongoose.Types.ObjectId;
   type: 'link';
   title: string;

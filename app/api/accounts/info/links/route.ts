@@ -111,6 +111,20 @@ export const PUT = async (request: NextRequest) => {
 
       return NextResponse.json(updatedAccount);
     } else {
+      const { platform } = link;
+
+      // check if link for platform already exists on database
+      const platformExists = account.links.social_links.find(
+        (link) => link.platform === platform
+      );
+
+      if (platformExists) {
+        return NextResponse.json(
+          { error: 'Link for the specified platform already exists' },
+          { status: 400 }
+        );
+      }
+
       const updatedAccount = await Account.findByIdAndUpdate(
         account._id,
         {

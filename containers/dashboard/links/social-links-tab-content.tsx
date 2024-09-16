@@ -1,4 +1,5 @@
 import ComboBoxInput from '@/components/combobox-input';
+import SocialLinkCard from '@/components/dashboards/links/social-link-card';
 import FormInput from '@/components/form-input';
 import {
   AlertDialog,
@@ -20,12 +21,13 @@ import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ReactSortable } from 'react-sortablejs';
+import { toast } from 'sonner';
 
 interface Props {
-  account: AccountInterface;
+  account: Omit<AccountInterface, 'password'>;
 }
 
-type SocialLinkWithId = SocialLink & { id: string };
+export type SocialLinkWithId = SocialLink & { id: string };
 
 const SocialLinksTabContent: FC<Props> = ({ account }) => {
   const socialLinkListWithId = account?.links?.social_links.map((link) => {
@@ -47,7 +49,7 @@ const SocialLinksTabContent: FC<Props> = ({ account }) => {
     <>
       <TabsContent value="social_links">
         <div className="mb-5">
-          <AddSocialLink />
+          <AddSocialLink account={account} />
         </div>
 
         <ReactSortable
@@ -66,68 +68,6 @@ const SocialLinksTabContent: FC<Props> = ({ account }) => {
 };
 
 export default SocialLinksTabContent;
-
-const SocialLinkCard: FC<{ link: SocialLinkWithId }> = ({ link }) => {
-  const showIcon = () => {
-    const res = SOCIAL_MEDIA_PLATFORMS.find((platform) => {
-      return platform.name === link.platform;
-    });
-
-    return res?.icon;
-  };
-
-  const Icon = showIcon();
-
-  return (
-    <>
-      <div className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3">
-        <div className="flex-1 flex items-center gap-3 bg-red-200">
-          <div className="bg-blue-200 cursor-grab active:cursor-grabbing">
-            <GripVerticalIcon />
-          </div>
-
-          <div className="flex w-full items-center gap-2">
-            <div>{Icon ? <Icon size={24} /> : null}</div>
-
-            <div className="bg-lime-200 flex-1 w-full flex flex-col gap-0">
-              <span className="font-medium truncate w-[90%]">
-                {link.platform}
-              </span>
-              {/* <span className="text-sm">https://localhost:3000</span> */}
-              <span className="text-sm truncate w-[90%]">{link.href}</span>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="sm:h-9 h-8 sm:w-9 w-8"
-          >
-            <RiPencilFill className="w-5 h-5" />
-          </Button>
-
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="sm:h-9 h-8 sm:w-9 w-8"
-          >
-            <EyeIcon className="w-5 h-5" />
-          </Button>
-
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="text-destructive hover:bg-red-100 hover:text-destructive sm:h-9 w-8 sm:w-9 h-8"
-          >
-            <Trash2 className="w-5 h-5" />
-          </Button>
-        </div>
-      </div>
-    </>
-  );
-};
 
 type Platform =
   | 'Instagram'
@@ -151,7 +91,11 @@ interface AddSocialLinkFormData {
   href: string;
 }
 
-const AddSocialLink: FC<{}> = () => {
+const AddSocialLink: FC<{
+  account: Omit<AccountInterface, 'password'>;
+}> = ({ account }) => {
+  const { social_links } = account.links;
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
 
@@ -172,8 +116,23 @@ const AddSocialLink: FC<{}> = () => {
     'Discord',
   ];
 
-  const { mutateAsync: addSocialLink, isLoading: isAddingSocialLink } =
-    useAddLinkOrHeader();
+  const filteredLinks = links.filter((link) => {
+    const exists = social_links.find(
+      (social_link) => social_link.platform === link
+    );
+
+    if (!exists) {
+      return link;
+    }
+  });
+
+  console.log('filteredLinks', filteredLinks);
+
+  const {
+    mutateAsync: addSocialLink,
+    isLoading: isAddingSocialLink,
+    isSuccess: socialLinkCreationSuccess,
+  } = useAddLinkOrHeader();
 
   const form = useForm<AddSocialLinkFormData>();
 
@@ -201,6 +160,12 @@ const AddSocialLink: FC<{}> = () => {
     reset();
     setDialogOpen(false);
   };
+
+  useEffect(() => {
+    if (socialLinkCreationSuccess) {
+      toast.success('Social Link added successfully');
+    }
+  }, [socialLinkCreationSuccess]);
 
   return (
     <>
@@ -238,7 +203,7 @@ const AddSocialLink: FC<{}> = () => {
                   comboboxOpen={comboboxOpen}
                   setComboboxOpen={setComboboxOpen}
                   error={errors.platform?.message}
-                  comboboxItems={links.map((link) => {
+                  comboboxItems={filteredLinks.map((link) => {
                     return {
                       id: link,
                       value: link,
