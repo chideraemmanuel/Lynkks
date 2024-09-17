@@ -45,7 +45,11 @@ const socialLinkSchema = z.object({
       'Discord',
     ])
     .optional(),
-  href: z.string().url().optional(),
+  // href: z.string().url().optional(),
+  href: z
+    .string()
+    .refine((value) => URLRegex.test(value), 'Invalid URL')
+    .optional(),
 });
 
 const BodySchema = z.discriminatedUnion('section', [

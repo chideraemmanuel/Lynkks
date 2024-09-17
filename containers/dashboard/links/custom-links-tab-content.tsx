@@ -56,18 +56,22 @@ const CustomLinksTabContent: FC<Props> = ({ account }) => {
           <AddHeader />
         </div>
 
-        {/* <div className="flex flex-col gap-3"> */}
-        <ReactSortable
-          list={list}
-          setList={setList}
-          className="flex flex-col gap-3"
-          animation={150}
-        >
-          {list.map((link, index) => (
-            <CustomLinkCard key={link.id} link={link} />
-          ))}
-        </ReactSortable>
-        {/* </div> */}
+        {list.length > 0 ? (
+          <ReactSortable
+            list={list}
+            setList={setList}
+            className="flex flex-col gap-3"
+            animation={150}
+          >
+            {list.map((link, index) => (
+              <CustomLinkCard key={link.id} link={link} />
+            ))}
+          </ReactSortable>
+        ) : (
+          <p className="text-sm text-muted-foreground text-center flex items-center justify-center h-20">
+            You don't have any links
+          </p>
+        )}
       </TabsContent>
     </>
   );
@@ -163,6 +167,7 @@ const AddLink: FC<{}> = () => {
                     },
                   })}
                   error={errors.title?.message}
+                  disabled={isAddingLink}
                 />
 
                 <FormInput
@@ -177,6 +182,7 @@ const AddLink: FC<{}> = () => {
                     },
                   })}
                   error={errors.href?.message}
+                  disabled={isAddingLink}
                 />
               </div>
 
@@ -215,8 +221,8 @@ const AddHeader: FC<{}> = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const {
-    mutateAsync: addLink,
-    isLoading: isAddingLink,
+    mutateAsync: addHeader,
+    isLoading: isAddingHeader,
     isSuccess: headerCreationSuccess,
   } = useAddLinkOrHeader();
 
@@ -240,7 +246,7 @@ const AddHeader: FC<{}> = () => {
     //   title,
     // });
 
-    await addLink({
+    await addHeader({
       section: 'custom_links',
       link: {
         type: 'header',
@@ -290,6 +296,7 @@ const AddHeader: FC<{}> = () => {
                     },
                   })}
                   error={errors.title?.message}
+                  disabled={isAddingHeader}
                 />
               </div>
 
@@ -297,15 +304,15 @@ const AddHeader: FC<{}> = () => {
                 <AlertDialogCancel
                   type="button"
                   className="w-full h-14 border-primary text-primary font-bold text-base leading-[150%] tracking-[-0.44%]"
-                  disabled={isAddingLink}
+                  disabled={isAddingHeader}
                 >
                   Cancel
                 </AlertDialogCancel>
                 <Button
                   className="w-full py-4 px-6 h-14 font-medium text-base tracking-[-1%] text-white bg-primary text-center"
-                  disabled={isAddingLink}
+                  disabled={isAddingHeader}
                 >
-                  {isAddingLink && (
+                  {isAddingHeader && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   Add header

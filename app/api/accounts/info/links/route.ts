@@ -39,7 +39,8 @@ const socialLinkSchema = z.object({
     'Twitch',
     'Discord',
   ]),
-  href: z.string().url(),
+  // href: z.string().url(),
+  href: z.string().refine((value) => URLRegex.test(value), 'Invalid URL'),
 });
 
 const BodySchema = z.discriminatedUnion('section', [

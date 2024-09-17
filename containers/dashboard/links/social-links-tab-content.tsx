@@ -29,46 +29,6 @@ interface Props {
 
 export type SocialLinkWithId = SocialLink & { id: string };
 
-const SocialLinksTabContent: FC<Props> = ({ account }) => {
-  const socialLinkListWithId = account?.links?.social_links.map((link) => {
-    return { ...link, id: link._id.toString() };
-  });
-
-  const [list, setList] = useState<SocialLinkWithId[]>(socialLinkListWithId);
-
-  useEffect(() => {
-    console.log('account changed', account);
-    const socialLinkListWithId = account?.links?.social_links.map((link) => {
-      return { ...link, id: link._id.toString() };
-    });
-
-    setList(socialLinkListWithId);
-  }, [account]);
-
-  return (
-    <>
-      <TabsContent value="social_links">
-        <div className="mb-5">
-          <AddSocialLink account={account} />
-        </div>
-
-        <ReactSortable
-          list={list}
-          setList={setList}
-          className="flex flex-col gap-3"
-          animation={150}
-        >
-          {list.map((link, index) => (
-            <SocialLinkCard key={link.id} link={link} />
-          ))}
-        </ReactSortable>
-      </TabsContent>
-    </>
-  );
-};
-
-export default SocialLinksTabContent;
-
 type Platform =
   | 'Instagram'
   | 'Facebook'
@@ -85,6 +45,89 @@ type Platform =
   | 'Twitch'
   | 'Discord';
 
+const links: Platform[] = [
+  'Instagram',
+  'Facebook',
+  'X',
+  'TikTok',
+  'YouTube',
+  'LinkedIn',
+  'Pinterest',
+  'Snapchat',
+  'WhatsApp',
+  'Telegram',
+  'Reddit',
+  'Tumblr',
+  'Twitch',
+  'Discord',
+];
+
+const SocialLinksTabContent: FC<Props> = ({ account }) => {
+  const socialLinkListWithId = account?.links?.social_links.map((link) => {
+    return { ...link, id: link._id.toString() };
+  });
+
+  const [list, setList] = useState<SocialLinkWithId[]>(socialLinkListWithId);
+
+  useEffect(() => {
+    console.log('account changed', account);
+    const socialLinkListWithId = account?.links?.social_links.map((link) => {
+      return { ...link, id: link._id.toString() };
+    });
+
+    setList(socialLinkListWithId);
+  }, [account]);
+
+  const allSocialsAdded = () => {
+    const filteredLinks = links.filter((link) => {
+      const exists = account?.links?.social_links.find(
+        (social_link) => social_link.platform === link
+      );
+
+      if (!exists) {
+        return link;
+      }
+    });
+
+    if (filteredLinks.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  return (
+    <>
+      <TabsContent value="social_links">
+        {!allSocialsAdded() && (
+          <div className="mb-5">
+            <AddSocialLink account={account} />
+          </div>
+        )}
+
+        {list.length > 0 ? (
+          <ReactSortable
+            list={list}
+            setList={setList}
+            className="flex flex-col gap-3"
+            animation={150}
+          >
+            {list.map((link, index) => (
+              <SocialLinkCard key={link.id} link={link} />
+            ))}
+          </ReactSortable>
+        ) : (
+          <p className="text-sm text-muted-foreground text-center flex items-center justify-center h-20">
+            You don't have any social links
+          </p>
+        )}
+      </TabsContent>
+    </>
+  );
+};
+
+export default SocialLinksTabContent;
+
 interface AddSocialLinkFormData {
   platform: Platform;
 
@@ -98,23 +141,6 @@ const AddSocialLink: FC<{
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
-
-  const links: Platform[] = [
-    'Instagram',
-    'Facebook',
-    'X',
-    'TikTok',
-    'YouTube',
-    'LinkedIn',
-    'Pinterest',
-    'Snapchat',
-    'WhatsApp',
-    'Telegram',
-    'Reddit',
-    'Tumblr',
-    'Twitch',
-    'Discord',
-  ];
 
   const filteredLinks = links.filter((link) => {
     const exists = social_links.find(
@@ -230,6 +256,7 @@ const AddSocialLink: FC<{
                     },
                   })}
                   error={errors.href?.message}
+                  disabled={isAddingSocialLink}
                 />
               </div>
 

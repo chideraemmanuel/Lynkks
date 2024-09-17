@@ -1,10 +1,12 @@
 import { app } from '@/config/firebase';
+import { passwordRegex, URLRegex } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
 import Account, { AccountInterface } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import bcrypt from 'bcrypt';
 
 // TODO: add route for profile picture deletion!
 
@@ -74,13 +76,21 @@ const HeaderSchema = z.object({
 const HyperlinkSchema = z.object({
   type: z.literal('link'),
   title: z.string().min(1),
-  href: z.string().url(),
+  // href: z.string().url(),
+  href: z.string().refine((value) => URLRegex.test(value), 'Invalid URL'),
 });
 
 const BodySchema = z.object({
   first_name: z.string().min(3).optional(),
   last_name: z.string().min(3).optional(),
   //   username: z.string().min(3).optional(),
+  password: z
+    .string()
+    .refine(
+      (value) => passwordRegex.test(value),
+      'Password must be 8-16 characters long, and contain at least one numeric digit, and special character'
+    )
+    .optional(),
   profile: z
     .object({
       title: z.string().min(3).optional(),
@@ -125,7 +135,10 @@ const BodySchema = z.object({
                 'Twitch',
                 'Discord',
               ]),
-              href: z.string().url(),
+              // href: z.string().url(),
+              href: z
+                .string()
+                .refine((value) => URLRegex.test(value), 'Invalid URL'),
             })
             .optional()
         )
@@ -175,7 +188,7 @@ export const PUT = async (request: NextRequest) => {
 
     const account = await Account.findById<AccountInterface>(
       sessionExists?.account
-    );
+    ).select('+password');
 
     if (!account) {
       return NextResponse.json({ error: 'Account Not Found' }, { status: 404 });
@@ -231,7 +244,7 @@ export const PUT = async (request: NextRequest) => {
 
     const body = await request.json();
 
-    const { profile_image } = body;
+    const { profile_image } = body; // ! intentional separation
 
     const returnObject = BodySchema.safeParse(body);
     console.log('returnObject', returnObject);
@@ -250,8 +263,14 @@ export const PUT = async (request: NextRequest) => {
       );
     }
 
-    const { first_name, last_name, profile, links, completed_onboarding } =
-      returnObject.data;
+    const {
+      first_name,
+      last_name,
+      password,
+      profile,
+      links,
+      completed_onboarding,
+    } = returnObject.data;
 
     const updates: Updates = {};
 
@@ -261,6 +280,37 @@ export const PUT = async (request: NextRequest) => {
 
     if (last_name) {
       updates.last_name = last_name;
+    }
+
+    if (password) {
+      if (account.auth_type === 'google') {
+        return NextResponse.json(
+          {
+            error:
+              'Account was authenticated with google. It does not have a password.',
+          },
+          { status: 400 }
+        );
+      }
+
+      // ! compare new password with previous !
+      const passwordIsSame = await bcrypt.compare(
+        password,
+        account.password as string
+      );
+
+      if (passwordIsSame) {
+        return NextResponse.json(
+          {
+            error: 'The supplied password is the same with previous.',
+          },
+          { status: 400 }
+        );
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashed_password = await bcrypt.hash(password, salt);
+      updates.password = hashed_password;
     }
 
     if (profile) {
