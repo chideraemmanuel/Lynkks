@@ -15,6 +15,7 @@ import { SOCIAL_MEDIA_PLATFORMS, URLRegex } from '@/constants';
 import { SocialLinkWithId } from '@/containers/dashboard/links/social-links-tab-content';
 import useDeleteLinkOrHeader from '@/hooks/links/useDeleteLinkOrHeader';
 import useEditLink from '@/hooks/links/useEditLink';
+import getIconByPlatform from '@/lib/getIconByPlatform';
 import { RiPencilFill } from '@remixicon/react';
 import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
@@ -26,15 +27,15 @@ interface Props {
 }
 
 const SocialLinkCard: FC<Props> = ({ link }) => {
-  const getIcon = () => {
-    const res = SOCIAL_MEDIA_PLATFORMS.find((platform) => {
-      return platform.name === link.platform;
-    });
+  // const getIcon = () => {
+  //   const res = SOCIAL_MEDIA_PLATFORMS.find((platform) => {
+  //     return platform.name === link.platform;
+  //   });
 
-    return res?.icon;
-  };
+  //   return res?.icon;
+  // };
 
-  const Icon = getIcon();
+  const Icon = getIconByPlatform(link.platform);
 
   return (
     <>

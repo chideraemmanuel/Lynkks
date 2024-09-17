@@ -2,6 +2,7 @@
 
 import useUpdateViews from '@/hooks/analytics/useUpdateViews';
 import { getCookie, setCookie } from '@/lib/cookie';
+import getIPAddress from '@/lib/getIPAddress';
 import axios from 'axios';
 import { FC, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
@@ -19,13 +20,13 @@ const ViewsUpdateProvider: FC<Props> = ({ children, username }) => {
     error: viewsUpdateError,
   } = useUpdateViews();
 
-  const getIpAddress = async () => {
-    const response = await axios.get<{ ip: string }>(
-      'https://api.ipify.org/?format=json'
-    );
+  // const getIpAddress = async () => {
+  //   const response = await axios.get<{ ip: string }>(
+  //     'https://api.ipify.org/?format=json'
+  //   );
 
-    return response.data.ip;
-  };
+  //   return response.data.ip;
+  // };
 
   useEffect(() => {
     const trackView = async () => {
@@ -41,7 +42,7 @@ const ViewsUpdateProvider: FC<Props> = ({ children, username }) => {
         referrer_hostname = url.hostname;
       }
 
-      const ip_address = await getIpAddress();
+      const ip_address = await getIPAddress();
 
       updateViews({
         username,
