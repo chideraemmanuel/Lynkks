@@ -1,11 +1,11 @@
 'use client';
 
 import FormInput from '@/components/form-input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { passwordRegex } from '@/constants';
 import { cn } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 // import { Badge } from '@/components/ui/badge';
@@ -24,6 +24,8 @@ import FullScreenSpinner from '@/components/full-screen-spinner';
 import useUpdateAccount from '@/hooks/useUpdateAccount';
 import { toast } from 'sonner';
 import profileImage from '@/assets/profile.jpg';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface Props {}
 
@@ -42,6 +44,10 @@ const passwordRequirements = [
   'Symbol',
 ];
 
+interface ProfileImageChangeFormTypes {
+  profile_image?: FileList;
+}
+
 interface PersonalDetailsChangeFormTypes {
   first_name: string;
   last_name: string;
@@ -53,8 +59,6 @@ interface PasswordChangeFormTypes {
 }
 
 const ProfileSettingsPage: FC<Props> = () => {
-  const [formChanged, setFormChanged] = useState(false);
-
   const { data: account, isLoading: isFetchingAccount } = useAccount();
 
   const {
@@ -69,13 +73,46 @@ const ProfileSettingsPage: FC<Props> = () => {
     }
   }, [accountUpdateSuccess]);
 
+  // !!! PROFILE IMAGE UPDATE LOGIC !!!
+  const [selectedImage, setSelectedImage] = useState<
+    undefined | { name: string; src: string | ArrayBuffer | null }
+  >(undefined);
+
+  const profileImageChangeForm = useForm<ProfileImageChangeFormTypes>();
+
+  const {
+    register: registerProfileImageChangeField,
+    formState: { errors: profileImageChangeFormErrors },
+    handleSubmit: handleProfileImageChangeSubmit,
+    getValues: getProfileImageChangeFormValues,
+    setValue: setProfileImageChangeFormValue,
+    watch: watchProfileImageChangeFields,
+  } = profileImageChangeForm;
+
+  const { name, ref, onChange, onBlur } =
+    registerProfileImageChangeField('profile_image');
+
+  const onProfileImageChangeSubmit: SubmitHandler<
+    ProfileImageChangeFormTypes
+  > = async (data, e) => {
+    if (!data.profile_image) return;
+
+    console.log('data', data);
+
+    await updateAccount({
+      profile_image: data.profile_image[0],
+    });
+  };
+
+  // !!! PERSONAL DETAILS UPDATE LOGIC !!!
+  const [formChanged, setFormChanged] = useState(false);
+
   const personalDetailsChangeForm = useForm<PersonalDetailsChangeFormTypes>({
     defaultValues: {
       // first_name: '',
       // last_name: '',
     },
   });
-  const passwordChangeForm = useForm<PasswordChangeFormTypes>();
 
   const {
     register: registerPersonalDetailsChangeField,
@@ -93,7 +130,7 @@ const ProfileSettingsPage: FC<Props> = () => {
     }
   }, [account]);
 
-  // ! Track form change !
+  // Track personal details form change
   const watchedPersonalDetailsFormFields = watchPersonalDetailsChangeFields();
 
   useEffect(() => {
@@ -130,6 +167,9 @@ const ProfileSettingsPage: FC<Props> = () => {
 
     await updateAccount(data);
   };
+
+  // !!! PASSWORD UPDATE LOGIC !!!
+  const passwordChangeForm = useForm<PasswordChangeFormTypes>();
 
   const {
     register: registerPasswordChangeField,
@@ -215,7 +255,12 @@ const ProfileSettingsPage: FC<Props> = () => {
 
           {/* <div className="flex-1"> */}
           <div className="flex-1 flex flex-col gap-12 bg-white shadow-lg px-8 py-9 rounded-[16px] border-[#E3E7ED]">
-            <div className="flex flex-col md:flex-row items-start gap-4 md:gap-14">
+            <form
+              className="flex flex-col md:flex-row items-start gap-4 md:gap-14"
+              onSubmit={handleProfileImageChangeSubmit(
+                onProfileImageChangeSubmit
+              )}
+            >
               <div className="flex flex-col gap-[6px] min-w-[305px]">
                 <h3 className="text-[#1D2639] font-bold text-base leading-[145%] tracking-[0%]">
                   Profile photo
@@ -223,24 +268,85 @@ const ProfileSettingsPage: FC<Props> = () => {
                 <p className="text-[#667185] text-sm leading-[145%] tracking-[0%] max-w-[200px]">
                   This image will be displayed on your LinkTree profile
                 </p>
+
+                <Button
+                  className="mt-[14px] rounded-md self-start"
+                  disabled={isUpdatingAccount || !selectedImage?.src}
+                >
+                  {isUpdatingAccount && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Update
+                </Button>
               </div>
 
               <div>
                 <div className="relative overflow-visible">
-                  <Avatar className="w-[100px] h-[100px] border-[6px] border-border">
-                    <AvatarFallback
-                      className={`bg-primary text-white text-[48px] font-semibold tracking-[-3%]`}
-                    >
-                      {account.first_name && account.first_name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <Input
+                    id="profile_image"
+                    type="file"
+                    accept="image/png,image/jpg,image/jpeg"
+                    className="hidden"
+                    name={name}
+                    ref={ref}
+                    onChange={async (e) => {
+                      console.log('selected image File:', e.target.files);
+                      // console.log('selected image value:', e.target.value);
 
-                  {/* <span className="absolute right-0 bottom-0 bg-[#1D2639] text-white flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full p-0">
-                    <RiCheckLine className="w-5 h-5" />
-                  </span> */}
+                      if (e.target.files?.[0]) {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(e.target.files?.[0]);
+                        reader.onload = () => {
+                          setSelectedImage({
+                            name: e.target.files?.[0].name!,
+                            src: reader.result,
+                          });
+                        };
+                      }
+
+                      // setSelectedImage(e.target.files?.[0].name);
+
+                      await onChange(e);
+                    }}
+                    onBlur={onBlur}
+                  />
+
+                  <Label
+                    htmlFor="profile_image"
+                    className="group relative inline-block rounded-[50%] w-[100px] h-[100px] border-[6px] border-border cursor-pointer"
+                  >
+                    <div
+                      className={cn(
+                        // (selectedImage?.src || account.profile.image) &&
+                        //   'group-hover:bg-black/70',
+                        'absolute inset-0 z-[2] transition-colors inline-flex items-center justify-center w-full h-full rounded-[inherit] group-hover:bg-black/50'
+                      )}
+                    >
+                      <Plus
+                        className={cn(
+                          // (selectedImage?.src || account.profile.image) &&
+                          //   'hidden text-muted',
+                          'hidden text-muted group-hover:inline-block w-7 h-7'
+                        )}
+                      />
+                    </div>
+
+                    {/* {selectedImage?.src && ( */}
+                    <Avatar className="absolute inset-0 w-full h-full">
+                      <AvatarImage
+                        // @ts-ignore
+                        src={
+                          selectedImage?.src ||
+                          account.profile.image ||
+                          profileImage.src
+                        }
+                      />
+                    </Avatar>
+                    {/* )} */}
+                  </Label>
                 </div>
               </div>
-            </div>
+            </form>
 
             <form
               className="flex flex-col md:flex-row items-start gap-4 md:gap-14"
