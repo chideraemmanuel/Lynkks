@@ -12,7 +12,7 @@ import { z } from 'zod';
 const BodySchema = z.object({
   // first_name: z.string().min(3),
   // last_name: z.string().min(3),
-  username: z.string().min(3).max(10),
+  username: z.string().min(3).max(15),
   email: z.string().email(),
   password: z
     .string()

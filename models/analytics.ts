@@ -25,6 +25,12 @@ interface View {
 
 interface Click {
   visitor_id: string;
+  link: {
+    link_id: mongoose.Types.ObjectId;
+    link_section: 'custom_links' | 'social_links';
+  };
+  referrer: string;
+  referrer_full_url: string;
   clickedAt: Date;
   ip_address: string;
   continent: string;
@@ -149,6 +155,28 @@ const analyticsSchema: Schema<AnalyticsInterface> = new Schema(
           visitor_id: {
             type: String,
             required: true,
+          },
+          link: {
+            type: {
+              link_id: {
+                type: mongoose.SchemaTypes.ObjectId,
+                required: true,
+              },
+              link_section: {
+                type: String,
+                required: true,
+                enum: ['custom_links', 'social_links'],
+              },
+            },
+            required: true,
+          },
+          referrer: {
+            type: String,
+            default: '',
+          },
+          referrer_full_url: {
+            type: String,
+            default: '',
           },
           clickedAt: {
             type: Date,

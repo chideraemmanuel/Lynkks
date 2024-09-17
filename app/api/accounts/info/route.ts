@@ -287,7 +287,7 @@ export const PUT = async (request: NextRequest) => {
         return NextResponse.json(
           {
             error:
-              'Account was authenticated with google. It does not have a password.',
+              'Account was authenticated with Google. No password to update.',
           },
           { status: 400 }
         );
