@@ -1,7 +1,7 @@
 import mongoose, { model, models, ObjectId, Schema } from 'mongoose';
 import { Document } from 'mongoose';
 
-export interface SessionInterface extends Document {
+export interface SessionInterface extends Pick<Document, '_id'> {
   account: mongoose.Types.ObjectId;
   session_id: string;
   expiresAt: Date;

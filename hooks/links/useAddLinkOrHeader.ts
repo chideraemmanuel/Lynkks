@@ -54,7 +54,7 @@ const addLinkOrHeader = async (details: Details) => {
     { withCredentials: true }
   );
 
-  console.log('response from add custom hook', response);
+  console.log('response from add link or header hook', response);
 
   return response.data;
 };
@@ -63,7 +63,7 @@ const useAddLinkOrHeader = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ['add custom'],
+    mutationKey: ['add link or header'],
     mutationFn: addLinkOrHeader,
     onSuccess: async (data) => {
       await queryClient.invalidateQueries('get current account');

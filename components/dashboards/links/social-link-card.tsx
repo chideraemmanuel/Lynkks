@@ -4,6 +4,7 @@ import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -12,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { SOCIAL_MEDIA_PLATFORMS, URLRegex } from '@/constants';
 import { SocialLinkWithId } from '@/containers/dashboard/links/social-links-tab-content';
+import useDeleteLinkOrHeader from '@/hooks/links/useDeleteLinkOrHeader';
 import useEditLink from '@/hooks/links/useEditLink';
 import { RiPencilFill } from '@remixicon/react';
 import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
@@ -68,13 +70,7 @@ const SocialLinkCard: FC<Props> = ({ link }) => {
             <EyeIcon className="w-5 h-5" />
           </Button>
 
-          <Button
-            size={'icon'}
-            variant={'ghost'}
-            className="text-destructive hover:bg-red-100 hover:text-destructive sm:h-9 w-8 sm:w-9 h-8"
-          >
-            <Trash2 className="w-5 h-5" />
-          </Button>
+          <DeleteSocialLink link={link} />
         </div>
       </div>
     </>
@@ -320,6 +316,83 @@ const EditSocialLink: FC<{
               </AlertDialogFooter>
             </div>
           </form>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
+
+const DeleteSocialLink: FC<{ link: SocialLinkWithId }> = ({ link }) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  // const capitalize = (string: string) => {
+  //   return string.charAt(0).toUpperCase() + string.slice(1);
+  // };
+
+  const {
+    mutateAsync: deleteSocialLink,
+    isLoading: isDeleting,
+    isSuccess,
+  } = useDeleteLinkOrHeader();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(`Social link deleted successfully`);
+    }
+  }, [isSuccess]);
+
+  return (
+    <>
+      <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <Button
+            size={'icon'}
+            variant={'ghost'}
+            className="text-destructive hover:bg-red-100 hover:text-destructive sm:h-9 w-8 sm:w-9 h-8"
+          >
+            <Trash2 className="w-5 h-5" />
+          </Button>
+        </AlertDialogTrigger>
+
+        <AlertDialogContent className="px-6 py-12 rounded-[16px] bg-white w-[min(480px,_90%)]">
+          <div className="flex flex-col gap-9 text-center">
+            <AlertDialogHeader className="!text-center">
+              <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
+                Delete Social Link
+              </AlertDialogTitle>
+
+              <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
+                Are you sure you want to delete this link? This action cannot be
+                undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter className="flex">
+              <AlertDialogCancel
+                className="w-full h-14 border-black text-black font-bold text-base leading-[150%] tracking-[-0.44%]"
+                disabled={isDeleting}
+              >
+                Cancel
+              </AlertDialogCancel>
+              <Button
+                variant={'destructive'}
+                className="w-full h-14 bg-[#C94A4A] "
+                onClick={async () => {
+                  await deleteSocialLink({
+                    link_id: link.id,
+                    section: 'social_links',
+                  });
+                  setDialogOpen(false);
+                }}
+                disabled={isDeleting}
+              >
+                {isDeleting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
     </>

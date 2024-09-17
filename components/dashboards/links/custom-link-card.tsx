@@ -19,6 +19,7 @@ import FormInput from '@/components/form-input';
 import { URLRegex } from '@/constants';
 import useEditLink from '@/hooks/links/useEditLink';
 import { toast } from 'sonner';
+import useDeleteLinkOrHeader from '@/hooks/links/useDeleteLinkOrHeader';
 
 interface Props {
   link: CustomLinkWithId;
@@ -53,7 +54,7 @@ const CustomLinkCard: FC<Props> = ({ link }) => {
             <EyeIcon className="w-5 h-5" />
           </Button>
 
-          <DeleteLinkOrHeader />
+          <DeleteLinkOrHeader link={link} />
         </div>
       </div>
     </>
@@ -409,8 +410,24 @@ const EditHeader: FC<{
   );
 };
 
-const DeleteLinkOrHeader: FC<{}> = () => {
+const DeleteLinkOrHeader: FC<{ link: CustomLinkWithId }> = ({ link }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const capitalize = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const {
+    mutateAsync: deleteLinkOrHeader,
+    isLoading: isDeleting,
+    isSuccess,
+  } = useDeleteLinkOrHeader();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(`${capitalize(link.type)} deleted successfully`);
+    }
+  }, [isSuccess]);
 
   return (
     <>
@@ -429,29 +446,38 @@ const DeleteLinkOrHeader: FC<{}> = () => {
           <div className="flex flex-col gap-9 text-center">
             <AlertDialogHeader className="!text-center">
               <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
-                Delete Link
+                Delete {capitalize(link.type)}
               </AlertDialogTitle>
 
               <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
-                Are you sure you want to delete this link | header? This action
+                Are you sure you want to delete this {link.type}? This action
                 cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
 
             <AlertDialogFooter className="flex">
-              <AlertDialogCancel className="w-full h-14 border-black rounded-full text-black font-bold text-base leading-[150%] tracking-[-0.44%]">
-                No, cancel
+              <AlertDialogCancel
+                className="w-full h-14 border-black text-black font-bold text-base leading-[150%] tracking-[-0.44%]"
+                disabled={isDeleting}
+              >
+                Cancel
               </AlertDialogCancel>
               <Button
                 variant={'destructive'}
-                className="w-full h-14 rounded-full bg-[#C94A4A] "
+                className="w-full h-14 bg-[#C94A4A] "
                 onClick={async () => {
-                  // await delete(id);
+                  await deleteLinkOrHeader({
+                    link_id: link.id,
+                    section: 'custom_links',
+                  });
                   setDialogOpen(false);
                 }}
-                // disabled={isDeleting}
+                disabled={isDeleting}
               >
-                Yes, delete
+                {isDeleting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Delete
               </Button>
             </AlertDialogFooter>
           </div>
