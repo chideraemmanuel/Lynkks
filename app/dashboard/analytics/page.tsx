@@ -14,172 +14,148 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
-// import useGetTotals from '@/hooks/useGetTotals';
 import FullScreenSpinner from '@/components/full-screen-spinner';
-// import useGetTops from '@/hooks/useGetTops';
-// import useGetViews from '@/hooks/useGetViews';
-// import GlobalNetworkError from '@/components/network-error/GlobalNetworkError';
-// import GlobalServerError from '@/components/server-error/GlobalServerError';
-// import GlobalError from '@/components/error/GlobalError';
 import SelectInput from '@/components/select-input';
 import { RiCalendar2Line } from '@remixicon/react';
+import useAnalytics from '@/hooks/analytics/useAnalytics';
+import { Range } from '@/app/api/analytics/route';
+import useAnalyticsTotal from '@/hooks/analytics/useAnalyticsTotal';
+import ErrorComponent from '@/components/error-component';
+import useAccount from '@/hooks/useAccount';
 
 interface Props {}
-
-type Range = '7d' | '30d' | '60d' | '90d';
 
 const BlogAnalyticsPage: FC<Props> = () => {
   const [chartRange, setChartRange] = useState<Range>('7d');
 
-  // const {
-  //   data: totals,
-  //   isLoading: isFetchingTotals,
-  //   isError: isErrorFetchingTotals,
-  //   error: totalsFetchError,
-  // } = useGetTotals();
+  const { data: account, isLoading: isFetchingAccount } = useAccount();
 
-  // const {
-  //   data: tops,
-  //   isLoading: isFetchingTops,
-  //   isError: isErrorFetchingTops,
-  //   error: topsFetchError,
-  // } = useGetTops();
+  const {
+    data: analyticsTotal,
+    isLoading: isFetchingAnalyticsTotal,
+    isError: isErrorFetchingAnalyticsTotal,
+    error: analyticsTotalFetchError,
+  } = useAnalyticsTotal();
 
-  // const error = totalsFetchError || topsFetchError;
+  if (isFetchingAccount || isFetchingAnalyticsTotal) {
+    return <FullScreenSpinner />;
+  }
 
-  // // @ts-ignore
-  // if (error?.message === 'Network Error') {
-  //   return <GlobalNetworkError />;
-  // }
+  if (analyticsTotalFetchError?.message === 'Network Error') {
+    return <ErrorComponent error={analyticsTotalFetchError} />;
+  }
 
-  // if (
-  //   // @ts-ignore
-  //   error?.response?.data?.error === 'Internal Server Error' ||
-  //   // @ts-ignore
-  //   error?.response?.status === 500
-  // ) {
-  //   return <GlobalServerError />;
-  // }
+  if (
+    analyticsTotalFetchError?.response?.data?.error ===
+      'Internal Server Error' ||
+    analyticsTotalFetchError?.response?.status === 500
+  ) {
+    return <ErrorComponent error={analyticsTotalFetchError} />;
+  }
 
-  // if (error) {
-  //   // @ts-ignore
-  //   return <GlobalError message={error?.message} />;
-  // }
+  if (analyticsTotalFetchError) {
+    return <ErrorComponent error={analyticsTotalFetchError} />;
+  }
 
   return (
     <>
-      {/* {(isFetchingTotals || isFetchingTops) && <FullScreenSpinner />} */}
+      {/* {isFetchingAnalyticsTotal && <FullScreenSpinner />} */}
 
-      <div className={`flex flex-col min-h-screen`}>
-        {/* <main className="flex-1 px-4 md:container mx-auto pt-6 pb-20"> */}
-        <main className="flex-1">
-          <div className="px-4 md:container mx-auto pt-6 pb-20 flex flex-col gap-9">
-            {/* header */}
-            <div className="flex justify-between gap-4 flex-wrap">
-              <div className="flex flex-col">
-                <span className="text-base leading-[140%] tracking-[0%] text-[#667085]">
-                  Hello Chidera,
-                </span>
+      {!isFetchingAccount &&
+        account &&
+        !isFetchingAnalyticsTotal &&
+        analyticsTotal && (
+          <div className={`flex flex-col min-h-screen`}>
+            {/* <main className="flex-1 px-4 md:container mx-auto pt-6 pb-20"> */}
+            <main className="flex-1">
+              <div className="px-4 md:container mx-auto pt-6 pb-20 flex flex-col gap-9">
+                {/* header */}
+                <div className="flex justify-between gap-4 flex-wrap">
+                  <div className="flex flex-col">
+                    <span className="text-base leading-[140%] tracking-[0%] text-[#667085]">
+                      {/* Hello Chidera, */}
+                      Hello {account.first_name},
+                    </span>
 
-                <h1 className="font-AeonikProBold font-bold text-2xl leading-[140%] tracking-[0%]">
-                  Your Stats
-                </h1>
+                    <h1 className="font-AeonikProBold font-bold text-2xl leading-[140%] tracking-[0%]">
+                      Your Stats
+                    </h1>
+                  </div>
+
+                  <div>
+                    <SelectInput
+                      icon={<RiCalendar2Line className="mr-1 w-4 h-4" />}
+                      placeholder="Filter"
+                      selectInputItems={[
+                        { id: '7d', name: 'Last 7 days', value: '7d' },
+                        { id: '30d', name: 'Last 30 days', value: '30d' },
+                        { id: '60d', name: 'Last 60 days', value: '60d' },
+                        { id: '90d', name: 'Last 90 days', value: '90d' },
+                      ]}
+                      selectInputItemProps={{ className: 'capitalize' }}
+                      selectInputTriggerProps={{
+                        className: 'capitalize bg-white p-4 text-sm',
+                      }}
+                      // disabled={isFetchingAnalyticsTotal}
+                      defautlValue={'7d'}
+                      onItemSelect={(value) => {
+                        console.log('selected role value:', value);
+                        setChartRange(value as Range);
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* stats cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
+                  {analyticsTotal && (
+                    <>
+                      <StatCard
+                        title={'Total views'}
+                        all_time_total={analyticsTotal.views.total}
+                        today_total={analyticsTotal.views.today}
+                      />
+
+                      <StatCard
+                        title={'Total clicks'}
+                        all_time_total={analyticsTotal.clicks.total}
+                        today_total={analyticsTotal.clicks.today}
+                      />
+                    </>
+                  )}
+                </div>
+                {/* <div className="h-[500px] border"></div> */}
+                <AnalyticsChart range={chartRange} />
               </div>
-
-              <div>
-                <SelectInput
-                  icon={<RiCalendar2Line className="mr-1 w-4 h-4" />}
-                  placeholder="Filter"
-                  selectInputItems={[
-                    { id: '7d', name: 'Last 7 days', value: '7d' },
-                    { id: '30d', name: 'Last 30 days', value: '30d' },
-                    { id: '60d', name: 'Last 60 days', value: '60d' },
-                    { id: '90d', name: 'Last 90 days', value: '90d' },
-                  ]}
-                  selectInputItemProps={{ className: 'capitalize' }}
-                  selectInputTriggerProps={{
-                    className: 'capitalize bg-white p-4 text-sm',
-                  }}
-                  // disabled={isCreatingUser}
-                  defautlValue={'7d'}
-                  onItemSelect={(value) => {
-                    console.log('selected role value:', value);
-                    setChartRange(value as Range);
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* stats cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 lg:gap-6">
-              {/* {totals && ( */}
-              <>
-                <StatCard
-                // title={'Total views'}
-                // allTimeTotal={totals?.views.total_views}
-                // todayTotal={totals?.views.today_views}
-                />
-
-                <StatCard
-                // title={'Total subscribers'}
-                // allTimeTotal={totals?.subscribers.total_subscribers}
-                // todayTotal={totals?.subscribers.today_subscribers}
-                />
-
-                <StatCard
-                // title={'Total posts'}
-                // allTimeTotal={totals?.posts.total_posts}
-                // todayTotal={totals?.posts.today_posts}
-                />
-              </>
-              {/* )} */}
-            </div>
-            {/* overview graph */}
-            {/* <div className="h-[500px] border"></div> */}
-            <AnalyticsChart range={chartRange} />
+            </main>
           </div>
-        </main>
-      </div>
+        )}
     </>
   );
 };
 
 export default BlogAnalyticsPage;
 
-// const chartData = [
-//   { month: 'January', desktop: 186 },
-//   { month: 'February', desktop: 305 },
-//   { month: 'March', desktop: 237 },
-//   { month: 'April', desktop: 73 },
-//   { month: 'May', desktop: 209 },
-//   { month: 'June', desktop: 214 },
-// ];
-
-// const chartConfig = {
-//   desktop: {
-//     label: 'Desktop',
-//     color: 'hsl(var(--chart-1))',
-//   },
-// } satisfies ChartConfig;
-
 interface ChartProps {
-  // chart_data: any[];
-  // chart_config: ChartConfig;
   range: Range;
 }
 
 const AnalyticsChart: FC<ChartProps> = ({ range }) => {
-  // const {
-  //   data: views,
-  //   isLoading: isFetchingViews,
-  //   isError: isErrorFetchingViews,
-  //   error: viewsFetchError,
-  // } = useGetViews(range);
+  const {
+    data: analytics,
+    isLoading: isFetchingAnalytics,
+    isError: isErrorFetchingAnalytics,
+    error: analyticsFetchError,
+  } = useAnalytics(range);
 
   const chart_config = {
     views: {
       label: 'Views',
-      color: 'var(--primary)',
+      color: 'hsl(var(--chart-1))',
+    },
+    clicks: {
+      label: 'Clicks',
+      color: 'hsl(var(--chart-2))',
     },
   } satisfies ChartConfig;
 
@@ -195,7 +171,7 @@ const AnalyticsChart: FC<ChartProps> = ({ range }) => {
       >
         <AreaChart
           accessibilityLayer
-          // data={views}
+          data={analytics}
           margin={{
             left: 12,
             right: 12,
@@ -207,7 +183,6 @@ const AnalyticsChart: FC<ChartProps> = ({ range }) => {
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            // tickFormatter={(value) => value.slice(0, 3)}
             // tickFormatter={(value) => value.slice(0, 3)} // TODO: use moment to format date return..? 2024-08-03
           />
           <ChartTooltip
@@ -217,11 +192,18 @@ const AnalyticsChart: FC<ChartProps> = ({ range }) => {
           <Area
             dataKey="views"
             type="natural"
-            // fill="var(--color-views)"
-            fill="#5747c7"
+            fill="var(--color-mobile)"
             fillOpacity={0.4}
-            // stroke="var(--color-views)"
-            stroke="#5747c7"
+            stroke="var(--color-mobile)"
+            stackId="a"
+          />
+          <Area
+            dataKey="clicks"
+            type="natural"
+            fill="var(--color-desktop)"
+            fillOpacity={0.4}
+            stroke="var(--color-desktop)"
+            stackId="a"
           />
         </AreaChart>
       </ChartContainer>

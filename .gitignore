@@ -37,3 +37,5 @@ next-env.d.ts
 
 # personal
 config/firebase.ts
+chart.tsx
+aggregation.ts
