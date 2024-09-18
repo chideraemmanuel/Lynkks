@@ -10,6 +10,7 @@ import { Link as LinkType, SOCIAL_MEDIA_PLATFORMS } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
 import LinkNestLink from '@/components/linknest-link';
 import LinkNestSocialLink from '@/components/linknest-social-link';
+import { link } from 'fs';
 
 interface Props {
   params: { username: string };
@@ -63,7 +64,10 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
             {social_links.map((link) => (
               <LinkNestSocialLink
                 key={link._id.toString()}
-                link={link}
+                // link={link} // ! cannot pass unserialized data to client component from server component
+                link_id={link._id.toString()}
+                link_href={link.href}
+                link_platform={link.platform}
                 username={username}
               />
             ))}
@@ -77,7 +81,10 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
                 return (
                   <LinkNestLink
                     key={link._id.toString()}
-                    link={link}
+                    // link={link} // ! cannot pass unserialized data to client component from server component
+                    link_id={link._id.toString()}
+                    link_href={link.href}
+                    link_title={link.title}
                     username={username}
                   />
                 );

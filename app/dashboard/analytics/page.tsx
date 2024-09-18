@@ -151,11 +151,11 @@ const AnalyticsChart: FC<ChartProps> = ({ range }) => {
   const chart_config = {
     views: {
       label: 'Views',
-      color: 'hsl(var(--chart-1))',
+      color: 'hsl(12, 76%, 61%)',
     },
     clicks: {
       label: 'Clicks',
-      color: 'hsl(var(--chart-2))',
+      color: 'hsl(173, 58%, 39%)',
     },
   } satisfies ChartConfig;
 
@@ -192,17 +192,17 @@ const AnalyticsChart: FC<ChartProps> = ({ range }) => {
           <Area
             dataKey="views"
             type="natural"
-            fill="var(--color-mobile)"
+            fill="hsl(12, 76%, 61%)"
             fillOpacity={0.4}
-            stroke="var(--color-mobile)"
+            stroke="hsl(12, 76%, 61%)"
             stackId="a"
           />
           <Area
             dataKey="clicks"
             type="natural"
-            fill="var(--color-desktop)"
+            fill="hsl(173, 58%, 39%)"
             fillOpacity={0.4}
-            stroke="var(--color-desktop)"
+            stroke="hsl(173, 58%, 39%)"
             stackId="a"
           />
         </AreaChart>

@@ -10,6 +10,7 @@ const LinkNestUserLayout: FC<Props> = ({ children, params: { username } }) => {
   return (
     <>
       <ViewsUpdateProvider username={username}>{children}</ViewsUpdateProvider>
+      {/* {children} */}
     </>
   );
 };

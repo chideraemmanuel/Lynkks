@@ -102,8 +102,6 @@ export const GET = async (request: NextRequest) => {
               as: 'view',
               cond: {
                 $and: [
-                  // { $gte: ['$$view.viewedAt', new Date(startDate)] },
-                  // { $lte: ['$$view.viewedAt', new Date(endDate)] },
                   { $gte: ['$$view.viewedAt', startDate] },
                   { $lte: ['$$view.viewedAt', endDate] },
                 ],
@@ -116,8 +114,6 @@ export const GET = async (request: NextRequest) => {
               as: 'click',
               cond: {
                 $and: [
-                  // { $gte: ['$$click.clickedAt', new Date(startDate)] },
-                  // { $lte: ['$$click.clickedAt', new Date(endDate)] },
                   { $gte: ['$$click.clickedAt', startDate] },
                   { $lte: ['$$click.clickedAt', endDate] },
                 ],
@@ -127,57 +123,75 @@ export const GET = async (request: NextRequest) => {
         },
       },
       {
+        $facet: {
+          views: [
+            {
+              $unwind: { path: '$views', preserveNullAndEmptyArrays: true },
+            },
+            {
+              $group: {
+                _id: {
+                  date: {
+                    $dateToString: {
+                      format: '%Y-%m-%d',
+                      date: '$views.viewedAt',
+                    },
+                  },
+                },
+                viewsCount: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                date: '$_id.date',
+                views: '$viewsCount',
+              },
+            },
+          ],
+          clicks: [
+            {
+              $unwind: { path: '$clicks', preserveNullAndEmptyArrays: true },
+            },
+            {
+              $group: {
+                _id: {
+                  date: {
+                    $dateToString: {
+                      format: '%Y-%m-%d',
+                      date: '$clicks.clickedAt',
+                    },
+                  },
+                },
+                clicksCount: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                date: '$_id.date',
+                clicks: '$clicksCount',
+              },
+            },
+          ],
+        },
+      },
+      {
         $project: {
-          views: {
-            $map: {
-              input: '$views',
-              as: 'view',
-              in: {
-                date: {
-                  $dateToString: {
-                    format: '%Y-%m-%d',
-                    date: '$$view.viewedAt',
-                  },
-                },
-              },
-            },
-          },
-          clicks: {
-            $map: {
-              input: '$clicks',
-              as: 'click',
-              in: {
-                date: {
-                  $dateToString: {
-                    format: '%Y-%m-%d',
-                    date: '$$click.clickedAt',
-                  },
-                },
-              },
-            },
+          mergedData: {
+            $concatArrays: ['$views', '$clicks'],
           },
         },
       },
       {
-        $unwind: {
-          path: '$views',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $unwind: {
-          path: '$clicks',
-          preserveNullAndEmptyArrays: true,
-        },
+        $unwind: '$mergedData',
       },
       {
         $group: {
-          _id: '$views.date',
-          date: { $first: '$views.date' },
-          viewsCount: { $sum: 1 },
-          clicksCount: {
-            $sum: { $cond: [{ $eq: ['$clicks.date', '$views.date'] }, 1, 0] },
-          },
+          _id: '$mergedData.date',
+          date: { $first: '$mergedData.date' },
+          views: { $sum: { $ifNull: ['$mergedData.views', 0] } },
+          clicks: { $sum: { $ifNull: ['$mergedData.clicks', 0] } },
         },
       },
       {
@@ -187,8 +201,8 @@ export const GET = async (request: NextRequest) => {
         $project: {
           _id: 0,
           date: 1,
-          views: '$viewsCount',
-          clicks: '$clicksCount',
+          views: 1,
+          clicks: 1,
         },
       },
     ];

@@ -8,11 +8,19 @@ import { FC, useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 interface Props {
-  link: Hyperlink;
+  // link: Hyperlink;
+  link_id: string;
+  link_href: string;
+  link_title: string;
   username: string;
 }
 
-const LinkNestLink: FC<Props> = ({ link, username }) => {
+const LinkNestLink: FC<Props> = ({
+  link_id,
+  link_href,
+  link_title,
+  username,
+}) => {
   const [referrerFullUrl, setReferrerFullUrl] = useState('');
   const [referrerHostname, setReferrerHostname] = useState('');
   const [ipAddress, setIpAddress] = useState('');
@@ -45,7 +53,8 @@ const LinkNestLink: FC<Props> = ({ link, username }) => {
     updateClicks({
       username,
       visitor_id: uuid(),
-      link_id: link._id.toString(),
+      // link_id: link._id.toString(),
+      link_id: link_id,
       link_section: 'custom_links',
       ip_address: ipAddress,
       referrer: referrerHostname,
@@ -56,12 +65,14 @@ const LinkNestLink: FC<Props> = ({ link, username }) => {
   return (
     <>
       <Link
-        href={link.href}
+        // href={link.href}
+        href={link_href}
         target="_blank"
         className="p-6 bg-white border rounded-lg w-full text-center shadow"
         onClick={() => handleClick()}
       >
-        {link.title}
+        {/* {link.title} */}
+        {link_title}
       </Link>
     </>
   );

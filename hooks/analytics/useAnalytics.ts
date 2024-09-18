@@ -14,7 +14,7 @@ const getAnalytics = async ({ queryKey }: { queryKey: any[] }) => {
   console.log('range', range);
 
   const response = await axios.get<AnalyticsReturnTypes[]>(
-    `/api/analytics?${range}`,
+    `/api/analytics?range=${range}`,
     {
       withCredentials: true,
     }
