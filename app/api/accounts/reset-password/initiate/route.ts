@@ -42,6 +42,15 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    if (accountExists.auth_type === 'google') {
+      return NextResponse.json(
+        {
+          error: 'Account was authenticated with Google. No password to reset.',
+        },
+        { status: 400 }
+      );
+    }
+
     // check if there's an existing password reset record, delete if any
     const passwordRequestRecordExists =
       await PasswordReset.findOne<PasswordResetInterface>({

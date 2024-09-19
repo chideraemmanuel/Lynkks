@@ -23,12 +23,23 @@ import useDeleteLinkOrHeader from '@/hooks/links/useDeleteLinkOrHeader';
 
 interface Props {
   link: CustomLinkWithId;
+  onDragEnd?: () => void;
 }
 
-const CustomLinkCard: FC<Props> = ({ link }) => {
+const CustomLinkCard: FC<Props> = ({ link, onDragEnd }) => {
   return (
     <>
-      <div className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3">
+      <div
+        onDragEnd={
+          onDragEnd
+            ? () => {
+                onDragEnd();
+                console.log('[DRAG ENDED!]');
+              }
+            : undefined
+        }
+        className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3"
+      >
         <div className="flex-1 flex items-center gap-3 bg-red-200">
           <div className="bg-blue-200 cursor-grab active:cursor-grabbing">
             <GripVerticalIcon />
@@ -77,7 +88,7 @@ const EditLink: FC<{
   const [formChanged, setFormChanged] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  console.log('formChanged', formChanged);
+  // console.log('formChanged', formChanged);
 
   const {
     mutateAsync: editLink,
@@ -121,7 +132,7 @@ const EditLink: FC<{
       console.log('form changed: title');
       setFormChanged(true);
     } else {
-      console.log('form has not changed');
+      // console.log('form has not changed');
       setFormChanged(false);
     }
   }, [watchedFormFields]);
@@ -264,7 +275,7 @@ const EditHeader: FC<{
   const [formChanged, setFormChanged] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  console.log('formChanged', formChanged);
+  // console.log('formChanged', formChanged);
 
   const {
     mutateAsync: editHeader,
@@ -302,7 +313,7 @@ const EditHeader: FC<{
       console.log('form changed: title');
       setFormChanged(true);
     } else {
-      console.log('form has not changed');
+      // console.log('form has not changed');
       setFormChanged(false);
     }
   }, [watchedFormFields]);

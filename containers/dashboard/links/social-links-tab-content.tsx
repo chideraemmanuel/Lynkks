@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { TabsContent } from '@/components/ui/tabs';
 import { SOCIAL_MEDIA_PLATFORMS, URLRegex } from '@/constants';
 import useAddLinkOrHeader from '@/hooks/links/useAddLinkOrHeader';
+import useUpdateAccount from '@/hooks/useUpdateAccount';
 import { AccountInterface, SocialLink } from '@/models/account';
 import { RiPencilFill } from '@remixicon/react';
 import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
@@ -96,6 +97,14 @@ const SocialLinksTabContent: FC<Props> = ({ account }) => {
     }
   };
 
+  // ! UPDATE ON SORT !
+  const {
+    mutate: updateAccount,
+    isLoading: isUpdatingAccount,
+    isSuccess: accountUpdateSuccessful,
+    error: accountUpdateError,
+  } = useUpdateAccount();
+
   return (
     <>
       <TabsContent value="social_links">
@@ -107,13 +116,33 @@ const SocialLinksTabContent: FC<Props> = ({ account }) => {
 
         {list.length > 0 ? (
           <ReactSortable
+            disabled={isUpdatingAccount}
             list={list}
-            setList={setList}
+            // setList={setList}
+            setList={(newState) => {
+              setList(newState);
+
+              // updateAccount({
+              //   links: {
+              //     social_links: newState,
+              //   },
+              // });
+            }}
             className="flex flex-col gap-3"
             animation={150}
           >
             {list.map((link, index) => (
-              <SocialLinkCard key={link.id} link={link} />
+              <SocialLinkCard
+                key={link.id}
+                link={link}
+                onDragEnd={() => {
+                  updateAccount({
+                    links: {
+                      social_links: list,
+                    },
+                  });
+                }}
+              />
             ))}
           </ReactSortable>
         ) : (

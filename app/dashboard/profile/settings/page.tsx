@@ -153,7 +153,7 @@ const ProfileSettingsPage: FC<Props> = () => {
       console.log('form changed: last_name');
       setFormChanged(true);
     } else {
-      console.log('form has not changed');
+      // console.log('form has not changed');
       setFormChanged(false);
     }
   }, [watchedPersonalDetailsFormFields]);

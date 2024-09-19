@@ -42,7 +42,7 @@ const completePasswordResetFunction = async (
 };
 
 const usePasswordReset = () => {
-  // ! INITIATE !
+  // ! INITIATE PASSWORD RESET !
   const {
     mutate: initiatePasswordReset,
     isLoading: isInitiatingPasswordReset,
@@ -63,7 +63,7 @@ const usePasswordReset = () => {
     },
   });
 
-  // ! COMPLETE !
+  // ! COMPLETE PASSWORD RESET !
   const { mutate: resetPassword, isLoading: isResettingPassword } = useMutation(
     {
       mutationKey: ['reset password'],

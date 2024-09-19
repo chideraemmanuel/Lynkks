@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { TabsContent } from '@/components/ui/tabs';
 import { URLRegex } from '@/constants';
 import useAddLinkOrHeader from '@/hooks/links/useAddLinkOrHeader';
+import useUpdateAccount from '@/hooks/useUpdateAccount';
 import { AccountInterface, CustomLink } from '@/models/account';
 import { RiDeleteBin5Line, RiPencilFill } from '@remixicon/react';
 import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
@@ -47,6 +48,14 @@ const CustomLinksTabContent: FC<Props> = ({ account }) => {
     setList(customLinkListWithId);
   }, [account]);
 
+  // ! UPDATE ON SORT !
+  const {
+    mutateAsync: updateAccount,
+    isLoading: isUpdatingAccount,
+    isSuccess: accountUpdateSuccessful,
+    error: accountUpdateError,
+  } = useUpdateAccount();
+
   return (
     <>
       <TabsContent value="links">
@@ -58,13 +67,33 @@ const CustomLinksTabContent: FC<Props> = ({ account }) => {
 
         {list.length > 0 ? (
           <ReactSortable
+            disabled={isUpdatingAccount}
             list={list}
-            setList={setList}
+            // setList={setList}
+            setList={(newState) => {
+              setList(newState);
+
+              //  updateAccount({
+              //   links: {
+              //     custom_links: newState,
+              //   },
+              // });
+            }}
             className="flex flex-col gap-3"
             animation={150}
           >
             {list.map((link, index) => (
-              <CustomLinkCard key={link.id} link={link} />
+              <CustomLinkCard
+                key={link.id}
+                link={link}
+                onDragEnd={() => {
+                  updateAccount({
+                    links: {
+                      custom_links: list,
+                    },
+                  });
+                }}
+              />
             ))}
           </ReactSortable>
         ) : (

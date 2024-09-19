@@ -142,12 +142,6 @@ const PasswordResetPage: FC<Props> = () => {
   }
 
   // ! HANDLE PASSWORD REQUEST VERIFICATION ERROR !
-  if (
-    errorVerifyingPasswordResetRequest?.response?.status === 422
-    // || !reset_string
-  ) {
-    notFound();
-  }
 
   if (errorVerifyingPasswordResetRequest?.message === 'Network Error') {
     console.log('network error');
@@ -163,11 +157,18 @@ const PasswordResetPage: FC<Props> = () => {
     return <ErrorComponent error={errorVerifyingPasswordResetRequest} />;
   }
 
+  // if (
+  //   errorVerifyingPasswordResetRequest &&
+  //   errorVerifyingPasswordResetRequest.response?.status !== 422
+  // ) {
+  //   return <ErrorComponent error={errorVerifyingPasswordResetRequest} />;
+  // }
+
   if (
-    errorVerifyingPasswordResetRequest &&
-    errorVerifyingPasswordResetRequest.response?.status !== 422
+    errorVerifyingPasswordResetRequest?.response?.status === 422
+    // || !reset_string
   ) {
-    return <ErrorComponent error={errorVerifyingPasswordResetRequest} />;
+    notFound();
   }
 
   return (

@@ -24,9 +24,10 @@ import { toast } from 'sonner';
 
 interface Props {
   link: SocialLinkWithId;
+  onDragEnd?: () => void;
 }
 
-const SocialLinkCard: FC<Props> = ({ link }) => {
+const SocialLinkCard: FC<Props> = ({ link, onDragEnd }) => {
   // const getIcon = () => {
   //   const res = SOCIAL_MEDIA_PLATFORMS.find((platform) => {
   //     return platform.name === link.platform;
@@ -39,7 +40,17 @@ const SocialLinkCard: FC<Props> = ({ link }) => {
 
   return (
     <>
-      <div className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3">
+      <div
+        onDragEnd={
+          onDragEnd
+            ? () => {
+                onDragEnd();
+                console.log('[DRAG ENDED!]');
+              }
+            : undefined
+        }
+        className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3"
+      >
         <div className="flex-1 flex items-center gap-3 bg-red-200">
           <div className="bg-blue-200 cursor-grab active:cursor-grabbing">
             <GripVerticalIcon />
@@ -109,7 +120,7 @@ const EditSocialLink: FC<{
   const [dialogOpen, setDialogOpen] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
 
-  console.log('formChanged', formChanged);
+  // console.log('formChanged', formChanged);
 
   const links: Platform[] = [
     'Instagram',
@@ -170,7 +181,7 @@ const EditSocialLink: FC<{
       console.log('form changed: platform');
       setFormChanged(true);
     } else {
-      console.log('form has not changed');
+      // console.log('form has not changed');
       setFormChanged(false);
     }
   }, [watchedFormFields]);
