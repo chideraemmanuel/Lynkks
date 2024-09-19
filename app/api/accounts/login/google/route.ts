@@ -5,6 +5,7 @@ import Account, { AccountInterface } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
 import { nanoid } from 'nanoid';
 import jwt from 'jsonwebtoken';
+import { z } from 'zod';
 
 interface GoogleResponse {
   id_token: string;
@@ -14,7 +15,7 @@ interface GoogleResponse {
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
   const code = request.nextUrl.searchParams.get('code');
-  const username = request.nextUrl.searchParams.get('username');
+  const usernameParam = request.nextUrl.searchParams.get('username');
   const success_redirect_path = request.nextUrl.searchParams.get(
     'success_redirect_path'
   );
@@ -114,19 +115,36 @@ export const GET = async (request: NextRequest) => {
           session_id: new_session_id,
         });
 
-        return NextResponse.redirect(
+        const response = NextResponse.redirect(
           `${process.env.CLIENT_BASE_URL}${success_redirect_path}?new_account=false`
         );
+
+        response.cookies.set('sid', new_session_id, {
+          // maxAge: 60 * 60 * 24 * 7, // 1 week
+          maxAge: 60 * 60, // 1 hour
+          httpOnly: true,
+        });
+
+        return response;
       }
 
       // create new account and session, and redirect to success path
-      if (!username || username.length < 3) {
-        return NextResponse.json(
-          {
-            error:
-              'Missing or Invalid "username" query parameter for new account',
-          },
-          { status: 400 }
+      const { success, data: username } = z
+        .string()
+        .min(3)
+        .max(15)
+        .safeParse(usernameParam);
+
+      if (!success) {
+        // return NextResponse.json(
+        //   {
+        //     error:
+        //       'Missing or Invalid "username" query parameter for new account',
+        //   },
+        //   { status: 400 }
+        // );
+        return NextResponse.redirect(
+          `${process.env.CLIENT_BASE_URL}${error_redirect_path}?error=invalid_username`
         );
       }
 
@@ -158,9 +176,17 @@ export const GET = async (request: NextRequest) => {
         session_id: new_session_id,
       });
 
-      return NextResponse.redirect(
+      const response = NextResponse.redirect(
         `${process.env.CLIENT_BASE_URL}${success_redirect_path}?new_account=true`
       );
+
+      response.cookies.set('sid', new_session_id, {
+        // maxAge: 60 * 60 * 24 * 7, // 1 week
+        maxAge: 60 * 60, // 1 hour
+        httpOnly: true,
+      });
+
+      return response;
     } catch (error: any) {
       console.log('[GOOGLE_OAUTH_ERROR]', error);
       return NextResponse.redirect(

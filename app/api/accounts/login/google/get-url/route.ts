@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 const generateGoogleOauthUrl = (
-  username: string,
   successRedirectPath: string,
-  errorRedirectPath: string
+  errorRedirectPath: string,
+  username?: string
 ) => {
   const base = 'https://accounts.google.com/o/oauth2/v2/auth';
 
@@ -12,7 +13,10 @@ const generateGoogleOauthUrl = (
     client_id: process.env.GOOGLE_AUTH_CLIENT_ID!,
     // redirect_uri: `${process.env.API_BASE_URL}/accounts/login/google?success_redirect_path=/&error_redirect_path=/auth/error`,
     // !!! redirect to API with query params; API handles redirect to client !!!
-    redirect_uri: `${process.env.API_BASE_URL}/accounts/login/google?username=${username}success_redirect_path=${successRedirectPath}&error_redirect_path=${errorRedirectPath}`,
+    // ! add username query param only when passed (i.e new account)
+    redirect_uri: username
+      ? `${process.env.API_BASE_URL}/accounts/login/google?username=${username}success_redirect_path=${successRedirectPath}&error_redirect_path=${errorRedirectPath}`
+      : `${process.env.API_BASE_URL}/accounts/login/google?success_redirect_path=${successRedirectPath}&error_redirect_path=${errorRedirectPath}`,
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',
@@ -28,7 +32,7 @@ const generateGoogleOauthUrl = (
 };
 
 export const GET = (request: NextRequest) => {
-  const username = request.nextUrl.searchParams.get('username');
+  const usernameParam = request.nextUrl.searchParams.get('username');
 
   const success_redirect_path = request.nextUrl.searchParams.get(
     'success_redirect_path'
@@ -37,9 +41,16 @@ export const GET = (request: NextRequest) => {
     'error_redirect_path'
   );
 
-  if (!username || username.length < 3) {
+  const { success, data: username } = z
+    .string()
+    .min(3)
+    .max(15)
+    .optional()
+    .safeParse(usernameParam);
+
+  if (!success) {
     return NextResponse.json(
-      { error: 'Missing or Invalid "username" query parameter' },
+      { error: 'Invalid "username" query parameter' },
       { status: 400 }
     );
   }
@@ -66,9 +77,9 @@ export const GET = (request: NextRequest) => {
   }
 
   const url = generateGoogleOauthUrl(
-    username,
     success_redirect_path,
-    error_redirect_path
+    error_redirect_path,
+    username
   );
 
   return NextResponse.json({ url });

@@ -14,6 +14,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
+import { toast } from 'sonner';
 
 interface Props {}
 
@@ -28,6 +29,7 @@ const RegistrationPage: FC<Props> = () => {
   const pathname = usePathname();
   const params = useSearchParams();
   const username = params.get('username');
+  const error = params.get('error');
 
   const [usernameState, setUsernameState] = useState<string>('');
 
@@ -42,6 +44,38 @@ const RegistrationPage: FC<Props> = () => {
       router.replace(pathname);
     }
   }, []);
+
+  // ! handle errors; most likely from google redirect
+  // authentication_failed;
+  // account_exists;
+  // invalid_username;
+  // username_taken;
+  // server_error;
+  useEffect(() => {
+    if (error) {
+      if (error === 'authentication_failed') {
+        toast.error('Authentication failed');
+      }
+
+      if (error === 'account_exists') {
+        toast.error('Email is already in use. Login with password instead.');
+      }
+
+      if (error === 'invalid_username') {
+        toast.error('Invalid username');
+      }
+
+      if (error === 'username_taken') {
+        toast.error('Username is already taken');
+      }
+
+      if (error === 'server_error') {
+        toast.error('Internal Server Error');
+      }
+
+      router.replace(pathname);
+    }
+  }, [error]);
 
   const { mutate: createAccount, isLoading: isCreatingAccount } = useRegister();
 
@@ -145,7 +179,10 @@ const RegistrationPage: FC<Props> = () => {
             </Button>
             {/* <Separator /> */}
             <FormBreak />
-            <GoogleSignInButton /> {/* disable while creating account */}
+            <GoogleSignInButton
+              disabled={isCreatingAccount}
+              username={usernameState}
+            />
           </div>
         </form>
 
