@@ -11,6 +11,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { RiArrowLeftLine } from '@remixicon/react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import usePasswordReset from '@/hooks/auth/usePasswordReset';
 
 interface Props {}
 
@@ -21,6 +22,9 @@ const PasswordResetInitiationPage: FC<Props> = () => {
   //   mutate: initiatePasswordReset,
   //   isLoading: isInitiatingPasswordReset,
   // } = useInitiatePasswordReset();
+
+  const { initiatePasswordReset, isInitiatingPasswordReset } =
+    usePasswordReset();
 
   const form = useForm<{ email: string }>();
 
@@ -33,7 +37,7 @@ const PasswordResetInitiationPage: FC<Props> = () => {
   const onSubmit: SubmitHandler<{ email: string }> = (data, e) => {
     console.log('data: ', data);
 
-    // initiatePasswordReset(data.email);
+    initiatePasswordReset({ email: data.email });
   };
 
   return (
@@ -75,11 +79,14 @@ const PasswordResetInitiationPage: FC<Props> = () => {
                 },
               })}
               error={errors.email?.message}
+              disabled={isInitiatingPasswordReset}
             />
           </div>
 
-          <Button className="w-full h-12">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Button className="w-full h-12" disabled={isInitiatingPasswordReset}>
+            {isInitiatingPasswordReset && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
             Send mail
           </Button>
         </form>

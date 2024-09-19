@@ -1,35 +1,21 @@
-import { passwordRegex } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
 import Account, { AccountInterface } from '@/models/account';
 import PasswordReset, { PasswordResetInterface } from '@/models/password-reset';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import bcrypt from 'bcrypt';
 
-const BodySchema = z.object({
-  email: z.string().email(),
-  reset_string: z.string().min(1),
-  new_password: z
-    .string()
-    .refine(
-      (value) => passwordRegex.test(value),
-      'Password must be 8-16 characters long, and contain at least one numeric digit, and special character'
-    ),
-});
+export const GET = async (request: NextRequest) => {
+  //   const body = await request.json();
+  const email_param = request.nextUrl.searchParams.get('email');
 
-export const PUT = async (request: NextRequest) => {
-  const body = await request.json();
+  const { success, data: email } = z.string().email().safeParse(email_param);
 
-  const returnObject = BodySchema.safeParse(body);
-
-  if (!returnObject.success) {
+  if (!success) {
     return NextResponse.json(
-      { error: 'Missing or Invalid body data' },
+      { error: 'Missing or Invalid "email" query param' },
       { status: 400 }
     );
   }
-
-  const { email, reset_string, new_password } = returnObject.data;
 
   try {
     console.log('connecting to database...');
@@ -59,29 +45,11 @@ export const PUT = async (request: NextRequest) => {
         {
           error: 'Password reset record does not exist or has expired',
         },
-        { status: 400 }
+        { status: 422 }
       );
     }
 
-    const resetStringsMatch = await bcrypt.compare(
-      reset_string,
-      passwordRequestRecordExists.reset_string
-    );
-
-    if (!resetStringsMatch) {
-      return NextResponse.json(
-        { error: 'Invalid reset string' },
-        { status: 400 }
-      );
-    }
-
-    const updatedAccount = await Account.findByIdAndUpdate(
-      accountExists._id,
-      { password: new_password },
-      { new: true }
-    );
-
-    return NextResponse.json({ message: 'Password updated successfully' });
+    return NextResponse.json({ message: 'Password reset request exists' });
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(
