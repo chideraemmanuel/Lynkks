@@ -48,6 +48,13 @@ export const PUT = async (request: NextRequest) => {
       );
     }
 
+    if (accountExists && !accountExists.email_verified) {
+      return NextResponse.json(
+        { error: 'Account with the supplied email has not been verified' },
+        { status: 400 }
+      );
+    }
+
     // check if there's an existing password reset record
     const passwordRequestRecordExists =
       await PasswordReset.findOne<PasswordResetInterface>({

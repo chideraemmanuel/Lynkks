@@ -15,7 +15,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import GoogleSignInButton from '@/components/google-sign-in-button';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 interface Props {}
 

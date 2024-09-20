@@ -123,4 +123,76 @@
     font-family: var(--font-geist-sans);
     /* font-family: var(--font-geist-mono); */
   }
+
+  .bg-gradient {
+    background-image: linear-gradient(
+      to right top,
+      #e6efff,
+      #dae2f2,
+      #ced5e6,
+      #c2c8d9,
+      #b6bbcd,
+      #b1bdcd,
+      #aebecc,
+      #abbfca,
+      #b6cdcf,
+      #c7dad4,
+      #dce6db,
+      #f1f1e6
+    );
+  }
+
+  .bg-gradient-2 {
+    background-image: linear-gradient(
+      to right top,
+      #e6efff,
+      #e1effd,
+      #dceffa,
+      #d9eff6,
+      #d7eef2,
+      #d8efef,
+      #d9efeb,
+      #dcefe8,
+      #e1f0e6,
+      #e7f0e5,
+      #ecf1e5,
+      #f1f1e6
+    );
+  }
+
+  .bg-gradient-3 {
+    background-image: linear-gradient(
+      to right top,
+      #e6efff,
+      #e9f1ff,
+      #edf2ff,
+      #f0f4ff,
+      #f3f6ff,
+      #f1f7ff,
+      #f0f7fe,
+      #eff8fd,
+      #ebf7f9,
+      #eaf6f2,
+      #ecf4eb,
+      #f1f1e6
+    );
+  }
+
+  .bg-gradient-4 {
+    background-image: radial-gradient(
+      circle,
+      #e6efff,
+      #e9f1ff,
+      #edf2ff,
+      #f0f4ff,
+      #f3f6ff,
+      #f2f6fe,
+      #f0f6fe,
+      #eff6fd,
+      #e8f4fa,
+      #e1f2f7,
+      #dbeff1,
+      #d6edeb
+    );
+  }
 }

@@ -29,14 +29,16 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
     links: { custom_links, social_links },
   } = account;
 
+  console.log({ custom_links, social_links });
+
   // const Icon = getIcon();
 
   return (
     <>
-      <div className="bg-red-300 min-h-screen py-10 flex flex-col">
+      <div className="bg-gradient-4 min-h-screen py-10 flex flex-col">
         {/* <div className="min-h-screen py-10 flex flex-col"> */}
-        <div className="bg-blue-300 w-[min(700px,_90%)] mx-auto flex-1">
-          {/* <div className="w-[min(700px,_90%)] mx-auto flex-1"> */}
+        {/* <div className="bg-blue-300 w-[min(700px,_90%)] mx-auto flex-1"> */}
+        <div className="w-[min(700px,_90%)] mx-auto flex-1">
           <div className="flex flex-col items-center gap-2 text-center mb-7">
             <div className="rounded-[50%] md:w-[150px] w-[100px] md:h-[150px] h-[100px]">
               <Image
@@ -76,7 +78,7 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
           <div className="flex flex-col items-center gap-4 w-[90%] mx-auto">
             {custom_links.map((link) => {
               if (link.type === 'header') {
-                return <span>{link.title}</span>;
+                return <span key={link._id.toString()}>{link.title}</span>;
               } else {
                 return (
                   <LinkNestLink

@@ -1,4 +1,5 @@
 import { connectToDatabase } from '@/lib/database';
+import emailVerificationTemplate from '@/lib/email-templates/emailVerificationTemplate';
 import generateOTP from '@/lib/generateOTP';
 import sendEmail from '@/lib/sendEmail';
 import Account, { AccountInterface } from '@/models/account';
@@ -69,12 +70,10 @@ export const POST = async (request: NextRequest) => {
       otp: OTP,
     });
 
-    // TODO: build email templates
-
     await sendEmail({
-      receipent: accountExists.email,
+      receipent: email,
       subject: 'Email Verification',
-      html: `<p>${OTP}</p>`,
+      html: emailVerificationTemplate(OTP),
     });
 
     return NextResponse.json(

@@ -83,7 +83,7 @@ export const POST = async (request: NextRequest) => {
 
     await EmailVerification.deleteOne({ account: accountExists._id });
 
-    // TODO: send email verification successful/welcome email..?
+    //   TODO: send welcome email..?
 
     return NextResponse.json({
       message: `Email "${email}" has been verified successfully`,

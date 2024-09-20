@@ -88,6 +88,125 @@ export const GET = async (request: NextRequest) => {
     const startDate = calculateStartDate(data);
     const endDate = new Date();
 
+    // const aggregation: PipelineStage[] = [
+    //   {
+    //     $match: {
+    //       account: account._id,
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       views: {
+    //         $filter: {
+    //           input: '$views',
+    //           as: 'view',
+    //           cond: {
+    //             $and: [
+    //               { $gte: ['$$view.viewedAt', startDate] },
+    //               { $lte: ['$$view.viewedAt', endDate] },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //       clicks: {
+    //         $filter: {
+    //           input: '$clicks',
+    //           as: 'click',
+    //           cond: {
+    //             $and: [
+    //               { $gte: ['$$click.clickedAt', startDate] },
+    //               { $lte: ['$$click.clickedAt', endDate] },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $facet: {
+    //       views: [
+    //         {
+    //           $unwind: { path: '$views', preserveNullAndEmptyArrays: true },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               date: {
+    //                 $dateToString: {
+    //                   format: '%Y-%m-%d',
+    //                   date: '$views.viewedAt',
+    //                 },
+    //               },
+    //             },
+    //             viewsCount: { $sum: 1 },
+    //           },
+    //         },
+    //         {
+    //           $project: {
+    //             _id: 0,
+    //             date: '$_id.date',
+    //             views: '$viewsCount',
+    //           },
+    //         },
+    //       ],
+    //       clicks: [
+    //         {
+    //           $unwind: { path: '$clicks', preserveNullAndEmptyArrays: true },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               date: {
+    //                 $dateToString: {
+    //                   format: '%Y-%m-%d',
+    //                   date: '$clicks.clickedAt',
+    //                 },
+    //               },
+    //             },
+    //             clicksCount: { $sum: 1 },
+    //           },
+    //         },
+    //         {
+    //           $project: {
+    //             _id: 0,
+    //             date: '$_id.date',
+    //             clicks: '$clicksCount',
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       mergedData: {
+    //         $concatArrays: ['$views', '$clicks'],
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $unwind: '$mergedData',
+    //   },
+    //   {
+    //     $group: {
+    //       _id: '$mergedData.date',
+    //       date: { $first: '$mergedData.date' },
+    //       views: { $sum: { $ifNull: ['$mergedData.views', 0] } },
+    //       clicks: { $sum: { $ifNull: ['$mergedData.clicks', 0] } },
+    //     },
+    //   },
+    //   {
+    //     $sort: { date: 1 },
+    //   },
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       date: 1,
+    //       views: 1,
+    //       clicks: 1,
+    //     },
+    //   },
+    // ];
+
     const aggregation: PipelineStage[] = [
       {
         $match: {
@@ -197,13 +316,89 @@ export const GET = async (request: NextRequest) => {
       {
         $sort: { date: 1 },
       },
+      // Generate all dates between startDate and endDate
+      {
+        $addFields: {
+          allDates: {
+            $range: [
+              { $toLong: startDate },
+              { $add: [{ $toLong: endDate }, 86400000] }, // Adding 1 day in milliseconds
+              86400000, // Interval of 1 day in milliseconds
+            ],
+          },
+        },
+      },
+      // Convert each timestamp to a date string
+      {
+        $project: {
+          allDates: {
+            $map: {
+              input: '$allDates',
+              as: 'date',
+              in: {
+                $dateToString: {
+                  format: '%Y-%m-%d',
+                  date: { $toDate: '$$date' },
+                },
+              },
+            },
+          },
+        },
+      },
+      // Left join with actual views and clicks data
+      {
+        $unwind: '$allDates',
+      },
+      {
+        $lookup: {
+          from: 'analytics',
+          let: { date: '$allDates' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$account', account._id] },
+                    {
+                      $eq: [
+                        {
+                          $dateToString: {
+                            format: '%Y-%m-%d',
+                            date: '$views.viewedAt',
+                          },
+                        },
+                        '$$date',
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'dateData',
+        },
+      },
+      // Combine the results of the lookup with the default dates
+      {
+        $addFields: {
+          views: {
+            $ifNull: [{ $arrayElemAt: ['$dateData.viewsCount', 0] }, 0],
+          },
+          clicks: {
+            $ifNull: [{ $arrayElemAt: ['$dateData.clicksCount', 0] }, 0],
+          },
+        },
+      },
       {
         $project: {
           _id: 0,
-          date: 1,
+          date: '$allDates',
           views: 1,
           clicks: 1,
         },
+      },
+      {
+        $sort: { date: 1 },
       },
     ];
 
@@ -218,3 +413,25 @@ export const GET = async (request: NextRequest) => {
     );
   }
 };
+
+// import { NextResponse } from 'next/server';
+// import type { NextFetchEvent, NextRequest } from 'next/server';
+
+// export function middleware(req: NextRequest, event: NextFetchEvent) {
+//   event.waitUntil(
+//     fetch('https://my-analytics-platform.com', {
+//       method: 'POST',
+//       body: JSON.stringify({ pathname: req.nextUrl.pathname }),
+//     })
+//   );
+
+//   return NextResponse.next();
+// }
+//
+// const response = NextResponse.next();
+//  response.cookies.set({
+//    name: 'vercel',
+//    value: 'fast',
+//    path: '/',
+//  });
+//   return response;

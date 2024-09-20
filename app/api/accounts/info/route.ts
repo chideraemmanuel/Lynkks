@@ -1,7 +1,11 @@
 import { app } from '@/config/firebase';
 import { passwordRegex, URLRegex } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
-import Account, { AccountInterface } from '@/models/account';
+import Account, {
+  AccountInterface,
+  CustomLink,
+  SocialLink,
+} from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { NextRequest, NextResponse } from 'next/server';
@@ -330,6 +334,17 @@ export const PUT = async (request: NextRequest) => {
 
     if (links) {
       updates.links = links;
+
+      // type LinksUpdates = {
+      //   custom_links?: CustomLink[]
+      //   social_links?: SocialLink[]
+      // }
+      // const linksUpdate: LinksUpdates = {}
+      // const { custom_links, social_links } = links
+
+      // if (custom_links) {
+      //   linksUpdate.custom_links = custom_links
+      // }
     }
 
     if (completed_onboarding !== undefined) {
@@ -373,9 +388,22 @@ export const PUT = async (request: NextRequest) => {
       profile_image_url
         ? {
             ...updates,
+            links: {
+              ...account.links,
+              ...updates.links,
+            },
+            // $set: { links: updates.links },
             profile: { ...updates.profile, image: profile_image_url },
           }
-        : updates,
+        : // : updates,
+          {
+            ...updates,
+            links: {
+              ...account.links,
+              ...updates.links,
+            },
+            // $set: { links: updates.links },
+          },
       // {...updates, profile: {...updates.profile, image: profile_image_url}},
       { new: true }
     );

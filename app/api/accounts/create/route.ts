@@ -1,5 +1,6 @@
 import { passwordRegex } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
+import emailVerificationTemplate from '@/lib/email-templates/emailVerificationTemplate';
 import generateOTP from '@/lib/generateOTP';
 import sendEmail from '@/lib/sendEmail';
 import Account, { AccountInterface } from '@/models/account';
@@ -91,13 +92,11 @@ export const POST = async (request: NextRequest) => {
       OTP,
     });
 
-    // TODO: build email templates
-
-    // await sendEmail({
-    //   receipent: email,
-    //   subject: 'Email Verification',
-    //   html: `<p>${OTP}</p>`,
-    // });
+    await sendEmail({
+      receipent: email,
+      subject: 'Email Verification',
+      html: emailVerificationTemplate(OTP),
+    });
 
     const response = NextResponse.json(
       { message: `Verification email has been sent to ${email}.` },

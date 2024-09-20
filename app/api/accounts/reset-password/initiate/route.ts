@@ -1,4 +1,5 @@
 import { connectToDatabase } from '@/lib/database';
+import passwordResetTemplate from '@/lib/email-templates/passwordResetTemplate';
 import sendEmail from '@/lib/sendEmail';
 import Account, { AccountInterface } from '@/models/account';
 import PasswordReset, { PasswordResetInterface } from '@/models/password-reset';
@@ -42,6 +43,13 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    if (accountExists && !accountExists.email_verified) {
+      return NextResponse.json(
+        { error: 'Account with the supplied email has not been verified' },
+        { status: 400 }
+      );
+    }
+
     if (accountExists.auth_type === 'google') {
       return NextResponse.json(
         {
@@ -70,21 +78,20 @@ export const POST = async (request: NextRequest) => {
       reset_string,
     });
 
-    // TODO: build email templates
-
     await sendEmail({
       receipent: email,
       subject: 'Password Reset Request',
-      html: `Click <a href="${
-        process.env.CLIENT_BASE_URL
-      }${reset_page_path}?email=${encodeURIComponent(
-        accountExists.email
-      )}reset_string=${reset_string}">here</a>`,
+      html: passwordResetTemplate({
+        first_name: accountExists.first_name,
+        email: accountExists.email,
+        reset_string,
+        reset_page_path,
+      }),
     });
 
     return NextResponse.json(
       {
-        message: `A password reset link has been sent to ${email}`,
+        message: `A password reset link has been sent to ${accountExists.email}`,
       },
       { status: 201 }
     );
