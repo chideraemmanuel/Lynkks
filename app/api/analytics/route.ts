@@ -413,6 +413,7 @@ export const GET = async (request: NextRequest) => {
     );
   }
 };
+// ! 'Failed to optimize pipeline :: caused by :: $range requires a starting value that can be represented as a 32-bit integer, found value: 1726199002274';
 
 // import { NextResponse } from 'next/server';
 // import type { NextFetchEvent, NextRequest } from 'next/server';

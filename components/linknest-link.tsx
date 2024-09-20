@@ -68,7 +68,7 @@ const LinkNestLink: FC<Props> = ({
         // href={link.href}
         href={link_href}
         target="_blank"
-        className="p-6 bg-white border rounded-lg w-full text-center shadow"
+        className="p-4 bg-white border rounded-2xl w-full text-center text-xl font-medium shadow hover:scale-105 transition-transform"
         onClick={() => handleClick()}
       >
         {/* {link.title} */}

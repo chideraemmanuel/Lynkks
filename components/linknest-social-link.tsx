@@ -87,8 +87,9 @@ const LinkNestSocialLink: FC<Props> = ({
         // href={link.href}
         href={link_href}
         target="_blank"
-        className="md:w-12 w-10 md:h-12 h-10"
+        className="md:w-12 w-10 md:h-12 h-10 hover:scale-110 transition-transform"
         onClick={() => handleClick()}
+        title={link_platform}
       >
         {/* <RiWhatsappLine className="md:w-12 w-10 md:h-12 h-10" /> */}
         <Icon size={'40'} />

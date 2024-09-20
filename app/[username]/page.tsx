@@ -18,7 +18,10 @@ interface Props {
 
 const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
   await connectToDatabase();
-  const account = await Account.findOne<AccountInterface>({ username });
+  const account = await Account.findOne<AccountInterface>({
+    username,
+    email_verified: true,
+  });
 
   if (!account) notFound();
 
@@ -29,7 +32,7 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
     links: { custom_links, social_links },
   } = account;
 
-  console.log({ custom_links, social_links });
+  // console.log({ custom_links, social_links });
 
   // const Icon = getIcon();
 
@@ -39,8 +42,8 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
         {/* <div className="min-h-screen py-10 flex flex-col"> */}
         {/* <div className="bg-blue-300 w-[min(700px,_90%)] mx-auto flex-1"> */}
         <div className="w-[min(700px,_90%)] mx-auto flex-1">
-          <div className="flex flex-col items-center gap-2 text-center mb-7">
-            <div className="rounded-[50%] md:w-[150px] w-[100px] md:h-[150px] h-[100px]">
+          <div className="flex flex-col items-center gap-1 text-center mb-7">
+            <div className="rounded-[50%] shadow-lg border-[4px] md:w-[120px] w-[90px] md:h-[120px] h-[90px] mb-3">
               <Image
                 src={profile.image || profileImage.src}
                 alt="#"
@@ -78,7 +81,14 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
           <div className="flex flex-col items-center gap-4 w-[90%] mx-auto">
             {custom_links.map((link) => {
               if (link.type === 'header') {
-                return <span key={link._id.toString()}>{link.title}</span>;
+                return (
+                  <span
+                    key={link._id.toString()}
+                    className="text-xl font-semibold text-muted-foreground"
+                  >
+                    {link.title}
+                  </span>
+                );
               } else {
                 return (
                   <LinkNestLink

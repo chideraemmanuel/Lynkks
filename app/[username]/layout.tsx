@@ -9,8 +9,8 @@ interface Props {
 const LinkNestUserLayout: FC<Props> = ({ children, params: { username } }) => {
   return (
     <>
-      <ViewsUpdateProvider username={username}>{children}</ViewsUpdateProvider>
-      {/* {children} */}
+      {/* <ViewsUpdateProvider username={username}>{children}</ViewsUpdateProvider> */}
+      {children}
     </>
   );
 };
