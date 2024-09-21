@@ -3,6 +3,7 @@ import Account, { AccountInterface } from '@/models/account';
 import Analytics from '@/models/analytics';
 import Session, { SessionInterface } from '@/models/session';
 import { PipelineStage, Types } from 'mongoose';
+import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -207,12 +208,604 @@ export const GET = async (request: NextRequest) => {
     //   },
     // ];
 
+    // const aggregation: PipelineStage[] = [
+    //   {
+    //     $match: {
+    //       account: account._id,
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       views: {
+    //         $filter: {
+    //           input: '$views',
+    //           as: 'view',
+    //           cond: {
+    //             $and: [
+    //               { $gte: ['$$view.viewedAt', startDate] },
+    //               { $lte: ['$$view.viewedAt', endDate] },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //       clicks: {
+    //         $filter: {
+    //           input: '$clicks',
+    //           as: 'click',
+    //           cond: {
+    //             $and: [
+    //               { $gte: ['$$click.clickedAt', startDate] },
+    //               { $lte: ['$$click.clickedAt', endDate] },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $facet: {
+    //       views: [
+    //         {
+    //           $unwind: { path: '$views', preserveNullAndEmptyArrays: true },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               date: {
+    //                 $dateToString: {
+    //                   format: '%Y-%m-%d',
+    //                   date: '$views.viewedAt',
+    //                 },
+    //               },
+    //             },
+    //             viewsCount: { $sum: 1 },
+    //           },
+    //         },
+    //         {
+    //           $project: {
+    //             _id: 0,
+    //             date: '$_id.date',
+    //             views: '$viewsCount',
+    //           },
+    //         },
+    //       ],
+    //       clicks: [
+    //         {
+    //           $unwind: { path: '$clicks', preserveNullAndEmptyArrays: true },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               date: {
+    //                 $dateToString: {
+    //                   format: '%Y-%m-%d',
+    //                   date: '$clicks.clickedAt',
+    //                 },
+    //               },
+    //             },
+    //             clicksCount: { $sum: 1 },
+    //           },
+    //         },
+    //         {
+    //           $project: {
+    //             _id: 0,
+    //             date: '$_id.date',
+    //             clicks: '$clicksCount',
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       mergedData: {
+    //         $concatArrays: ['$views', '$clicks'],
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $unwind: '$mergedData',
+    //   },
+    //   {
+    //     $group: {
+    //       _id: '$mergedData.date',
+    //       date: { $first: '$mergedData.date' },
+    //       views: { $sum: { $ifNull: ['$mergedData.views', 0] } },
+    //       clicks: { $sum: { $ifNull: ['$mergedData.clicks', 0] } },
+    //     },
+    //   },
+    //   {
+    //     $sort: { date: 1 },
+    //   },
+    //   // Generate all dates between startDate and endDate
+    //   {
+    //     $addFields: {
+    //       allDates: {
+    //         $range: [
+    //           { $toLong: startDate },
+    //           { $add: [{ $toLong: endDate }, 86400000] }, // Adding 1 day in milliseconds
+    //           86400000, // Interval of 1 day in milliseconds
+    //         ],
+    //       },
+    //     },
+    //   },
+    //   // Convert each timestamp to a date string
+    //   {
+    //     $project: {
+    //       allDates: {
+    //         $map: {
+    //           input: '$allDates',
+    //           as: 'date',
+    //           in: {
+    //             $dateToString: {
+    //               format: '%Y-%m-%d',
+    //               date: { $toDate: '$$date' },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    //   // Left join with actual views and clicks data
+    //   {
+    //     $unwind: '$allDates',
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: 'analytics',
+    //       let: { date: '$allDates' },
+    //       pipeline: [
+    //         {
+    //           $match: {
+    //             $expr: {
+    //               $and: [
+    //                 { $eq: ['$account', account._id] },
+    //                 {
+    //                   $eq: [
+    //                     {
+    //                       $dateToString: {
+    //                         format: '%Y-%m-%d',
+    //                         date: '$views.viewedAt',
+    //                       },
+    //                     },
+    //                     '$$date',
+    //                   ],
+    //                 },
+    //               ],
+    //             },
+    //           },
+    //         },
+    //       ],
+    //       as: 'dateData',
+    //     },
+    //   },
+    //   // Combine the results of the lookup with the default dates
+    //   {
+    //     $addFields: {
+    //       views: {
+    //         $ifNull: [{ $arrayElemAt: ['$dateData.viewsCount', 0] }, 0],
+    //       },
+    //       clicks: {
+    //         $ifNull: [{ $arrayElemAt: ['$dateData.clicksCount', 0] }, 0],
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       date: '$allDates',
+    //       views: 1,
+    //       clicks: 1,
+    //     },
+    //   },
+    //   {
+    //     $sort: { date: 1 },
+    //   },
+    // ];
+
+    // const aggregation: PipelineStage[] = [
+    //   {
+    //     $match: {
+    //       account: account._id,
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       views: {
+    //         $filter: {
+    //           input: '$views',
+    //           as: 'view',
+    //           cond: {
+    //             $and: [
+    //               { $gte: ['$$view.viewedAt', startDate] },
+    //               { $lte: ['$$view.viewedAt', endDate] },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //       clicks: {
+    //         $filter: {
+    //           input: '$clicks',
+    //           as: 'click',
+    //           cond: {
+    //             $and: [
+    //               { $gte: ['$$click.clickedAt', startDate] },
+    //               { $lte: ['$$click.clickedAt', endDate] },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $facet: {
+    //       views: [
+    //         {
+    //           $unwind: { path: '$views', preserveNullAndEmptyArrays: true },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               date: {
+    //                 $dateToString: {
+    //                   format: '%Y-%m-%d',
+    //                   date: '$views.viewedAt',
+    //                 },
+    //               },
+    //             },
+    //             viewsCount: { $sum: 1 },
+    //           },
+    //         },
+    //         {
+    //           $project: {
+    //             _id: 0,
+    //             date: '$_id.date',
+    //             views: '$viewsCount',
+    //           },
+    //         },
+    //       ],
+    //       clicks: [
+    //         {
+    //           $unwind: { path: '$clicks', preserveNullAndEmptyArrays: true },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               date: {
+    //                 $dateToString: {
+    //                   format: '%Y-%m-%d',
+    //                   date: '$clicks.clickedAt',
+    //                 },
+    //               },
+    //             },
+    //             clicksCount: { $sum: 1 },
+    //           },
+    //         },
+    //         {
+    //           $project: {
+    //             _id: 0,
+    //             date: '$_id.date',
+    //             clicks: '$clicksCount',
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       mergedData: {
+    //         $concatArrays: ['$views', '$clicks'],
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $unwind: '$mergedData',
+    //   },
+    //   {
+    //     $group: {
+    //       _id: '$mergedData.date',
+    //       date: { $first: '$mergedData.date' },
+    //       views: { $sum: { $ifNull: ['$mergedData.views', 0] } },
+    //       clicks: { $sum: { $ifNull: ['$mergedData.clicks', 0] } },
+    //     },
+    //   },
+    //   {
+    //     $sort: { date: 1 },
+    //   },
+    //   // Generate all dates between startDate and endDate (in days, not ms)
+    //   {
+    //     $addFields: {
+    //       startDay: { $toInt: { $divide: [{ $toLong: startDate }, 86400000] } },
+    //       endDay: { $toInt: { $divide: [{ $toLong: endDate }, 86400000] } },
+    //     },
+    //   },
+    //   {
+    //     $addFields: {
+    //       allDates: {
+    //         $range: ['$startDay', { $add: ['$endDay', 1] }, 1], // Increment by 1 day
+    //       },
+    //     },
+    //   },
+    //   // Convert each day back to a date string
+    //   {
+    //     $project: {
+    //       allDates: {
+    //         $map: {
+    //           input: '$allDates',
+    //           as: 'day',
+    //           in: {
+    //             $dateToString: {
+    //               format: '%Y-%m-%d',
+    //               date: { $toDate: { $multiply: ['$$day', 86400000] } }, // Convert back to milliseconds
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    //   // Left join the generated dates with the actual data
+    //   {
+    //     $unwind: '$allDates',
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: 'analytics',
+    //       let: { date: '$allDates' },
+    //       pipeline: [
+    //         {
+    //           $match: {
+    //             $expr: {
+    //               $and: [
+    //                 { $eq: ['$account', account._id] },
+    //                 {
+    //                   $eq: [
+    //                     {
+    //                       $dateToString: {
+    //                         format: '%Y-%m-%d',
+    //                         date: '$views.viewedAt',
+    //                       },
+    //                     },
+    //                     '$$date',
+    //                   ],
+    //                 },
+    //               ],
+    //             },
+    //           },
+    //         },
+    //       ],
+    //       as: 'dateData',
+    //     },
+    //   },
+    //   {
+    //     $addFields: {
+    //       views: {
+    //         $ifNull: [{ $arrayElemAt: ['$dateData.viewsCount', 0] }, 0],
+    //       },
+    //       clicks: {
+    //         $ifNull: [{ $arrayElemAt: ['$dateData.clicksCount', 0] }, 0],
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       date: '$allDates',
+    //       views: 1,
+    //       clicks: 1,
+    //     },
+    //   },
+    //   {
+    //     $sort: { date: 1 },
+    //   },
+    // ];
+    // const aggregation: PipelineStage[] = [
+    //   {
+    //     $match: {
+    //       account: account._id,
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       views: {
+    //         $filter: {
+    //           input: '$views',
+    //           as: 'view',
+    //           cond: {
+    //             $and: [
+    //               { $gte: ['$$view.viewedAt', startDate] },
+    //               { $lte: ['$$view.viewedAt', endDate] },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //       clicks: {
+    //         $filter: {
+    //           input: '$clicks',
+    //           as: 'click',
+    //           cond: {
+    //             $and: [
+    //               { $gte: ['$$click.clickedAt', startDate] },
+    //               { $lte: ['$$click.clickedAt', endDate] },
+    //             ],
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $facet: {
+    //       views: [
+    //         {
+    //           $unwind: { path: '$views', preserveNullAndEmptyArrays: true },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               date: {
+    //                 $dateToString: {
+    //                   format: '%Y-%m-%d',
+    //                   date: '$views.viewedAt',
+    //                 },
+    //               },
+    //             },
+    //             viewsCount: { $sum: 1 },
+    //           },
+    //         },
+    //         {
+    //           $project: {
+    //             _id: 0,
+    //             date: '$_id.date',
+    //             views: '$viewsCount',
+    //           },
+    //         },
+    //       ],
+    //       clicks: [
+    //         {
+    //           $unwind: { path: '$clicks', preserveNullAndEmptyArrays: true },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               date: {
+    //                 $dateToString: {
+    //                   format: '%Y-%m-%d',
+    //                   date: '$clicks.clickedAt',
+    //                 },
+    //               },
+    //             },
+    //             clicksCount: { $sum: 1 },
+    //           },
+    //         },
+    //         {
+    //           $project: {
+    //             _id: 0,
+    //             date: '$_id.date',
+    //             clicks: '$clicksCount',
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       mergedData: {
+    //         $concatArrays: ['$views', '$clicks'],
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $unwind: '$mergedData',
+    //   },
+    //   {
+    //     $group: {
+    //       _id: '$mergedData.date',
+    //       date: { $first: '$mergedData.date' },
+    //       views: { $sum: { $ifNull: ['$mergedData.views', 0] } },
+    //       clicks: { $sum: { $ifNull: ['$mergedData.clicks', 0] } },
+    //     },
+    //   },
+    //   {
+    //     $sort: { date: 1 },
+    //   },
+    //   // Generate all dates between startDate and endDate (in days, not ms)
+    //   {
+    //     $addFields: {
+    //       startDay: { $toInt: { $divide: [{ $toLong: startDate }, 86400000] } },
+    //       endDay: { $toInt: { $divide: [{ $toLong: endDate }, 86400000] } },
+    //     },
+    //   },
+    //   {
+    //     $addFields: {
+    //       allDates: {
+    //         $range: ['$startDay', { $add: ['$endDay', 1] }, 1], // Increment by 1 day
+    //       },
+    //     },
+    //   },
+    //   // Convert each day back to a date string
+    //   {
+    //     $project: {
+    //       allDates: {
+    //         $map: {
+    //           input: '$allDates',
+    //           as: 'day',
+    //           in: {
+    //             $dateToString: {
+    //               format: '%Y-%m-%d',
+    //               date: { $toDate: { $multiply: ['$$day', 86400000] } }, // Convert back to milliseconds
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    //   // Left join the generated dates with the actual data
+    //   {
+    //     $lookup: {
+    //       from: 'analytics',
+    //       let: { date: '$allDates' },
+    //       pipeline: [
+    //         {
+    //           $match: {
+    //             account: account._id,
+    //             $expr: {
+    //               $and: [
+    //                 {
+    //                   $eq: [
+    //                     {
+    //                       $dateToString: {
+    //                         format: '%Y-%m-%d',
+    //                         date: '$views.viewedAt',
+    //                       },
+    //                     },
+    //                     '$$date',
+    //                   ],
+    //                 },
+    //               ],
+    //             },
+    //           },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: null,
+    //             viewsCount: { $sum: 1 },
+    //             clicksCount: { $sum: 1 },
+    //           },
+    //         },
+    //       ],
+    //       as: 'dateData',
+    //     },
+    //   },
+    //   // Handle missing values (days with no views or clicks)
+    //   {
+    //     $addFields: {
+    //       views: {
+    //         $ifNull: [{ $arrayElemAt: ['$dateData.viewsCount', 0] }, 0],
+    //       },
+    //       clicks: {
+    //         $ifNull: [{ $arrayElemAt: ['$dateData.clicksCount', 0] }, 0],
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       date: '$allDates',
+    //       views: 1,
+    //       clicks: 1,
+    //     },
+    //   },
+    //   {
+    //     $sort: { date: 1 },
+    //   },
+    // ];
     const aggregation: PipelineStage[] = [
+      // Match the documents for the specified account and date range
       {
         $match: {
           account: account._id,
         },
       },
+      // Filter views and clicks within the date range
       {
         $project: {
           views: {
@@ -241,133 +834,83 @@ export const GET = async (request: NextRequest) => {
           },
         },
       },
+      // Unwind both views and clicks
       {
-        $facet: {
-          views: [
-            {
-              $unwind: { path: '$views', preserveNullAndEmptyArrays: true },
-            },
-            {
-              $group: {
-                _id: {
-                  date: {
-                    $dateToString: {
-                      format: '%Y-%m-%d',
-                      date: '$views.viewedAt',
-                    },
-                  },
-                },
-                viewsCount: { $sum: 1 },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-                date: '$_id.date',
-                views: '$viewsCount',
-              },
-            },
-          ],
-          clicks: [
-            {
-              $unwind: { path: '$clicks', preserveNullAndEmptyArrays: true },
-            },
-            {
-              $group: {
-                _id: {
-                  date: {
-                    $dateToString: {
-                      format: '%Y-%m-%d',
-                      date: '$clicks.clickedAt',
-                    },
-                  },
-                },
-                clicksCount: { $sum: 1 },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-                date: '$_id.date',
-                clicks: '$clicksCount',
-              },
-            },
-          ],
-        },
+        $unwind: { path: '$views', preserveNullAndEmptyArrays: true },
       },
       {
-        $project: {
-          mergedData: {
-            $concatArrays: ['$views', '$clicks'],
-          },
-        },
+        $unwind: { path: '$clicks', preserveNullAndEmptyArrays: true },
       },
-      {
-        $unwind: '$mergedData',
-      },
+      // Group views and clicks by day
       {
         $group: {
-          _id: '$mergedData.date',
-          date: { $first: '$mergedData.date' },
-          views: { $sum: { $ifNull: ['$mergedData.views', 0] } },
-          clicks: { $sum: { $ifNull: ['$mergedData.clicks', 0] } },
+          _id: {
+            date: {
+              $dateToString: {
+                format: '%Y-%m-%d',
+                date: {
+                  $ifNull: ['$views.viewedAt', '$clicks.clickedAt'], // Handle nulls for empty arrays
+                },
+              },
+            },
+          },
+          viewsCount: { $sum: { $cond: ['$views.viewedAt', 1, 0] } },
+          clicksCount: { $sum: { $cond: ['$clicks.clickedAt', 1, 0] } },
         },
       },
       {
-        $sort: { date: 1 },
+        $sort: { '_id.date': 1 },
       },
-      // Generate all dates between startDate and endDate
+      // Create all dates between startDate and endDate
+      {
+        $addFields: {
+          startDay: { $toInt: { $divide: [{ $toLong: startDate }, 86400000] } },
+          endDay: { $toInt: { $divide: [{ $toLong: endDate }, 86400000] } },
+        },
+      },
       {
         $addFields: {
           allDates: {
-            $range: [
-              { $toLong: startDate },
-              { $add: [{ $toLong: endDate }, 86400000] }, // Adding 1 day in milliseconds
-              86400000, // Interval of 1 day in milliseconds
-            ],
+            $range: ['$startDay', { $add: ['$endDay', 1] }, 1],
           },
         },
       },
-      // Convert each timestamp to a date string
       {
         $project: {
           allDates: {
             $map: {
               input: '$allDates',
-              as: 'date',
+              as: 'day',
               in: {
                 $dateToString: {
                   format: '%Y-%m-%d',
-                  date: { $toDate: '$$date' },
+                  date: { $toDate: { $multiply: ['$$day', 86400000] } },
                 },
               },
             },
           },
         },
       },
-      // Left join with actual views and clicks data
-      {
-        $unwind: '$allDates',
-      },
+      // Left join generated dates with actual view and click data
       {
         $lookup: {
           from: 'analytics',
-          let: { date: '$allDates' },
+          let: { generatedDate: '$allDates' },
           pipeline: [
             {
               $match: {
+                account: account._id,
                 $expr: {
                   $and: [
-                    { $eq: ['$account', account._id] },
                     {
-                      $eq: [
+                      $in: [
                         {
                           $dateToString: {
                             format: '%Y-%m-%d',
                             date: '$views.viewedAt',
                           },
                         },
-                        '$$date',
+                        '$$generatedDate',
                       ],
                     },
                   ],
@@ -378,7 +921,6 @@ export const GET = async (request: NextRequest) => {
           as: 'dateData',
         },
       },
-      // Combine the results of the lookup with the default dates
       {
         $addFields: {
           views: {
@@ -404,7 +946,26 @@ export const GET = async (request: NextRequest) => {
 
     const aggregationResult = await Analytics.aggregate(aggregation);
 
-    return NextResponse.json(aggregationResult);
+    const new_session_id = nanoid();
+
+    await Session.updateOne(
+      { session_id },
+      {
+        session_id: new_session_id,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+      }
+    );
+
+    const response = NextResponse.json(aggregationResult);
+
+    response.cookies.set('sid', new_session_id, {
+      // maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60, // 1 hour
+      httpOnly: true,
+    });
+
+    return response;
+    // return NextResponse.json(aggregationResult);
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(
@@ -414,25 +975,4 @@ export const GET = async (request: NextRequest) => {
   }
 };
 // ! 'Failed to optimize pipeline :: caused by :: $range requires a starting value that can be represented as a 32-bit integer, found value: 1726199002274';
-
-// import { NextResponse } from 'next/server';
-// import type { NextFetchEvent, NextRequest } from 'next/server';
-
-// export function middleware(req: NextRequest, event: NextFetchEvent) {
-//   event.waitUntil(
-//     fetch('https://my-analytics-platform.com', {
-//       method: 'POST',
-//       body: JSON.stringify({ pathname: req.nextUrl.pathname }),
-//     })
-//   );
-
-//   return NextResponse.next();
-// }
-//
-// const response = NextResponse.next();
-//  response.cookies.set({
-//    name: 'vercel',
-//    value: 'fast',
-//    path: '/',
-//  });
-//   return response;
+// ! PlanExecutor error during aggregation :: caused by :: error while multiplanner was selecting best plan :: caused by :: can't convert from BSON type array to Date;

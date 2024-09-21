@@ -2,6 +2,7 @@ import { URLRegex } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
 import Account, { AccountInterface } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
+import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -134,7 +135,26 @@ export const PUT = async (request: NextRequest) => {
         { new: true }
       );
 
-      return NextResponse.json(updatedAccount);
+      const new_session_id = nanoid();
+
+      await Session.updateOne(
+        { session_id },
+        {
+          session_id: new_session_id,
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+        }
+      );
+
+      const response = NextResponse.json(updatedAccount);
+
+      response.cookies.set('sid', new_session_id, {
+        // maxAge: 60 * 60 * 24 * 7, // 1 week
+        maxAge: 60 * 60, // 1 hour
+        httpOnly: true,
+      });
+
+      return response;
+      // return NextResponse.json(updatedAccount);
     }
   } catch (error: any) {
     console.log('[ERROR]', error);

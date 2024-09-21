@@ -3,6 +3,7 @@ import Account, { AccountInterface } from '@/models/account';
 import Analytics from '@/models/analytics';
 import Session, { SessionInterface } from '@/models/session';
 import { PipelineStage } from 'mongoose';
+import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest) => {
@@ -105,7 +106,26 @@ export const GET = async (request: NextRequest) => {
       },
     };
 
-    return NextResponse.json(result);
+    const new_session_id = nanoid();
+
+    await Session.updateOne(
+      { session_id },
+      {
+        session_id: new_session_id,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+      }
+    );
+
+    const response = NextResponse.json(result);
+
+    response.cookies.set('sid', new_session_id, {
+      // maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60, // 1 hour
+      httpOnly: true,
+    });
+
+    return response;
+    // return NextResponse.json(result);
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(

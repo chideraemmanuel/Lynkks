@@ -29,10 +29,30 @@ export const POST = async (request: NextRequest) => {
         const account = await Account.findById(sessionExists?.account);
 
         if (account) {
-          return NextResponse.json(
-            { error: 'User already logged in - An active session was found' },
+          const new_session_id = nanoid();
+
+          await Session.updateOne(
+            { session_id },
+            {
+              session_id: new_session_id,
+              expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+            }
+          );
+
+          const response = NextResponse.json(
+            {
+              error: 'User already logged in - An active session was found',
+            },
             { status: 400 }
           );
+
+          response.cookies.set('sid', new_session_id, {
+            // maxAge: 60 * 60 * 24 * 7, // 1 week
+            maxAge: 60 * 60, // 1 hour
+            httpOnly: true,
+          });
+
+          return response;
         }
       }
     }

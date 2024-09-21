@@ -11,6 +11,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import { nanoid } from 'nanoid';
 
 // TODO: add route for profile picture deletion!
 
@@ -62,7 +63,26 @@ export const GET = async (request: NextRequest) => {
       return response;
     }
 
-    return NextResponse.json(account);
+    const new_session_id = nanoid();
+
+    await Session.updateOne(
+      { session_id },
+      {
+        session_id: new_session_id,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+      }
+    );
+
+    const response = NextResponse.json(account);
+
+    response.cookies.set('sid', new_session_id, {
+      // maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60, // 1 hour
+      httpOnly: true,
+    });
+
+    return response;
+    // return NextResponse.json(account);
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(
@@ -408,7 +428,26 @@ export const PUT = async (request: NextRequest) => {
       { new: true }
     );
 
-    return NextResponse.json(updatedAccount);
+    const new_session_id = nanoid();
+
+    await Session.updateOne(
+      { session_id },
+      {
+        session_id: new_session_id,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+      }
+    );
+
+    const response = NextResponse.json(updatedAccount);
+
+    response.cookies.set('sid', new_session_id, {
+      // maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60, // 1 hour
+      httpOnly: true,
+    });
+
+    return response;
+    // return NextResponse.json(updatedAccount);
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(
