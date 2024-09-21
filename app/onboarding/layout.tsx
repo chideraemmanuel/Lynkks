@@ -2,15 +2,15 @@ import { Metadata } from 'next';
 import { FC } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Analytics',
+  title: 'Setup your account',
 };
 
 interface Props {
   children: React.ReactNode;
 }
 
-const AnalyticsLayout: FC<Props> = ({ children }) => {
+const OnboardingLayout: FC<Props> = ({ children }) => {
   return <>{children}</>;
 };
 
-export default AnalyticsLayout;
+export default OnboardingLayout;

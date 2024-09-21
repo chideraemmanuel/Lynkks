@@ -1,7 +1,12 @@
 import DashboardHeader from '@/containers/dashboard/dashboard-header';
 import DashboardSideNavigation from '@/containers/dashboard/dashboard-side-navigation';
 import RouteGuard from '@/providers/route-guard';
+import { Metadata } from 'next';
 import { FC } from 'react';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
 
 interface Props {
   children: React.ReactNode;
