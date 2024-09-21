@@ -77,6 +77,8 @@ export interface AccountInterface extends Pick<Document, '_id'> {
     social_links: SocialLink[];
   };
   completed_onboarding: boolean;
+  createdAt: Date;
+  updatedAt: Date;
   // TODO: add role field..?
   // TODO: add disabled field..?
 }

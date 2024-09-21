@@ -34,7 +34,7 @@ export async function generateMetadata(
       // images: [firstImage, ...previousImages],
     },
     alternates: {
-      canonical: `${process.env.CLIENT_URL}/${username}`,
+      canonical: `${process.env.CLIENT_BASE_URL}/${username}`,
     },
   };
 }
