@@ -116,7 +116,7 @@ const DashboardHeaderAccountDropdown: FC = () => {
                 </Avatar>
 
                 <div className="hidden lg:flex items-center gap-3">
-                  <span className="text-[#123633] font-medium text-sm leading-[140%] tracking-[-0.44%]">
+                  <span className="text-[#123633] font-medium text-sm leading-[140%] tracking-[-0.44%] inline-block w-[70%] truncate">
                     {/* Chidera Emmanuel */}
                     {account.first_name} {account.last_name}
                   </span>

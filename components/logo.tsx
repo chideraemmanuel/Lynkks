@@ -8,7 +8,7 @@ const Logo: FC<Props> = () => {
     <>
       <Link href={'/'} className="text-2xl font-semibold">
         <span>
-          Link<span className="text-primary">N</span>est
+          <span className="text-primary">L</span>ynkks
         </span>
       </Link>
     </>

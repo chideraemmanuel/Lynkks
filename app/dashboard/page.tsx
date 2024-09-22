@@ -21,6 +21,8 @@ import LynkksSocialLink from '@/components/lynkks-social-link';
 import LynkksLink from '@/components/lynkks-link';
 import Logo from '@/components/logo';
 import getIconByPlatform from '@/lib/getIconByPlatform';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import Link from 'next/link';
 
 interface Props {}
 
@@ -105,7 +107,7 @@ const DashboardLinksPage: FC<Props> = () => {
                   navigator.clipboard.writeText(
                     `lynkks.vercel.app/${account.username}`
                   );
-                  toast('Copied');
+                  toast.success('Copied');
                 }}
               >
                 Copy
@@ -151,7 +153,7 @@ const DashboardLinksPage: FC<Props> = () => {
                     })}
                   </div>
 
-                  <div className="flex flex-col items-center gap-4 w-[90%] mx-auto">
+                  <div className="flex flex-col items-center gap-[calc(16px_*_0.65)] w-[90%] mx-auto">
                     {account.links.custom_links.map((link) => {
                       if (link.type === 'header') {
                         return (
@@ -185,6 +187,116 @@ const DashboardLinksPage: FC<Props> = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="lg:hidden block">
+            <Button className="fixed right-4 bottom-7 z-[5]">
+              <a
+                target="_blank"
+                href={`https://lynkks.vercel.app/${account.username}`}
+              >
+                Preview
+              </a>
+            </Button>
+
+            {/* <Drawer>
+              <DrawerTrigger asChild>
+                <Button className="fixed right-4 bottom-7 z-[5]">
+                  Preview
+                </Button>
+              </DrawerTrigger>
+
+              <DrawerContent>
+                <div className="flex flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l max-h-screen !overflow-y-scroll">
+                  <Alert className="flex justify-between items-center p-2">
+                    <AlertDescription>
+                      lynkks.vercel.app/{account.username}
+                    </AlertDescription>
+
+                    <Button
+                      size={'sm'}
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `lynkks.vercel.app/${account.username}`
+                        );
+                        toast.success('Copied');
+                      }}
+                    >
+                      Copy
+                    </Button>
+                  </Alert>
+
+                  <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto bg-slate-500 rounded-[30px] overflow-hidden">
+                    <div className="bg-gradient-4 min-h-[100%] py-[calc(40px_*_0.65)] flex flex-col">
+                      <div className="w-[90%] mx-auto flex-1">
+                        <div className="flex flex-col items-center gap-[calc(4px_*_0.65)] text-center mb-[calc(28px_*_0.65)]">
+                          <div className="rounded-[50%] shadow-lg border-[calc(4px_*_0.65)] md:w-[calc(120px_*_0.65)] w-[calc(90px_*_0.65)] md:h-[calc(120px_*_0.65)] h-[calc(90px_*_0.65)] mb-[calc(12px_*_0.65)]">
+                            <Image
+                              src={account.profile.image || profileImage.src}
+                              alt="#"
+                              width={512}
+                              height={512}
+                              className="w-full h-full rounded-[inherit]"
+                            />
+                          </div>
+
+                          <h1 className="text-[calc(20px_*_0.65)] leading-[calc(28px_*_0.65)] font-semibold">
+                            {account.profile.title}
+                          </h1>
+
+                          <p className="w-[90%] text-muted-foreground text-[calc(14px_*_0.65)] leading-[calc(20px_*_0.65)]">
+                            {account.profile.bio}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-center gap-[calc(16px_*_0.65)] mb-[calc(40px_*_0.65)] w-[90%] mx-auto">
+                          {account.links.social_links.map((link) => {
+                            const Icon = getIconByPlatform(link.platform);
+                            return (
+                              <div className="w-[calc(40px_*_0.65)] h-[calc(40px_*_0.65)]">
+                                <Icon size={'26'} />
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="flex flex-col items-center gap-[calc(16px_*_0.65)] w-[90%] mx-auto">
+                          {account.links.custom_links.map((link) => {
+                            if (link.type === 'header') {
+                              return (
+                                <span
+                                  key={link._id.toString()}
+                                  className="text-[calc(20px_*_0.65)] leading-[calc(28px_*_0.65)] font-semibold text-muted-foreground"
+                                >
+                                  {link.title}
+                                </span>
+                              );
+                            } else {
+                              return (
+                                <div className="p-[calc(16px_*_0.65)] bg-white border rounded-[calc(16px_*_0.65)] w-full text-center text-[calc(20px_*_0.65)] leading-[calc(28px_*_0.65)] font-medium shadow">
+                                  {link.title}
+                                </div>
+                              );
+                            }
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="mt-[calc(40px_*_0.65)] flex flex-col items-center">
+                        <span className="text-[calc(12px_*_0.65)] leading-[calc(16px_*_0.65)] text-muted-foreground italic">
+                          Made with
+                        </span>
+                        <div className="text-[calc(24px_*_0.65)] leading-[calc(32px_*_0.65)] font-semibold">
+                          <span>
+                            Link<span className="text-primary">N</span>est
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </DrawerContent>
+            </Drawer> */}
           </div>
         </>
       )}

@@ -22,6 +22,7 @@ import { Range } from '@/app/api/analytics/route';
 import useAnalyticsTotal from '@/hooks/analytics/useAnalyticsTotal';
 import ErrorComponent from '@/components/error-component';
 import useAccount from '@/hooks/useAccount';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Props {}
 
@@ -165,50 +166,60 @@ const AnalyticsChart: FC<ChartProps> = ({ range }) => {
 
   return (
     <>
-      <ChartContainer
-        config={chart_config}
-        className="min-h-[200px] max-h-[80vh] w-full"
-      >
-        <AreaChart
-          accessibilityLayer
-          data={analytics}
-          margin={{
-            left: 12,
-            right: 12,
-          }}
-        >
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="date"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            // tickFormatter={(value) => value.slice(0, 3)} // TODO: use moment to format date return..? 2024-08-03
-          />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent indicator="dot" />}
-          />
-          <Area
-            dataKey="views"
-            type="natural"
-            fill="hsl(12, 76%, 61%)"
-            fillOpacity={0.4}
-            stroke="hsl(12, 76%, 61%)"
-            stackId="a"
-          />
-          <Area
-            dataKey="clicks"
-            type="natural"
-            fill="hsl(173, 58%, 39%)"
-            fillOpacity={0.4}
-            stroke="hsl(173, 58%, 39%)"
-            stackId="a"
-          />
-        </AreaChart>
-      </ChartContainer>
+      {isFetchingAnalytics && <Skeleton className="min-h-[500px] w-full" />}
 
-      <div>{/* <span>Date range goes here..?</span> */}</div>
+      {!isFetchingAnalytics && analytics && (
+        <div>
+          <ChartContainer
+            config={chart_config}
+            className="min-h-[200px] max-h-[80vh] w-full"
+          >
+            <AreaChart
+              accessibilityLayer
+              data={analytics}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={true}
+                tickMargin={8}
+                tick={false}
+                // tickFormatter={(value) => value.slice(0, 3)} // TODO: use moment to format date return..? 2024-08-03
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="dot" />}
+              />
+              <Area
+                dataKey="views"
+                type="natural"
+                fill="hsl(12, 76%, 61%)"
+                fillOpacity={0.4}
+                stroke="hsl(12, 76%, 61%)"
+                stackId="a"
+              />
+              <Area
+                dataKey="clicks"
+                type="natural"
+                fill="hsl(173, 58%, 39%)"
+                fillOpacity={0.4}
+                stroke="hsl(173, 58%, 39%)"
+                stackId="a"
+              />
+            </AreaChart>
+          </ChartContainer>
+
+          <div className="flex justify-between items-center text-sm">
+            <span>{analytics[0].date}</span>
+            <span>{analytics[analytics.length - 1].date}</span>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -1,5 +1,13 @@
 import Logo from '@/components/logo';
+import { Metadata } from 'next';
 import { FC, Suspense } from 'react';
+
+export const metadata: Metadata = {
+  title: {
+    default: 'Lynkks',
+    template: '%s - Lynkks',
+  },
+};
 
 interface Props {
   children: React.ReactNode;

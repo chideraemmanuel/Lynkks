@@ -5,7 +5,10 @@ import { Metadata } from 'next';
 import { FC } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
+  title: {
+    default: 'Dashboard',
+    template: '%s - Lynkks',
+  },
 };
 
 interface Props {

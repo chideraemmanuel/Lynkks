@@ -297,12 +297,10 @@ export const PUT = async (request: NextRequest) => {
 
     // const { profile_image } = body; // ! intentional separation
 
-    const f = new Intl.DateTimeFormat('en-us', { timeStyle: 'full' });
-
     // console.log('body', body);
     // console.log('profile_image', profile_image);
+    // const f = new Intl.DateTimeFormat('en-us', { timeStyle: 'full' });
     // console.log('[DATE]', f.format(new Date(Date.now() + 1000 * 60 * 60)));
-    // console.log(Date.now());
 
     const { success, data } = BodySchema.safeParse(formDataObject);
 

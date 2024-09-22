@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { passwordRegex } from '@/constants';
 import { cn } from '@/lib/utils';
-import { Loader2, Plus } from 'lucide-react';
+import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 // import { Badge } from '@/components/ui/badge';
@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 import profileImage from '@/assets/profile.jpg';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import useDeleteProfileImage from '@/hooks/useDeleteProfileImage';
 
 interface Props {}
 
@@ -104,6 +105,10 @@ const ProfileSettingsPage: FC<Props> = () => {
     });
   };
 
+  // !!! PROFILE IMAGE DELETE LOGIC !!!
+  const { mutate: deleteProfileImage, isLoading: isDeletingProfileImage } =
+    useDeleteProfileImage();
+
   // !!! PERSONAL DETAILS UPDATE LOGIC !!!
   const [formChanged, setFormChanged] = useState(false);
 
@@ -143,7 +148,7 @@ const ProfileSettingsPage: FC<Props> = () => {
       console.log('form changed: first_name');
       setFormChanged(true);
     } else if (
-      watchedPersonalDetailsFormFields.last_name !== account.last_name
+      watchedPersonalDetailsFormFields.last_name !== account?.last_name
     ) {
       console.log(
         'watchedPersonalDetailsFormFields.last_name',
@@ -239,7 +244,9 @@ const ProfileSettingsPage: FC<Props> = () => {
 
   return (
     <>
-      {(isFetchingAccount || isUpdatingAccount) && <FullScreenSpinner />}
+      {(isFetchingAccount || isUpdatingAccount || isDeletingProfileImage) && (
+        <FullScreenSpinner />
+      )}
 
       {!isFetchingAccount && account && (
         <div className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex flex-col sm:px-6 px-4 py-6">
@@ -266,7 +273,7 @@ const ProfileSettingsPage: FC<Props> = () => {
                   Profile photo
                 </h3>
                 <p className="text-[#667185] text-sm leading-[145%] tracking-[0%] max-w-[200px]">
-                  This image will be displayed on your LinkTree profile
+                  This image will be displayed on your Lynkks profile
                 </p>
 
                 <Button
@@ -344,6 +351,18 @@ const ProfileSettingsPage: FC<Props> = () => {
                     </Avatar>
                     {/* )} */}
                   </Label>
+
+                  {account.profile.image && (
+                    <Button
+                      variant={'destructive'}
+                      className="absolute z-[5] right-0 bottom-[7%] flex h-[25px] w-[25px] shrink-0 items-center justify-center rounded-full p-0"
+                      title="Delete profile image"
+                      onClick={() => deleteProfileImage()}
+                      type="button"
+                    >
+                      <Trash2 className="w-[15px] h-[15px] text-destructive-foreground" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </form>
