@@ -27,6 +27,7 @@ import profileImage from '@/assets/profile.jpg';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useDeleteProfileImage from '@/hooks/useDeleteProfileImage';
+import TextareaInput from '@/components/textarea-input';
 
 interface Props {}
 
@@ -52,6 +53,10 @@ interface ProfileImageChangeFormTypes {
 interface PersonalDetailsChangeFormTypes {
   first_name: string;
   last_name: string;
+  profile: {
+    title: string;
+    bio: string;
+  };
 }
 
 interface PasswordChangeFormTypes {
@@ -132,6 +137,14 @@ const ProfileSettingsPage: FC<Props> = () => {
     if (account) {
       setPersonalDetailsChangeFormValue('first_name', account.first_name || '');
       setPersonalDetailsChangeFormValue('last_name', account.last_name || '');
+      setPersonalDetailsChangeFormValue(
+        'profile.title',
+        account.profile.title || ''
+      );
+      setPersonalDetailsChangeFormValue(
+        'profile.bio',
+        account.profile.bio || ''
+      );
     }
   }, [account]);
 
@@ -156,6 +169,26 @@ const ProfileSettingsPage: FC<Props> = () => {
       );
       console.log('account?.last_name', account?.last_name);
       console.log('form changed: last_name');
+      setFormChanged(true);
+    } else if (
+      watchedPersonalDetailsFormFields.profile.title !== account?.profile?.title
+    ) {
+      console.log(
+        'watchedPersonalDetailsFormFields.profile.title',
+        watchedPersonalDetailsFormFields.profile.title
+      );
+      console.log('account?.profile.title', account?.profile.title);
+      console.log('form changed: profile.title');
+      setFormChanged(true);
+    } else if (
+      watchedPersonalDetailsFormFields.profile.bio !== account?.profile?.bio
+    ) {
+      console.log(
+        'watchedPersonalDetailsFormFields.profile.bio',
+        watchedPersonalDetailsFormFields.profile.bio
+      );
+      console.log('account?.profile.bio', account?.profile.bio);
+      console.log('form changed: profile.bio');
       setFormChanged(true);
     } else {
       // console.log('form has not changed');
@@ -263,7 +296,7 @@ const ProfileSettingsPage: FC<Props> = () => {
           {/* <div className="flex-1"> */}
           <div className="flex-1 flex flex-col gap-12 bg-white shadow-lg px-8 py-9 rounded-[16px] border-[#E3E7ED]">
             <form
-              className="flex flex-col md:flex-row items-start gap-4 md:gap-14"
+              className="flex flex-col-reverse md:flex-row items-start gap-4 md:gap-14"
               onSubmit={handleProfileImageChangeSubmit(
                 onProfileImageChangeSubmit
               )}
@@ -368,7 +401,7 @@ const ProfileSettingsPage: FC<Props> = () => {
             </form>
 
             <form
-              className="flex flex-col md:flex-row items-start gap-4 md:gap-14"
+              className="flex flex-col-reverse md:flex-row items-start gap-4 md:gap-14"
               onSubmit={handlePersonalDetailsChangeSubmit(
                 onPersonalDetailsChangeSubmit
               )}
@@ -426,6 +459,37 @@ const ProfileSettingsPage: FC<Props> = () => {
                     className="disabled:bg-[#F0F2F5] disabled:opacity-1 disabled:text-[#98A2B3]"
                     disabled
                     readOnly
+                  />
+                  <FormInput
+                    label="Profile title"
+                    placeholder="E.g John Doe"
+                    id="profile_title"
+                    {...registerPersonalDetailsChangeField('profile.title', {
+                      required: {
+                        value: true,
+                        message: 'Please input a title for your profile',
+                      },
+                    })}
+                    error={
+                      personalDetailsChangeFormErrors.profile?.title?.message
+                    }
+                    // disabled={isCreatingAccount}
+                  />
+                  <TextareaInput
+                    label="Bio"
+                    placeholder="Enter a short description"
+                    className="resize-none"
+                    id="bio"
+                    {...registerPersonalDetailsChangeField('profile.bio', {
+                      // required: {
+                      //   value: true,
+                      //   message: 'Please input a bio for your profile',
+                      // },
+                    })}
+                    error={
+                      personalDetailsChangeFormErrors.profile?.bio?.message
+                    }
+                    // disabled={isCreatingAccount}
                   />
                 </div>
               </div>

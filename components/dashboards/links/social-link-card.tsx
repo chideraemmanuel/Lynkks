@@ -74,13 +74,13 @@ const SocialLinkCard: FC<Props> = ({ link, onDragEnd }) => {
         <div>
           <EditSocialLink link={link} />
 
-          <Button
+          {/* <Button
             size={'icon'}
             variant={'ghost'}
             className="sm:h-9 h-8 sm:w-9 w-8"
           >
             <EyeIcon className="w-5 h-5" />
-          </Button>
+          </Button> */}
 
           <DeleteSocialLink link={link} />
         </div>

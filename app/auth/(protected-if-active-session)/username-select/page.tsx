@@ -53,7 +53,7 @@ const UsernameSelectionPage: FC<Props> = () => {
         // set cookie and route to registration page
         document.cookie = `lynkks_selected_username=${getValues(
           'username'
-        )};expires=${new Date().toUTCString()}`;
+        )};expires=${new Date(9999, 10, 10).toUTCString()}`;
 
         router.push(`/auth/register`);
       },
@@ -112,7 +112,7 @@ const UsernameSelectionPage: FC<Props> = () => {
               )}
             >
               <span className="text-muted-foreground/50 text-base leading-[140%] tracking-[-0.4%]">
-                linknext.vercel.app/
+                lynkks.vercel.app/
               </span>
 
               <input

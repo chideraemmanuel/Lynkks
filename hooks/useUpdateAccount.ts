@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 // }
 
 const updateAccount = async (updates: Updates & { profile_image?: File }) => {
+  console.log('updatesss', updates);
   const response = await axios.put<AccountInterface>(
     '/api/accounts/info',
     updates,

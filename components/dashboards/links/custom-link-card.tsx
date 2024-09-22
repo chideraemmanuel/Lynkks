@@ -61,9 +61,9 @@ const CustomLinkCard: FC<Props> = ({ link, onDragEnd }) => {
             <EditHeader link={link} />
           )}
 
-          <Button size={'icon'} variant={'ghost'} className="h-9 w-9">
+          {/* <Button size={'icon'} variant={'ghost'} className="h-9 w-9">
             <EyeIcon className="w-5 h-5" />
-          </Button>
+          </Button> */}
 
           <DeleteLinkOrHeader link={link} />
         </div>

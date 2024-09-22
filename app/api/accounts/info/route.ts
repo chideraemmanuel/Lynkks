@@ -19,6 +19,7 @@ import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
 import { v4 as uuid } from 'uuid';
+import formDataToObject from '@/lib/formDataToObject';
 
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
@@ -273,23 +274,7 @@ export const PUT = async (request: NextRequest) => {
     // formData.forEach((value, key) => (body[key] = value));
     // console.log('body', body);
 
-    const formDataObject: Record<
-      string,
-      FormDataEntryValue | FormDataEntryValue[]
-    > = {};
-
-    formData.forEach((value, key) => {
-      // If the key already exists, convert it to an array and append the value
-      if (formDataObject[key]) {
-        if (Array.isArray(formDataObject[key])) {
-          formDataObject[key].push(value);
-        } else {
-          formDataObject[key] = [formDataObject[key], value];
-        }
-      } else {
-        formDataObject[key] = value;
-      }
-    });
+    const formDataObject = formDataToObject(formData);
 
     // console.log('formDataObject', formDataObject);
 
@@ -301,6 +286,8 @@ export const PUT = async (request: NextRequest) => {
     // console.log('profile_image', profile_image);
     // const f = new Intl.DateTimeFormat('en-us', { timeStyle: 'full' });
     // console.log('[DATE]', f.format(new Date(Date.now() + 1000 * 60 * 60)));
+
+    console.log('formDataObject', formDataObject);
 
     const { success, data } = BodySchema.safeParse(formDataObject);
 
@@ -328,6 +315,8 @@ export const PUT = async (request: NextRequest) => {
       links,
       completed_onboarding,
     } = data;
+
+    console.log('dataaaa', data);
 
     const updates: Updates = {};
 
@@ -420,6 +409,8 @@ export const PUT = async (request: NextRequest) => {
     }
 
     console.log('profile_image_url', profile_image_url);
+
+    console.log({ ...updates });
 
     const updatedAccount = await Account.findByIdAndUpdate(
       sessionExists?.account,
