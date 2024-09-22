@@ -39,7 +39,7 @@ export async function generateMetadata(
   };
 }
 
-const LinkNestUserLayout: FC<Props> = ({ children, params: { username } }) => {
+const LynkksUserLayout: FC<Props> = ({ children, params: { username } }) => {
   return (
     <>
       {/* <ViewsUpdateProvider username={username}>{children}</ViewsUpdateProvider> */}
@@ -48,4 +48,4 @@ const LinkNestUserLayout: FC<Props> = ({ children, params: { username } }) => {
   );
 };
 
-export default LinkNestUserLayout;
+export default LynkksUserLayout;

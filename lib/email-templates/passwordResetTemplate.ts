@@ -18,7 +18,7 @@ const passwordResetTemplate = ({
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>LinkNest | Password Reset</title>
+    <title>Lynkks | Password Reset</title>
 
     <style>
       @font-face {
@@ -168,7 +168,7 @@ const passwordResetTemplate = ({
         <tr class="header">
           <td>
             <!-- <img src="../assets/logo.svg" alt="#" /> -->
-            <span class="header__logo">LinkNest</span>
+            <span class="header__logo">Lynkks</span>
           </td>
         </tr>
 
@@ -190,7 +190,7 @@ const passwordResetTemplate = ({
                 <br />
                 <br />
                 <p class="text">
-                  We noticed you requested a password reset for your LinkNest
+                  We noticed you requested a password reset for your Lynkks
                   account. To reset your password, simply click on the reset
                   password button below.
                 </p>
@@ -207,7 +207,7 @@ const passwordResetTemplate = ({
                 <p class="text">
                   Best regards,
                   <br />
-                  Chidera, LinkNest Founder.
+                  Chidera, Lynkks Founder.
                 </p>
               </div>
 

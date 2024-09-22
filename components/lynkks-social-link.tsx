@@ -1,24 +1,41 @@
 'use client';
 
+import { SOCIAL_MEDIA_PLATFORMS } from '@/constants';
 import useUpdateClicks from '@/hooks/analytics/useUpdateClicks';
+import getIconByPlatform from '@/lib/getIconByPlatform';
 import getIPAddress from '@/lib/getIPAddress';
-import { CustomLink, Hyperlink } from '@/models/account';
+import { SocialLink } from '@/models/account';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 interface Props {
-  // link: Hyperlink;
+  // link: SocialLink;
   link_id: string;
   link_href: string;
-  link_title: string;
+  link_platform:
+    | 'Instagram'
+    | 'Facebook'
+    | 'X'
+    | 'TikTok'
+    | 'YouTube'
+    | 'LinkedIn'
+    | 'Pinterest'
+    | 'Snapchat'
+    | 'WhatsApp'
+    | 'Telegram'
+    | 'Reddit'
+    | 'Tumblr'
+    | 'Twitch'
+    | 'Discord'
+    | 'Website';
   username: string;
 }
 
-const LinkNestLink: FC<Props> = ({
+const LynkksSocialLink: FC<Props> = ({
   link_id,
   link_href,
-  link_title,
+  link_platform,
   username,
 }) => {
   const [referrerFullUrl, setReferrerFullUrl] = useState('');
@@ -54,13 +71,15 @@ const LinkNestLink: FC<Props> = ({
       username,
       visitor_id: uuid(),
       // link_id: link._id.toString(),
-      link_id: link_id,
-      link_section: 'custom_links',
+      link_id,
+      link_section: 'social_links',
       ip_address: ipAddress,
       referrer: referrerHostname,
       referrer_full_url: referrerFullUrl,
     });
   };
+
+  const Icon = getIconByPlatform(link_platform);
 
   return (
     <>
@@ -68,14 +87,15 @@ const LinkNestLink: FC<Props> = ({
         // href={link.href}
         href={link_href}
         target="_blank"
-        className="p-4 bg-white border rounded-2xl w-full text-center text-xl font-medium shadow hover:scale-105 transition-transform"
+        className="md:w-12 w-10 md:h-12 h-10 hover:scale-110 transition-transform"
         onClick={() => handleClick()}
+        title={link_platform}
       >
-        {/* {link.title} */}
-        {link_title}
+        {/* <RiWhatsappLine className="md:w-12 w-10 md:h-12 h-10" /> */}
+        <Icon size={'40'} />
       </Link>
     </>
   );
 };
 
-export default LinkNestLink;
+export default LynkksSocialLink;

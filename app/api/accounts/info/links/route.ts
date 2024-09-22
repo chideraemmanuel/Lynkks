@@ -90,6 +90,13 @@ export const PUT = async (request: NextRequest) => {
       return NextResponse.json({ error: 'Account Not Found' }, { status: 404 });
     }
 
+    if (!account.email_verified) {
+      return NextResponse.json(
+        { error: 'Account email has not been verified' },
+        { status: 403 }
+      );
+    }
+
     // ! VALIDATION STARTS !
     const { success, data } = BodySchema.safeParse(body);
 

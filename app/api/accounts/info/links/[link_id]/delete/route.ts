@@ -55,6 +55,13 @@ export const PUT = async (
       return NextResponse.json({ error: 'Account Not Found' }, { status: 404 });
     }
 
+    if (!account.email_verified) {
+      return NextResponse.json(
+        { error: 'Account email has not been verified' },
+        { status: 403 }
+      );
+    }
+
     //  ! VALIDATION > DELETION STARTS !
     const { success, data } = z
       .object({

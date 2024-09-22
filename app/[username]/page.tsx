@@ -8,15 +8,15 @@ import Account, { AccountInterface } from '@/models/account';
 import { notFound } from 'next/navigation';
 import { Link as LinkType, SOCIAL_MEDIA_PLATFORMS } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
-import LinkNestLink from '@/components/linknest-link';
-import LinkNestSocialLink from '@/components/linknest-social-link';
+import LynkksLink from '@/components/lynkks-link';
+import LynkksSocialLink from '@/components/lynkks-social-link';
 import { link } from 'fs';
 
 interface Props {
   params: { username: string };
 }
 
-const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
+const LynkksUserPage: FC<Props> = async ({ params: { username } }) => {
   await connectToDatabase();
   const account = await Account.findOne<AccountInterface>({
     username,
@@ -67,7 +67,7 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
 
           <div className="flex flex-wrap items-center justify-center md:gap-5 gap-4 mb-10 w-[90%] mx-auto">
             {social_links.map((link) => (
-              <LinkNestSocialLink
+              <LynkksSocialLink
                 key={link._id.toString()}
                 // link={link} // ! cannot pass unserialized data to client component from server component
                 link_id={link._id.toString()}
@@ -91,7 +91,7 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
                 );
               } else {
                 return (
-                  <LinkNestLink
+                  <LynkksLink
                     key={link._id.toString()}
                     // link={link} // ! cannot pass unserialized data to client component from server component
                     link_id={link._id.toString()}
@@ -116,4 +116,4 @@ const LinkNestUserPage: FC<Props> = async ({ params: { username } }) => {
   );
 };
 
-export default LinkNestUserPage;
+export default LynkksUserPage;

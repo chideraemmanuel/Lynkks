@@ -30,7 +30,7 @@ const ViewsUpdateProvider: FC<Props> = ({ children, username }) => {
 
   useEffect(() => {
     const trackView = async () => {
-      // const visitor_id = getCookie('linknest_${username}_viewed');
+      // const visitor_id = getCookie('lynkks_${username}_viewed');
 
       const referrer = document.referrer;
       let referrer_hostname = '';
@@ -53,7 +53,7 @@ const ViewsUpdateProvider: FC<Props> = ({ children, username }) => {
       });
     };
 
-    const cookieName = `linknest_${username}_viewed`;
+    const cookieName = `lynkks_${username}_viewed`;
     const lastViewed = getCookie(cookieName);
 
     const currentTime = new Date().getTime();

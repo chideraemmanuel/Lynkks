@@ -17,8 +17,8 @@ import { ReactSortable } from 'react-sortablejs';
 import { toast } from 'sonner';
 import profileImage from '@/assets/profile.jpg';
 import Image from 'next/image';
-import LinkNestSocialLink from '@/components/linknest-social-link';
-import LinkNestLink from '@/components/linknest-link';
+import LynkksSocialLink from '@/components/lynkks-social-link';
+import LynkksLink from '@/components/lynkks-link';
 import Logo from '@/components/logo';
 import getIconByPlatform from '@/lib/getIconByPlatform';
 
@@ -94,18 +94,18 @@ const DashboardLinksPage: FC<Props> = () => {
 
           <div className="fixed right-0 top-[80px] w-[500px] lg:flex hidden flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l">
             <Alert className="flex justify-between items-center p-2">
-              {/* <AlertDescription>linknest.vercel.app/chidera</AlertDescription> */}
+              {/* <AlertDescription>lynkks.vercel.app/chidera</AlertDescription> */}
               <AlertDescription>
-                linknest.vercel.app/{account.username}
+                lynkks.vercel.app/{account.username}
               </AlertDescription>
 
               <Button
                 size={'sm'}
                 onClick={() => {
                   navigator.clipboard.writeText(
-                    ` linknest.vercel.app/${account.username}`
+                    `lynkks.vercel.app/${account.username}`
                   );
-                  toast('Link copied successfully');
+                  toast('Copied');
                 }}
               >
                 Copy

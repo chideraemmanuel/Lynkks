@@ -41,19 +41,19 @@ export const GET = (request: NextRequest) => {
     'error_redirect_path'
   );
 
-  const { success, data: username } = z
-    .string()
-    .min(3)
-    .max(15)
-    .optional()
-    .safeParse(usernameParam);
+  // const { success, data: username } = z
+  //   .string()
+  //   .min(3)
+  //   .max(15)
+  //   .optional()
+  //   .safeParse(usernameParam);
 
-  if (!success) {
-    return NextResponse.json(
-      { error: 'Invalid "username" query parameter' },
-      { status: 400 }
-    );
-  }
+  // if (!success) {
+  //   return NextResponse.json(
+  //     { error: 'Invalid "username" query parameter' },
+  //     { status: 400 }
+  //   );
+  // }
 
   if (!success_redirect_path || !error_redirect_path) {
     return NextResponse.json(
@@ -78,8 +78,8 @@ export const GET = (request: NextRequest) => {
 
   const url = generateGoogleOauthUrl(
     success_redirect_path,
-    error_redirect_path,
-    username
+    error_redirect_path
+    // username
   );
 
   return NextResponse.json({ url });

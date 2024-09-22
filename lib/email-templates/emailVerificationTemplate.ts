@@ -6,7 +6,7 @@ const emailVerificationTemplate = (OTP: string) => {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>LinkNest | Verify Your Email Address</title>
+    <title>Lynkks | Verify Your Email Address</title>
 
     <style>
       @font-face {
@@ -156,7 +156,7 @@ const emailVerificationTemplate = (OTP: string) => {
         <tr class="header">
           <td>
             <!-- <img src="../assets/logo.svg" alt="#" /> -->
-            <span class="header__logo">LinkNest</span>
+            <span class="header__logo">Lynkks</span>
           </td>
         </tr>
 
@@ -173,7 +173,7 @@ const emailVerificationTemplate = (OTP: string) => {
                 <br />
                 <br />
                 <p class="text">
-                  Thank you for joining LinkNest! To complete your registration,
+                  Thank you for joining Lynkks! To complete your registration,
                   please enter the verification code below to verify your email
                   address:
                 </p>
@@ -191,7 +191,7 @@ const emailVerificationTemplate = (OTP: string) => {
                 <p class="text">
                   Best regards,
                   <br />
-                  Chidera, LinkNest Founder.
+                  Chidera, Lynkks Founder.
                 </p>
               </div>
             </div>

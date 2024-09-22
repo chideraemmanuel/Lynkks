@@ -6,7 +6,7 @@ const welcomeTemplate = (first_name: string) => {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>LinkNest | Welcome to LinkNest</title>
+    <title>Lynkks | Welcome to Lynkks</title>
 
     <style>
       @font-face {
@@ -156,7 +156,7 @@ const welcomeTemplate = (first_name: string) => {
         <tr class="header">
           <td>
             <!-- <img src="../assets/logo.svg" alt="#" /> -->
-            <span class="header__logo">LinkNest</span>
+            <span class="header__logo">Lynkks</span>
           </td>
         </tr>
 
@@ -164,7 +164,7 @@ const welcomeTemplate = (first_name: string) => {
         <tr class="main">
           <td class="">
             <div class="main__content">
-              <h1 class="main__content--header">Welcome to LinkNest</h1>
+              <h1 class="main__content--header">Welcome to Lynkks</h1>
 
               <div class="main__content--body">
                 <span class="greeting">Hey ${first_name
@@ -173,7 +173,7 @@ const welcomeTemplate = (first_name: string) => {
                 <br />
                 <br />
                 <p class="text">
-                  Welcome to LinkNest! We're excited to have you onboard. Now
+                  Welcome to Lynkks! We're excited to have you onboard. Now
                   you can start creating your unique profile and sharing your
                   links with the world.
                 </p>
@@ -188,7 +188,7 @@ const welcomeTemplate = (first_name: string) => {
                 <p class="text">
                   Best regards,
                   <br />
-                  Chidera, LinkNest Founder.
+                  Chidera, Lynkks Founder.
                 </p>
               </div>
             </div>

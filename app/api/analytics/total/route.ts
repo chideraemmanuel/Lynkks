@@ -46,6 +46,13 @@ export const GET = async (request: NextRequest) => {
       return NextResponse.json({ error: 'Account Not Found' }, { status: 404 });
     }
 
+    if (!account.email_verified) {
+      return NextResponse.json(
+        { error: 'Account email has not been verified' },
+        { status: 403 }
+      );
+    }
+
     // ! ROUTE LOGIC !
     const date = new Date();
     const startOfDay = new Date(date.setHours(0, 0, 0, 0)); // Start of the day

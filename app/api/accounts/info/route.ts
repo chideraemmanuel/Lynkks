@@ -7,13 +7,17 @@ import Account, {
   SocialLink,
 } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from 'firebase/storage';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
-
-// TODO: add route for profile picture deletion!
 
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
@@ -218,6 +222,13 @@ export const PUT = async (request: NextRequest) => {
       return NextResponse.json({ error: 'Account Not Found' }, { status: 404 });
     }
 
+    if (!account.email_verified) {
+      return NextResponse.json(
+        { error: 'Account email has not been verified' },
+        { status: 403 }
+      );
+    }
+
     // !!!!! FIELD VALIDATION STARTS !!!!!
     //   const returnObject = BodySchema.safeParse({
     //     links: {
@@ -374,9 +385,21 @@ export const PUT = async (request: NextRequest) => {
     let profile_image_url: string | null = null;
 
     if (profile_image) {
+      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      const ACCEPTED_IMAGE_TYPES = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/webp',
+      ];
       // TODO: refine file and restrict to image files
       const { success, data: image_file } = z
         .instanceof(File)
+        .refine((file) => file.size <= MAX_FILE_SIZE, 'Max file size is 5MB.')
+        .refine(
+          (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+          'Only JPEG, JPG, PNG, and WebP formats are supported.'
+        )
         .safeParse(profile_image);
 
       if (!success) {
@@ -427,6 +450,18 @@ export const PUT = async (request: NextRequest) => {
       // {...updates, profile: {...updates.profile, image: profile_image_url}},
       { new: true }
     );
+
+    if (profile_image) {
+      // TODO: delete previous profile image from firebase if any
+      // const storage = getStorage(app);
+      // Extract the file path from the full image URL
+      // const decodedUrl = decodeURIComponent(imageUrl);
+      // const filePath = decodedUrl
+      //   .split('/o/')[1] // Get the part after '/o/'
+      //   .split('?')[0]; // Remove the query parameters like '?alt=media'
+      // const previousProfileImageRef = ref(storage, `images/profile/${imageName}`);
+      // const info = await deleteObject(previousProfileImageRef);
+    }
 
     const new_session_id = nanoid();
 

@@ -199,8 +199,9 @@ const PasswordResetPage: FC<Props> = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="pb-12 flex flex-col gap-6">
               <FormInput
-                type="password"
                 label="New password"
+                id="password"
+                type="password"
                 placeholder="Enter your password"
                 {...register('password', {
                   required: {
@@ -218,8 +219,9 @@ const PasswordResetPage: FC<Props> = () => {
               />
 
               <FormInput
-                type="password"
                 label="Repeat new password"
+                id="confirm_password"
+                type="password"
                 placeholder="Enter your password"
                 {...register('confirm_password', {
                   required: {

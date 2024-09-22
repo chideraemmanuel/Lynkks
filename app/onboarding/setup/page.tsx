@@ -98,8 +98,8 @@ const LinkSelection: FC = () => {
             Select the links you'd like to add
           </h1>
           <p className="w-[90%] mx-auto text-base text-muted-foreground leading-[140%] tracking-[-0.4%]">
-            Pick at least one link to add to your LinkNest. Links can be
-            modified later.
+            Pick at least one link to add to your Lynkks. Links can be modified
+            later.
           </p>
         </div>
 
@@ -430,7 +430,7 @@ const ProfileConfig: FC = () => {
             Add profile details
           </h1>
           {/* <p className="w-[90%] mx-auto text-base text-muted-foreground leading-[140%] tracking-[-0.4%]">
-            Pick at least one link to add to your LinkNest. Links can be
+            Pick at least one link to add to your Lynkks. Links can be
             modified later.
           </p> */}
         </div>
@@ -442,7 +442,7 @@ const ProfileConfig: FC = () => {
                 Personal Information
               </h2>
               <p className="text-sm text-muted-foreground">
-                These will not be displayed on your public LinkNest
+                These will not be displayed on your public Lynkks
               </p>
             </div>
 
@@ -547,7 +547,7 @@ const ProfileConfig: FC = () => {
                 Profile Information
               </h2>
               <p className="text-sm text-muted-foreground">
-                These will be displayed as header on your public LinkNest
+                These will be displayed as header on your public Lynkks
               </p>
             </div>
 
@@ -588,7 +588,7 @@ const ProfileConfig: FC = () => {
           {isUpdatingAccount && (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           )}
-          Build my LinkNest
+          Build my Lynkks
         </Button>
       </form>
     </>

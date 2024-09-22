@@ -67,6 +67,7 @@ const PasswordResetInitiationPage: FC<Props> = () => {
           <div className="pb-12">
             <FormInput
               label="Email address"
+              id="email"
               placeholder="Enter your email address"
               {...register('email', {
                 required: {

@@ -93,6 +93,7 @@ const LoginPage: FC<Props> = () => {
           <div className="pb-12 flex flex-col gap-6">
             <FormInput
               label="Email address"
+              id="email"
               placeholder="Enter your email address"
               {...register('email', {
                 required: {
@@ -110,6 +111,7 @@ const LoginPage: FC<Props> = () => {
 
             <FormInput
               label="Password"
+              id="password"
               type="password"
               placeholder="Enter your password"
               {...register('password', {

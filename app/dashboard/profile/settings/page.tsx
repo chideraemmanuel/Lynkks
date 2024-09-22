@@ -437,8 +437,9 @@ const ProfileSettingsPage: FC<Props> = () => {
 
                       <div className="pb-9 flex flex-col gap-5">
                         <FormInput
-                          type="password"
                           label="New password"
+                          id="password"
+                          type="password"
                           placeholder="Enter your password"
                           {...registerPasswordChangeField('password', {
                             required: {
@@ -455,8 +456,9 @@ const ProfileSettingsPage: FC<Props> = () => {
                         />
 
                         <FormInput
-                          type="password"
                           label="Repeat new password"
+                          id="confirm_password"
+                          type="password"
                           placeholder="Enter your password"
                           {...registerPasswordChangeField('confirm_password', {
                             required: {
