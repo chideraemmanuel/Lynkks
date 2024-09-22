@@ -14,14 +14,18 @@ interface GoogleResponse {
 
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
+  const selected_username = request.cookies.get(
+    'lynkks_selected_username'
+  )?.value;
   const code = request.nextUrl.searchParams.get('code');
-  const usernameParam = request.nextUrl.searchParams.get('username');
   const success_redirect_path = request.nextUrl.searchParams.get(
     'success_redirect_path'
   );
   const error_redirect_path = request.nextUrl.searchParams.get(
     'error_redirect_path'
   );
+
+  console.log('selected_username', selected_username);
 
   try {
     console.log('connecting to database...');
@@ -66,12 +70,14 @@ export const GET = async (request: NextRequest) => {
     }
 
     // !!! Auth logic starts !!!
+    // ! redundant; redirect uri must match what is in google cloud console before it gets here anyway
     if (!success_redirect_path || !error_redirect_path) {
       return NextResponse.json({
         error: `Missing 'success_redirect_path' or 'error_redirect_path' in query parameters`,
       });
     }
 
+    // ! redundant; redirect uri must match what is in google cloud console before it gets here anyway
     if (
       !success_redirect_path.startsWith('/') ||
       !error_redirect_path.startsWith('/')
@@ -146,21 +152,15 @@ export const GET = async (request: NextRequest) => {
         return response;
       }
 
-      // create new account and session, and redirect to success path
+      // ! account with email doesn't exist
+      // ! create new account and session, and redirect to success path
       const { success, data: username } = z
         .string()
         .min(3)
         .max(15)
-        .safeParse(usernameParam);
+        .safeParse(selected_username);
 
       if (!success) {
-        // return NextResponse.json(
-        //   {
-        //     error:
-        //       'Missing or Invalid "username" query parameter for new account',
-        //   },
-        //   { status: 400 }
-        // );
         return NextResponse.redirect(
           `${process.env.CLIENT_BASE_URL}${error_redirect_path}?error=invalid_username`
         );

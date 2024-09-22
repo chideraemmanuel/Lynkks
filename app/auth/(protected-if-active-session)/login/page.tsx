@@ -75,7 +75,7 @@ const LoginPage: FC<Props> = () => {
 
       router.replace(pathname);
     }
-  }, [error]);
+  }, []);
 
   return (
     <>

@@ -1,6 +1,8 @@
+import { app } from '@/config/firebase';
 import { connectToDatabase } from '@/lib/database';
 import Account, { AccountInterface } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
+import { deleteObject, getStorage, ref } from 'firebase/storage';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const PUT = async (request: NextRequest) => {
@@ -50,9 +52,35 @@ export const PUT = async (request: NextRequest) => {
       );
     }
 
-    // const storage = getStorage(app);
-    // const profileImageRef = ref(storage, `images/profile/${imageName}`);
-    // const info = await deleteObject(profileImageRef);
+    // ! ROUTE LOGIC !
+    if (!account.profile.image) {
+      return NextResponse.json(
+        { error: 'No profile image to delete' },
+        { status: 400 }
+      );
+    }
+
+    const updatedAccount = await Account.findByIdAndUpdate(
+      sessionExists?.account,
+      {
+        // profile: { ...account.profile, image: null },
+        // profile: { image: null },
+        profile: { $set: { image: null } },
+      },
+      { new: true }
+    );
+
+    const storage = getStorage(app);
+
+    // Extract the file path from the full image URL
+    const decodedUrl = decodeURIComponent(account.profile.image);
+    const filePath = decodedUrl
+      .split('/o/')[1] // Get the part after '/o/'
+      .split('?')[0]; // Remove the query parameters like '?alt=media'
+
+    // const previousProfileImageRef = ref(storage, `images/profile/${imageName}`);
+    const previousProfileImageRef = ref(storage, filePath);
+    await deleteObject(previousProfileImageRef);
 
     return NextResponse.json({ message: 'Profile image deleted successfully' });
   } catch (error: any) {

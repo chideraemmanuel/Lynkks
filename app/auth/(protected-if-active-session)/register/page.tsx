@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { emailRegex, passwordRegex } from '@/constants';
 import useRegister from '@/hooks/auth/useRegister';
+import { getCookie } from '@/lib/cookie';
 // import useRegistration from '@/hooks/auth/useRegistration';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -28,19 +29,20 @@ const RegistrationPage: FC<Props> = () => {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const username = params.get('username');
   const error = params.get('error');
 
-  const [usernameState, setUsernameState] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
 
   // console.log('usernameState', usernameState);
   // console.log('username', username);
 
+  // ! get username from cookie
   useEffect(() => {
-    if (!username) {
+    const selected_username = getCookie('lynkks_selected_username');
+    if (!selected_username) {
       router.replace('/auth/username-select');
     } else {
-      setUsernameState(username);
+      setUsername(selected_username);
       router.replace(pathname);
     }
   }, []);
@@ -75,7 +77,7 @@ const RegistrationPage: FC<Props> = () => {
 
       router.replace(pathname);
     }
-  }, [error]);
+  }, []);
 
   const { mutate: createAccount, isLoading: isCreatingAccount } = useRegister();
 
@@ -93,7 +95,7 @@ const RegistrationPage: FC<Props> = () => {
 
     createAccount({
       ...data,
-      username: usernameState,
+      username: username,
     });
   };
 
@@ -180,10 +182,7 @@ const RegistrationPage: FC<Props> = () => {
             </Button>
             {/* <Separator /> */}
             <FormBreak />
-            <GoogleSignInButton
-              disabled={isCreatingAccount}
-              username={usernameState}
-            />
+            <GoogleSignInButton disabled={isCreatingAccount} />
           </div>
         </form>
 

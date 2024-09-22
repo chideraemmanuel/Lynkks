@@ -18,6 +18,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
+import { v4 as uuid } from 'uuid';
 
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
@@ -96,6 +97,14 @@ export const GET = async (request: NextRequest) => {
   }
 };
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+];
+
 const HeaderSchema = z.object({
   type: z.literal('header'),
   title: z.string().min(1),
@@ -126,17 +135,18 @@ const BodySchema = z.object({
       // image: z.instanceof(File).optional(),
     })
     .optional(),
+  profile_image: z
+    .instanceof(File)
+    .refine((file) => file.size <= MAX_FILE_SIZE, 'Max file size is 5MB.')
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+      'Only JPEG, JPG, PNG, and WebP formats are supported.'
+    )
+    .optional(),
   links: z
     .object({
       custom_links: z
         .array(
-          //   z
-          //     .object({
-          //       type: z.enum(['header', 'link']),
-          //       title: z.string().min(1),
-          //       href: z.string().url(),
-          //     })
-          //     .optional()
           z
             .discriminatedUnion('type', [HeaderSchema, HyperlinkSchema])
             .optional()
@@ -257,41 +267,54 @@ export const PUT = async (request: NextRequest) => {
 
     // const profile_image = formData.get('profile_image');
 
-    // const formDataObject: Record<
-    //   string,
-    //   FormDataEntryValue | FormDataEntryValue[]
-    // > = {};
+    const formData = await request.formData();
 
-    // formData.forEach((value, key) => {
-    //   // If the key already exists, convert it to an array and append the value
-    //   if (formDataObject[key]) {
-    //     if (Array.isArray(formDataObject[key])) {
-    //       formDataObject[key].push(value);
-    //     } else {
-    //       formDataObject[key] = [formDataObject[key], value];
-    //     }
-    //   } else {
-    //     formDataObject[key] = value;
-    //   }
-    // });
+    // let body: any = {};
+    // formData.forEach((value, key) => (body[key] = value));
+    // console.log('body', body);
+
+    const formDataObject: Record<
+      string,
+      FormDataEntryValue | FormDataEntryValue[]
+    > = {};
+
+    formData.forEach((value, key) => {
+      // If the key already exists, convert it to an array and append the value
+      if (formDataObject[key]) {
+        if (Array.isArray(formDataObject[key])) {
+          formDataObject[key].push(value);
+        } else {
+          formDataObject[key] = [formDataObject[key], value];
+        }
+      } else {
+        formDataObject[key] = value;
+      }
+    });
 
     // console.log('formDataObject', formDataObject);
 
-    const body = await request.json();
+    // const body = await request.json();
 
-    const { profile_image } = body; // ! intentional separation
+    // const { profile_image } = body; // ! intentional separation
 
-    const returnObject = BodySchema.safeParse(body);
-    console.log('returnObject', returnObject);
+    const f = new Intl.DateTimeFormat('en-us', { timeStyle: 'full' });
 
-    if (!returnObject.success) {
+    // console.log('body', body);
+    // console.log('profile_image', profile_image);
+    // console.log('[DATE]', f.format(new Date(Date.now() + 1000 * 60 * 60)));
+    // console.log(Date.now());
+
+    const { success, data } = BodySchema.safeParse(formDataObject);
+
+    if (!success) {
       return NextResponse.json(
         { error: 'Missing or Invalid body data' },
         { status: 400 }
       );
     }
 
-    if (Object.keys(returnObject.data).length === 0 && !profile_image) {
+    // if (Object.keys(data).length === 0 && !profile_image) {
+    if (Object.keys(data).length === 0) {
       return NextResponse.json(
         { error: 'No field to be updated was supplied' },
         { status: 400 }
@@ -303,9 +326,10 @@ export const PUT = async (request: NextRequest) => {
       last_name,
       password,
       profile,
+      profile_image,
       links,
       completed_onboarding,
-    } = returnObject.data;
+    } = data;
 
     const updates: Updates = {};
 
@@ -385,38 +409,12 @@ export const PUT = async (request: NextRequest) => {
     let profile_image_url: string | null = null;
 
     if (profile_image) {
-      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-      const ACCEPTED_IMAGE_TYPES = [
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/webp',
-      ];
-      // TODO: refine file and restrict to image files
-      const { success, data: image_file } = z
-        .instanceof(File)
-        .refine((file) => file.size <= MAX_FILE_SIZE, 'Max file size is 5MB.')
-        .refine(
-          (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
-          'Only JPEG, JPG, PNG, and WebP formats are supported.'
-        )
-        .safeParse(profile_image);
-
-      if (!success) {
-        return NextResponse.json(
-          {
-            error: 'Invalid file supplied for "profile_image"',
-          },
-          { status: 400 }
-        );
-      }
-
       const storage = getStorage(app);
       const storageRef = ref(
         storage,
-        `images/profile/${image_file.name}-${Date.now()}`
+        `images/profile/${profile_image.name}-${uuid()}`
       );
-      const snapshot = await uploadBytes(storageRef, image_file);
+      const snapshot = await uploadBytes(storageRef, profile_image);
 
       const url = await getDownloadURL(snapshot.ref);
 
@@ -451,16 +449,19 @@ export const PUT = async (request: NextRequest) => {
       { new: true }
     );
 
-    if (profile_image) {
-      // TODO: delete previous profile image from firebase if any
-      // const storage = getStorage(app);
+    // ! delete previous profile image from firebase if any
+    if (account.profile.image) {
+      const storage = getStorage(app);
+
       // Extract the file path from the full image URL
-      // const decodedUrl = decodeURIComponent(imageUrl);
-      // const filePath = decodedUrl
-      //   .split('/o/')[1] // Get the part after '/o/'
-      //   .split('?')[0]; // Remove the query parameters like '?alt=media'
+      const decodedUrl = decodeURIComponent(account.profile.image);
+      const filePath = decodedUrl
+        .split('/o/')[1] // Get the part after '/o/'
+        .split('?')[0]; // Remove the query parameters like '?alt=media'
+
       // const previousProfileImageRef = ref(storage, `images/profile/${imageName}`);
-      // const info = await deleteObject(previousProfileImageRef);
+      const previousProfileImageRef = ref(storage, filePath);
+      await deleteObject(previousProfileImageRef);
     }
 
     const new_session_id = nanoid();

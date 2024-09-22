@@ -50,8 +50,12 @@ const UsernameSelectionPage: FC<Props> = () => {
         return response.data;
       },
       onSuccess: (data) => {
-        // route to registration page
-        router.push(`/auth/register?username=${getValues('username')}`);
+        // set cookie and route to registration page
+        document.cookie = `lynkks_selected_username=${getValues(
+          'username'
+        )};expires=${new Date().toUTCString()}`;
+
+        router.push(`/auth/register`);
       },
       onError: (error: AxiosError<{ error: string }>) => {
         if (error.response?.status === 422) {

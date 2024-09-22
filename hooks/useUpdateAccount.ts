@@ -13,7 +13,13 @@ const updateAccount = async (updates: Updates & { profile_image?: File }) => {
   const response = await axios.put<AccountInterface>(
     '/api/accounts/info',
     updates,
-    { withCredentials: true }
+    {
+      withCredentials: true,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+    }
   );
 
   console.log('response from update account hook', response);

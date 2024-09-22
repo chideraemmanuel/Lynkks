@@ -8,7 +8,7 @@ import axios from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
 
 type GoogleSignInButtonProps = ComponentPropsWithoutRef<typeof Button> & {
-  username?: string;
+  // username?: string;
   // success_redirect_path: string
   // error_redirect_path: string
 };
@@ -18,7 +18,7 @@ type GoogleSignInButtonRef = ElementRef<typeof Button>;
 const GoogleSignInButton = React.forwardRef<
   GoogleSignInButtonRef,
   GoogleSignInButtonProps
->(({ disabled, onClick, username, ...props }, ref) => {
+>(({ disabled, onClick, ...props }, ref) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -30,9 +30,9 @@ const GoogleSignInButton = React.forwardRef<
       queryStrings.set('success_redirect_path', '/dashboard');
       queryStrings.set('error_redirect_path', pathname);
 
-      if (username) {
-        queryStrings.set('username', username);
-      }
+      // if (username) {
+      //   queryStrings.set('username', username);
+      // }
 
       console.log('queryStrings', queryStrings.toString());
 
