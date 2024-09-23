@@ -6,6 +6,7 @@ import GoogleSignInButton from '@/components/google-sign-in-button';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { emailRegex, passwordRegex } from '@/constants';
+import { useSelectedUsernameContext } from '@/contexts/selected-username-context';
 import useRegister from '@/hooks/auth/useRegister';
 import { getCookie } from '@/lib/cookie';
 // import useRegistration from '@/hooks/auth/useRegistration';
@@ -26,26 +27,34 @@ interface RegistrationFormTypes {
 }
 
 const RegistrationPage: FC<Props> = () => {
+  const { selectedUsername, setSelectedUsername } =
+    useSelectedUsernameContext();
+
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
   const error = params.get('error');
 
-  const [username, setUsername] = useState<string>('');
+  // const [username, setUsername] = useState<string>('');
 
   // console.log('usernameState', usernameState);
   // console.log('username', username);
 
-  // ! get username from cookie
+  // ! check for username from context
   useEffect(() => {
-    const selected_username = getCookie('lynkks_selected_username');
-    if (!selected_username) {
+    // // const selected_username = getCookie('lynkks_selected_username');
+    // // if (!selected_username) {
+    // if (selectedUsername === '') {
+    //   router.replace('/auth/username-select');
+    // } else {
+    //   setUsername(selectedUsername);
+    //   router.replace(pathname);
+    // }
+
+    if (selectedUsername === '') {
       router.replace('/auth/username-select');
-    } else {
-      setUsername(selected_username);
-      router.replace(pathname);
     }
-  }, []);
+  }, [selectedUsername]);
 
   // ! handle errors; most likely from google redirect
   // authentication_failed;
@@ -95,7 +104,7 @@ const RegistrationPage: FC<Props> = () => {
 
     createAccount({
       ...data,
-      username: username,
+      username: selectedUsername,
     });
   };
 

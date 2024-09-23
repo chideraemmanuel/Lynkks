@@ -171,7 +171,8 @@ const ProfileSettingsPage: FC<Props> = () => {
       console.log('form changed: last_name');
       setFormChanged(true);
     } else if (
-      watchedPersonalDetailsFormFields.profile.title !== account?.profile?.title
+      watchedPersonalDetailsFormFields.profile?.title !==
+      account?.profile?.title
     ) {
       console.log(
         'watchedPersonalDetailsFormFields.profile.title',
@@ -181,7 +182,7 @@ const ProfileSettingsPage: FC<Props> = () => {
       console.log('form changed: profile.title');
       setFormChanged(true);
     } else if (
-      watchedPersonalDetailsFormFields.profile.bio !== account?.profile?.bio
+      watchedPersonalDetailsFormFields.profile?.bio !== account?.profile?.bio
     ) {
       console.log(
         'watchedPersonalDetailsFormFields.profile.bio',

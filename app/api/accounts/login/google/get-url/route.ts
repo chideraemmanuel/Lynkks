@@ -10,9 +10,9 @@ const generateGoogleOauthUrl = (
   const options = {
     response_type: 'code',
     client_id: process.env.GOOGLE_AUTH_CLIENT_ID!,
-    // redirect_uri: `${process.env.API_BASE_URL}/accounts/login/google?success_redirect_path=/&error_redirect_path=/auth/error`,
-    // !!! redirect to API with query params; API handles redirect to client !!!
-    redirect_uri: `${process.env.API_BASE_URL}/accounts/login/google?success_redirect_path=${successRedirectPath}&error_redirect_path=${errorRedirectPath}`,
+    // // !!! redirect to API with query params; API handles redirect to client !!!
+    // redirect_uri: `${process.env.API_BASE_URL}/accounts/login/google?success_redirect_path=${successRedirectPath}&error_redirect_path=${errorRedirectPath}`,
+    redirect_uri: `${process.env.CLIENT_BASE_URL}/auth/google/callback?success_redirect_path=${successRedirectPath}&error_redirect_path=${errorRedirectPath}`,
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',

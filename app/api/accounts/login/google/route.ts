@@ -14,9 +14,9 @@ interface GoogleResponse {
 
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
-  const selected_username = request.cookies.get(
-    'lynkks_selected_username'
-  )?.value;
+  // const selected_username = request.cookies.get(
+  //   'lynkks_selected_username'
+  // )?.value;
   const code = request.nextUrl.searchParams.get('code');
   const success_redirect_path = request.nextUrl.searchParams.get(
     'success_redirect_path'
@@ -24,6 +24,8 @@ export const GET = async (request: NextRequest) => {
   const error_redirect_path = request.nextUrl.searchParams.get(
     'error_redirect_path'
   );
+  const selected_username =
+    request.nextUrl.searchParams.get('selected_username');
 
   console.log('selected_username', selected_username);
 
@@ -103,7 +105,8 @@ export const GET = async (request: NextRequest) => {
       client_id: process.env.GOOGLE_AUTH_CLIENT_ID!,
       client_secret: process.env.GOOGLE_AUTH_CLIENT_SECRET!,
       //  !!! must match redirect_uri in oauth url params !!!
-      redirect_uri: `${process.env.API_BASE_URL}/accounts/login/google?success_redirect_path=${success_redirect_path}&error_redirect_path=${error_redirect_path}`,
+      // redirect_uri: `${process.env.API_BASE_URL}/accounts/login/google?success_redirect_path=${success_redirect_path}&error_redirect_path=${error_redirect_path}`,
+      redirect_uri: `${process.env.CLIENT_BASE_URL}/auth/google/callback?success_redirect_path=${success_redirect_path}&error_redirect_path=${error_redirect_path}`,
       grant_type: 'authorization_code',
     };
 
@@ -203,6 +206,8 @@ export const GET = async (request: NextRequest) => {
         maxAge: 60 * 60, // 1 hour
         httpOnly: true,
       });
+
+      // response.cookies.set('selected_username', '', { maxAge: 0 });
 
       return response;
     } catch (error: any) {

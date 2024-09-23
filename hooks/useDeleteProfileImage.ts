@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
 
 const deleteProfileImage = async () => {
@@ -15,10 +15,13 @@ const deleteProfileImage = async () => {
 };
 
 const useDeleteProfileImage = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationKey: ['delete profile image'],
     mutationFn: deleteProfileImage,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries('get current account');
       toast.success('Image deleted successfully');
     },
     onError: (error: AxiosError<{ error: string }>) => {

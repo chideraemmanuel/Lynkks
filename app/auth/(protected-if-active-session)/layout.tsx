@@ -1,3 +1,4 @@
+import SelectedUsernameContextProvider from '@/contexts/selected-username-context';
 import AuthRoutesGuard from '@/providers/auth-routes-guard';
 import { FC } from 'react';
 
@@ -8,7 +9,9 @@ interface Props {
 const ProtectedIfActiveSession: FC<Props> = ({ children }) => {
   return (
     <>
-      <AuthRoutesGuard>{children}</AuthRoutesGuard>
+      <SelectedUsernameContextProvider>
+        <AuthRoutesGuard>{children}</AuthRoutesGuard>
+      </SelectedUsernameContextProvider>
     </>
   );
 };

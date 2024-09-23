@@ -39,3 +39,5 @@ next-env.d.ts
 config/firebase.ts
 chart.tsx
 aggregation.ts
+app/api/accounts/login/google/route.reference.ts
+app/api/accounts/login/google/get-url/route.reference.ts

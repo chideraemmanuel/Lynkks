@@ -15,10 +15,14 @@ import { cn } from '@/lib/utils';
 import { useMutation } from 'react-query';
 import axios, { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import { useSelectedUsernameContext } from '@/contexts/selected-username-context';
 
 interface Props {}
 
 const UsernameSelectionPage: FC<Props> = () => {
+  const { selectedUsername, setSelectedUsername } =
+    useSelectedUsernameContext();
+
   const router = useRouter();
 
   const form = useForm<{ username: string }>();
@@ -50,10 +54,13 @@ const UsernameSelectionPage: FC<Props> = () => {
         return response.data;
       },
       onSuccess: (data) => {
-        // set cookie and route to registration page
-        document.cookie = `lynkks_selected_username=${getValues(
-          'username'
-        )};expires=${new Date(9999, 10, 10).toUTCString()}`;
+        // // set cookie and route to registration page
+        // document.cookie = `lynkks_selected_username=${getValues(
+        //   'username'
+        // )};expires=${new Date(9999, 10, 10).toUTCString()}`;
+
+        localStorage.setItem('lynkks_selected_username', getValues('username'));
+        setSelectedUsername(getValues('username'));
 
         router.push(`/auth/register`);
       },
