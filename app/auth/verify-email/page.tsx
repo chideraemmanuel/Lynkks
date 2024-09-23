@@ -94,13 +94,13 @@ const EmailVerificationPage: FC<Props> = () => {
     return <ErrorComponent error={error} />;
   }
 
-  if (
-    error &&
-    // @ts-ignore
-    !(error?.response?.status > 400 && error?.response?.status < 500)
-  ) {
-    return <ErrorComponent error={error} />;
-  }
+  // if (
+  //   error &&
+  //   // @ts-ignore
+  //   !(error?.response?.status > 400 && error?.response?.status < 500)
+  // ) {
+  //   return <ErrorComponent error={error} />;
+  // }
 
   return (
     <>

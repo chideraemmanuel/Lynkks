@@ -18,6 +18,7 @@ const generateGoogleOauthUrl = (
       'https://www.googleapis.com/auth/userinfo.profile',
     ].join(' '),
     access_type: 'offline',
+    state: 'whatever',
   };
 
   const queryStrings = new URLSearchParams(options);

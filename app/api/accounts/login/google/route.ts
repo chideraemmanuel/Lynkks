@@ -18,6 +18,7 @@ export const GET = async (request: NextRequest) => {
   //   'lynkks_selected_username'
   // )?.value;
   const code = request.nextUrl.searchParams.get('code');
+  const state = request.nextUrl.searchParams.get('state');
   const success_redirect_path = request.nextUrl.searchParams.get(
     'success_redirect_path'
   );
@@ -28,6 +29,8 @@ export const GET = async (request: NextRequest) => {
     request.nextUrl.searchParams.get('selected_username');
 
   console.log('selected_username', selected_username);
+  console.log('code', code);
+  console.log('state', state);
 
   try {
     console.log('connecting to database...');
@@ -93,8 +96,9 @@ export const GET = async (request: NextRequest) => {
     }
 
     if (!code) {
-      return NextResponse.redirect(
-        `${process.env.CLIENT_BASE_URL}${error_redirect_path}?error=authentication_failed`
+      return NextResponse.json(
+        { error: 'Authentication failed' },
+        { status: 401 }
       );
     }
 
@@ -114,11 +118,11 @@ export const GET = async (request: NextRequest) => {
       // params can be passed as either body data or query strings
       const googleResponse = await axios.post<GoogleResponse>(base, params);
 
-      console.log('googleResponse.data', googleResponse.data);
+      // console.log('googleResponse.data', googleResponse.data);
 
       const googleUserData = jwt.decode(googleResponse?.data?.id_token);
 
-      console.log('googleUserData', googleUserData);
+      // console.log('googleUserData', googleUserData);
 
       // @ts-ignore
       const { email, given_name, family_name, picture } = googleUserData;
@@ -128,13 +132,17 @@ export const GET = async (request: NextRequest) => {
       });
 
       if (accountExists && accountExists.auth_type === 'manual') {
-        return NextResponse.redirect(
-          `${process.env.CLIENT_BASE_URL}${error_redirect_path}?error=account_exists`
+        return NextResponse.json(
+          {
+            error:
+              'Account with the provided email address already exists. Sign in with password instead.',
+          },
+          { status: 400 }
         );
       }
 
       if (accountExists && accountExists.auth_type === 'google') {
-        // create session and redirect to success path
+        // create session
         const new_session_id = nanoid();
 
         const session = await Session.create<SessionInterface>({
@@ -142,9 +150,9 @@ export const GET = async (request: NextRequest) => {
           session_id: new_session_id,
         });
 
-        const response = NextResponse.redirect(
-          `${process.env.CLIENT_BASE_URL}${success_redirect_path}?new_account=false`
-        );
+        const response = NextResponse.json({
+          message: 'Login successful',
+        });
 
         response.cookies.set('sid', new_session_id, {
           // maxAge: 60 * 60 * 24 * 7, // 1 week
@@ -164,8 +172,9 @@ export const GET = async (request: NextRequest) => {
         .safeParse(selected_username);
 
       if (!success) {
-        return NextResponse.redirect(
-          `${process.env.CLIENT_BASE_URL}${error_redirect_path}?error=invalid_username`
+        return NextResponse.json(
+          { error: 'Missing or invalid username' },
+          { status: 400 }
         );
       }
 
@@ -174,8 +183,9 @@ export const GET = async (request: NextRequest) => {
       });
 
       if (usernameTaken) {
-        return NextResponse.redirect(
-          `${process.env.CLIENT_BASE_URL}${error_redirect_path}?error=username_taken`
+        return NextResponse.json(
+          { error: 'Username is already taken' },
+          { status: 400 }
         );
       }
 
@@ -197,8 +207,9 @@ export const GET = async (request: NextRequest) => {
         session_id: new_session_id,
       });
 
-      const response = NextResponse.redirect(
-        `${process.env.CLIENT_BASE_URL}${success_redirect_path}?new_account=true`
+      const response = NextResponse.json(
+        { message: 'Account created successfully' },
+        { status: 201 }
       );
 
       response.cookies.set('sid', new_session_id, {
@@ -212,14 +223,16 @@ export const GET = async (request: NextRequest) => {
       return response;
     } catch (error: any) {
       console.log('[GOOGLE_OAUTH_ERROR]', error);
-      return NextResponse.redirect(
-        `${process.env.CLIENT_BASE_URL}${error_redirect_path}?error=authentication_failed`
+      return NextResponse.json(
+        { error: 'Authentication failed' },
+        { status: 401 }
       );
     }
   } catch (error: any) {
     console.log('[ERROR]', error);
-    return NextResponse.redirect(
-      `${process.env.CLIENT_BASE_URL}${error_redirect_path}?error=server_error`
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
     );
   }
 };

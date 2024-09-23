@@ -41,7 +41,7 @@ const CustomLinkCard: FC<Props> = ({ link, onDragEnd }) => {
         className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3"
       >
         <div className="flex-1 flex items-center gap-3 bg-red-200">
-          <div className="bg-blue-200 cursor-grab active:cursor-grabbing">
+          <div className="bg-blue-200 cursor-grab active:cursor-grabbing handle">
             <GripVerticalIcon />
           </div>
 

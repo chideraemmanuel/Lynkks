@@ -63,9 +63,9 @@ export const PUT = async (request: NextRequest) => {
     const updatedAccount = await Account.findByIdAndUpdate(
       sessionExists?.account,
       {
-        // profile: { ...account.profile, image: null },
+        profile: { ...account.profile, image: null },
         // profile: { image: null },
-        profile: { $set: { image: null } },
+        // profile: { $set: { image: null } },
       },
       { new: true }
     );

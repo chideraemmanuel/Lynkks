@@ -130,6 +130,7 @@ const SocialLinksTabContent: FC<Props> = ({ account }) => {
             }}
             className="flex flex-col gap-3"
             animation={150}
+            handle=".handle"
           >
             {list.map((link, index) => (
               <SocialLinkCard

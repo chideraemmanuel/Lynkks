@@ -25,6 +25,7 @@ const useVerifyEmail = () => {
     mutationKey: ['verify email'],
     mutationFn: verifyEmail,
     onSuccess: async (data) => {
+      toast.success('Email verified successully');
       // WILL BE REDIRECTED TO APPROPRIATE ROUTE FROM EMAIL VERIFICATION PAGE ONCE ACCOUNT QUERY IS INVALIDATED
       //  router.replace('/dashboard');
       await queryClient.invalidateQueries('get current account');

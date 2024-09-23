@@ -2,13 +2,28 @@ import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
+import bg from '@/assets/landing-bg.svg';
+import bg2 from '@/assets/landing-bg-2.svg';
 
 export default function Home() {
   return (
     <>
+      <div className="absolute inset-0 opacity-10">
+        <Image
+          src={bg2.src}
+          alt="#"
+          width={1000}
+          height={1000}
+          className="w-full h-full object-cover"
+        />
+      </div>
       {/* <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
     </div> */}
-      <div className="bg-[#fdfdfd] min-h-screen">
+      <div
+        // style={{ background: `url(${bg.src}) no-repeat center center/cover` }}
+        className="bg-[#fdfdfd] bg-opacity-70 min-h-screen relative z-[5]"
+        // className="min-h-screen relative z-[5]"
+      >
         <div className="sm:container px-4 mx-auto pt-4 md:pt-6 flex flex-col min-h-screen">
           <div className="flex justify-between items-center">
             <Logo />

@@ -423,7 +423,11 @@ export const PUT = async (request: NextRequest) => {
               ...updates.links,
             },
             // $set: { links: updates.links },
-            profile: { ...updates.profile, image: profile_image_url },
+            profile: {
+              ...account.profile,
+              ...updates.profile,
+              image: profile_image_url,
+            },
           }
         : // : updates,
           {
@@ -433,6 +437,7 @@ export const PUT = async (request: NextRequest) => {
               ...updates.links,
             },
             // $set: { links: updates.links },
+            profile: { ...account.profile, ...updates.profile },
           },
       // {...updates, profile: {...updates.profile, image: profile_image_url}},
       { new: true }
