@@ -6,6 +6,21 @@ A simple and customizable link-in-bio web application that allows users to creat
 
 This repository contains the source code for **_Lynnks_** a link-in-bio web application, designed to help users easily create personalized profiles where they can share all their important links. The application offers a simple interface, with options for users to manage their links, track click-throughs, and personalize their profile.
 
+## Live Demo
+
+Check out the live demo of the application [here](https://lynkks.vercel.app/).
+
+## Features
+
+- **Customizable Profile** - Users can personalize their profile with custom titles, descriptions, and profile images.
+- **Unlimited Links** - Add, edit, and reorder an unlimited number of links to external websites, social media, or content.
+- **Mobile-Friendly Design** - Fully responsive layout, optimized for both mobile and desktop users.
+- **Link Tracking** - Monitor engagement with built-in click-through tracking for each shared link.
+- **Simple User Interface** - Clean, user-friendly design that’s easy to navigate and set up.
+- **Secure Authentication** - Protect your profile with secure login and user authentication.
+- **Social Media Integration** - Seamlessly connect and share your profile across social media platforms.
+- **SEO Optimized** - Optimized for search engines to improve the visibility of individual profiles.
+
 ## Techologies Used
 
 - **Frontend & Backend**:
@@ -39,17 +54,6 @@ This repository contains the source code for **_Lynnks_** a link-in-bio web appl
 
 - **Storage**:
   - **Firebase**: Used for secure and scalable cloud storage to handle image uploads.
-
-## Features
-
-- **Customizable Profile** - Users can personalize their profile with custom titles, descriptions, and profile images.
-- **Unlimited Links** - Add, edit, and reorder an unlimited number of links to external websites, social media, or content.
-- **Mobile-Friendly Design** - Fully responsive layout, optimized for both mobile and desktop users.
-- **Link Tracking** - Monitor engagement with built-in click-through tracking for each shared link.
-- **Simple User Interface** - Clean, user-friendly design that’s easy to navigate and set up.
-- **Secure Authentication** - Protect your profile with secure login and user authentication.
-- **Social Media Integration** - Seamlessly connect and share your profile across social media platforms.
-- **SEO Optimized** - Optimized for search engines to improve the visibility of individual profiles.
 
 <!-- ## Installation and Usage -->
 
