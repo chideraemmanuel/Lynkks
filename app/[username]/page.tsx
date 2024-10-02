@@ -11,9 +11,48 @@ import { connectToDatabase } from '@/lib/database';
 import LynkksLink from '@/components/lynkks-link';
 import LynkksSocialLink from '@/components/lynkks-social-link';
 import { link } from 'fs';
+import { Metadata, ResolvingMetadata } from 'next';
 
 interface Props {
   params: { username: string };
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { username } = params;
+
+  await connectToDatabase();
+  const account = await Account.findOne<AccountInterface>({
+    username,
+    email_verified: true,
+  });
+
+  if (!account) notFound();
+
+  const previousImages = (await parent).openGraph?.images || [];
+
+  const profile_image = account?.profile.image || profileImage.src;
+
+  const name =
+    account?.first_name && account.last_name
+      ? `${account?.first_name} ${account?.last_name}`
+      : account?.username;
+
+  return {
+    title: {
+      absolute: `${name} | Links and Profile on Lynkks`,
+    },
+    description: `Explore ${name}'s profile on Lynkks, featuring all their important links in one place – social media, content, and more.`,
+    keywords: `link in bio, personalized profile, share links, social media links, content creators, online presence, bio links, link sharing tool, single link profile, digital portfolio`,
+    openGraph: {
+      // images: [profile_image, ...previousImages],
+    },
+    alternates: {
+      canonical: `${process.env.CLIENT_BASE_URL}/${username}`,
+    },
+  };
 }
 
 const LynkksUserPage: FC<Props> = async ({ params: { username } }) => {
@@ -38,12 +77,12 @@ const LynkksUserPage: FC<Props> = async ({ params: { username } }) => {
 
   return (
     <>
-      <div className="bg-gradient-4 min-h-screen py-10 flex flex-col">
+      <div className="bg-gradient min-h-screen py-10 flex flex-col">
         {/* <div className="min-h-screen py-10 flex flex-col"> */}
         {/* <div className="bg-blue-300 w-[min(700px,_90%)] mx-auto flex-1"> */}
         <div className="w-[min(700px,_90%)] mx-auto flex-1">
           <div className="flex flex-col items-center gap-1 text-center mb-7">
-            <div className="rounded-[50%] shadow-lg border-[4px] md:w-[120px] w-[90px] md:h-[120px] h-[90px] mb-3">
+            <div className="rounded-[50%] shadow-lg border-slate-300 border-[4px] md:w-[120px] w-[90px] md:h-[120px] h-[90px] mb-3">
               <Image
                 src={profile.image || profileImage.src}
                 alt="#"
@@ -58,7 +97,7 @@ const LynkksUserPage: FC<Props> = async ({ params: { username } }) => {
               {profile.title}
             </h1>
 
-            <p className="w-[90%] text-muted-foreground md:text-base text-sm">
+            <p className="w-[90%] text-muted-foreground md:text-base text-sm whitespace-pre-line">
               {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint,
               nihil esse debitis necessitatibus fugiat sit? */}
               {profile.bio}

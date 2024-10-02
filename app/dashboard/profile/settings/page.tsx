@@ -108,6 +108,8 @@ const ProfileSettingsPage: FC<Props> = () => {
     await updateAccount({
       profile_image: data.profile_image[0],
     });
+
+    setSelectedImage(undefined);
   };
 
   // !!! PROFILE IMAGE DELETE LOGIC !!!
@@ -204,7 +206,33 @@ const ProfileSettingsPage: FC<Props> = () => {
 
     console.log('data', data);
 
-    await updateAccount(data);
+    const {
+      first_name,
+      last_name,
+      profile: { title, bio },
+    } = getPersonalDetailsChangeFormValues();
+    const updates: PersonalDetailsChangeFormTypes =
+      {} as PersonalDetailsChangeFormTypes;
+
+    if (first_name !== account?.first_name) {
+      updates.first_name = first_name;
+    }
+
+    if (last_name !== account?.last_name) {
+      updates.last_name = last_name;
+    }
+
+    if (title !== account?.profile.title) {
+      updates.profile.title = title;
+    }
+
+    if (bio !== '' && bio !== account?.profile.bio) {
+      updates.profile.bio = bio;
+    }
+
+    console.log('final updates', updates);
+
+    await updateAccount(updates);
   };
 
   // !!! PASSWORD UPDATE LOGIC !!!
@@ -306,7 +334,7 @@ const ProfileSettingsPage: FC<Props> = () => {
                 <h3 className="text-[#1D2639] font-bold text-base leading-[145%] tracking-[0%]">
                   Profile photo
                 </h3>
-                <p className="text-[#667185] text-sm leading-[145%] tracking-[0%] max-w-[200px]">
+                <p className="text-[#667185] text-sm leading-[145%] tracking-[0%] max-w-[auto] md:max-w-[200px]">
                   This image will be displayed on your Lynkks profile
                 </p>
 
@@ -411,7 +439,7 @@ const ProfileSettingsPage: FC<Props> = () => {
                 <h3 className="text-[#1D2639] font-bold text-base leading-[145%] tracking-[0%]">
                   Personal Information
                 </h3>
-                <p className="text-[#667185] text-sm leading-[145%] tracking-[0%] max-w-[200px]">
+                <p className="text-[#667185] text-sm leading-[145%] tracking-[0%] max-w-[auto] md:max-w-[200px]">
                   Update your personal details here
                 </p>
 
@@ -502,7 +530,7 @@ const ProfileSettingsPage: FC<Props> = () => {
                   <h3 className="text-[#1D2639] font-bold text-base leading-[145%] tracking-[0%]">
                     Account Password
                   </h3>
-                  <p className="text-[#667185] text-sm leading-[145%] tracking-[0%] max-w-[200px]">
+                  <p className="text-[#667185] text-sm leading-[145%] tracking-[0%] max-w-[auto] md:max-w-[200px]">
                     Update your account password here
                   </p>
                 </div>

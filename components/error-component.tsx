@@ -9,14 +9,14 @@ const ErrorComponent: FC<Props> = ({ error }) => {
 
   const message = (): string => {
     if (error?.message === 'Network Error') {
-      return 'Network error message';
+      return 'Network Error';
     }
 
     if (
       error?.response?.data?.error === 'Internal Server Error' ||
       error?.response?.status === 500
     ) {
-      return 'Server error message';
+      return 'Internal Server Error';
     }
 
     if (

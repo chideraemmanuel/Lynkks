@@ -11,7 +11,7 @@ const sendEmail = async ({ receipent, subject, html }: MailOptions) => {
   const mailOptions = {
     // from: process.env.EMAIL_AUTH_USER!,
     // from: `Lynkks <${process.env.EMAIL_AUTH_USER!}>`,
-    from: `Lynkks <admin@lynkks.io>`,
+    from: `Lynkks <admin@lynkks.vercel.app>`,
     to: receipent,
     subject,
     html,

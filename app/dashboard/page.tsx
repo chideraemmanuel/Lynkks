@@ -105,7 +105,7 @@ const DashboardLinksPage: FC<Props> = () => {
                 size={'sm'}
                 onClick={() => {
                   navigator.clipboard.writeText(
-                    `lynkks.vercel.app/${account.username}`
+                    `https://lynkks.vercel.app/${account.username}`
                   );
                   toast.success('Copied');
                 }}
@@ -114,8 +114,8 @@ const DashboardLinksPage: FC<Props> = () => {
               </Button>
             </Alert>
 
-            <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto bg-slate-500 rounded-[30px] overflow-hidden">
-              <div className="bg-gradient-4 min-h-[100%] py-[calc(40px_*_0.65)] flex flex-col">
+            <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto rounded-[30px] border overflow-hidden">
+              <div className="bg-gradient min-h-[100%] py-[calc(40px_*_0.65)] flex flex-col">
                 {/* <div className="min-h-screen py-10 flex flex-col"> */}
                 {/* <div className="bg-blue-300 w-[min(700px,_90%)] mx-auto flex-1"> */}
                 <div className="w-[90%] mx-auto flex-1">
@@ -135,7 +135,7 @@ const DashboardLinksPage: FC<Props> = () => {
                       {account.profile.title}
                     </h1>
 
-                    <p className="w-[90%] text-muted-foreground text-[calc(14px_*_0.65)] leading-[calc(20px_*_0.65)]">
+                    <p className="w-[90%] text-muted-foreground text-[calc(14px_*_0.65)] leading-[calc(20px_*_0.65)] whitespace-pre-line">
                       {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint,
               nihil esse debitis necessitatibus fugiat sit? */}
                       {account.profile.bio}
@@ -195,7 +195,7 @@ const DashboardLinksPage: FC<Props> = () => {
                 target="_blank"
                 href={`https://lynkks.vercel.app/${account.username}`}
               >
-                Preview
+                Live Preview
               </a>
             </Button>
 

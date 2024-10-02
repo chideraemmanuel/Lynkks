@@ -18,7 +18,7 @@ export const GET = async (request: NextRequest) => {
   //   'lynkks_selected_username'
   // )?.value;
   const code = request.nextUrl.searchParams.get('code');
-  const state = request.nextUrl.searchParams.get('state');
+  // const state = request.nextUrl.searchParams.get('state');
   const success_redirect_path = request.nextUrl.searchParams.get(
     'success_redirect_path'
   );
@@ -30,7 +30,7 @@ export const GET = async (request: NextRequest) => {
 
   console.log('selected_username', selected_username);
   console.log('code', code);
-  console.log('state', state);
+  // console.log('state', state);
 
   try {
     console.log('connecting to database...');
@@ -46,12 +46,12 @@ export const GET = async (request: NextRequest) => {
         const account = await Account.findById(sessionExists?.account);
 
         if (account) {
-          const new_session_id = nanoid();
+          // const new_session_id = nanoid();
 
           await Session.updateOne(
             { session_id },
             {
-              session_id: new_session_id,
+              // session_id: new_session_id,
               expiresAt: new Date(Date.now() + 1000 * 60 * 60),
             }
           );
@@ -63,7 +63,7 @@ export const GET = async (request: NextRequest) => {
             { status: 400 }
           );
 
-          response.cookies.set('sid', new_session_id, {
+          response.cookies.set('sid', session_id, {
             // maxAge: 60 * 60 * 24 * 7, // 1 week
             maxAge: 60 * 60, // 1 hour
             httpOnly: true,

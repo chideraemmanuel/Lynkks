@@ -10,40 +10,40 @@ interface Props {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const { username } = params;
+// export async function generateMetadata(
+//   { params, searchParams }: Props,
+//   parent: ResolvingMetadata
+// ): Promise<Metadata> {
+//   const { username } = params;
 
-  await connectToDatabase();
-  const account = await Account.findOne<AccountInterface>({
-    username,
-    email_verified: true,
-  });
+//   await connectToDatabase();
+//   const account = await Account.findOne<AccountInterface>({
+//     username,
+//     email_verified: true,
+//   });
 
-  console.log('metadata fetch response', account);
+//   console.log('metadata fetch response', account);
 
-  const previousImages = (await parent).openGraph?.images || [];
+//   const previousImages = (await parent).openGraph?.images || [];
 
-  return {
-    title: account?.username.toUpperCase(),
-    description: account?.profile.bio,
-    // keywords: '',
-    openGraph: {
-      // images: [firstImage, ...previousImages],
-    },
-    alternates: {
-      canonical: `${process.env.CLIENT_BASE_URL}/${username}`,
-    },
-  };
-}
+//   return {
+//     title: account?.username.toUpperCase(),
+//     description: account?.profile.bio,
+//     // keywords: '',
+//     openGraph: {
+//       // images: [firstImage, ...previousImages],
+//     },
+//     alternates: {
+//       canonical: `${process.env.CLIENT_BASE_URL}/${username}`,
+//     },
+//   };
+// }
 
 const LynkksUserLayout: FC<Props> = ({ children, params: { username } }) => {
   return (
     <>
-      {/* <ViewsUpdateProvider username={username}>{children}</ViewsUpdateProvider> */}
-      {children}
+      <ViewsUpdateProvider username={username}>{children}</ViewsUpdateProvider>
+      {/* {children} */}
     </>
   );
 };

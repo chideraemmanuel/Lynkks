@@ -2,18 +2,15 @@ import { Metadata } from 'next';
 import { FC } from 'react';
 
 export const metadata: Metadata = {
-  title: {
-    default: 'Reset Password',
-    template: '%s - Lynkks',
-  },
+  title: 'Authenticating...',
 };
 
 interface Props {
   children: React.ReactNode;
 }
 
-const PasswordResetLayout: FC<Props> = ({ children }) => {
+const GoogleLoginLayout: FC<Props> = ({ children }) => {
   return <>{children}</>;
 };
 
-export default PasswordResetLayout;
+export default GoogleLoginLayout;

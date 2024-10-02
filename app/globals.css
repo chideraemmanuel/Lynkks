@@ -125,61 +125,7 @@
   }
 
   .bg-gradient {
-    background-image: linear-gradient(
-      to right top,
-      #e6efff,
-      #dae2f2,
-      #ced5e6,
-      #c2c8d9,
-      #b6bbcd,
-      #b1bdcd,
-      #aebecc,
-      #abbfca,
-      #b6cdcf,
-      #c7dad4,
-      #dce6db,
-      #f1f1e6
-    );
-  }
-
-  .bg-gradient-2 {
-    background-image: linear-gradient(
-      to right top,
-      #e6efff,
-      #e1effd,
-      #dceffa,
-      #d9eff6,
-      #d7eef2,
-      #d8efef,
-      #d9efeb,
-      #dcefe8,
-      #e1f0e6,
-      #e7f0e5,
-      #ecf1e5,
-      #f1f1e6
-    );
-  }
-
-  .bg-gradient-3 {
-    background-image: linear-gradient(
-      to right top,
-      #e6efff,
-      #e9f1ff,
-      #edf2ff,
-      #f0f4ff,
-      #f3f6ff,
-      #f1f7ff,
-      #f0f7fe,
-      #eff8fd,
-      #ebf7f9,
-      #eaf6f2,
-      #ecf4eb,
-      #f1f1e6
-    );
-  }
-
-  .bg-gradient-4 {
-    background-image: radial-gradient(
+    /* background-image: radial-gradient(
       circle,
       #e6efff,
       #e9f1ff,
@@ -193,6 +139,49 @@
       #e1f2f7,
       #dbeff1,
       #d6edeb
+    ); */
+    background: radial-gradient(
+      circle at 10% 20%,
+      rgb(222, 168, 248) 0%,
+      rgb(168, 222, 248) 21.8%,
+      rgb(189, 250, 205) 35.6%,
+      rgb(243, 250, 189) 52.9%,
+      rgb(250, 227, 189) 66.8%,
+      rgb(248, 172, 172) 90%,
+      rgb(254, 211, 252) 99.7%
+    );
+    background: radial-gradient(
+      290px at 8.6% 46.4%,
+      rgb(255, 148, 148) 7.8%,
+      rgb(255, 223, 155) 32.2%,
+      rgb(255, 247, 177) 48.1%,
+      rgb(216, 255, 177) 61%,
+      rgb(177, 255, 253) 75.3%
+    );
+    background: linear-gradient(
+      122.3deg,
+      rgb(111, 71, 133) 14.6%,
+      rgb(232, 129, 166) 29.6%,
+      rgb(237, 237, 183) 42.1%,
+      rgb(244, 166, 215) 56.7%,
+      rgb(154, 219, 232) 68.7%,
+      rgb(238, 226, 159) 84.8%
+    );
+    background: linear-gradient(
+      101.9deg,
+      rgb(253, 183, 220) 25%,
+      rgb(240, 213, 190) 38.1%,
+      rgb(249, 240, 206) 55.5%,
+      rgb(253, 244, 210) 67.3%,
+      rgb(222, 248, 226) 85.2%,
+      rgb(200, 247, 242) 103.6%
+    );
+
+    /* background: linear-gradient(to top, #09203f 0%, #537895 100%); */
+    background: radial-gradient(
+      343px at 46.3% 47.5%,
+      rgb(242, 242, 242) 0%,
+      rgb(241, 241, 241) 72.9%
     );
   }
 }

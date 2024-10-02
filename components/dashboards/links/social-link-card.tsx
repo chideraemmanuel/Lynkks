@@ -51,8 +51,8 @@ const SocialLinkCard: FC<Props> = ({ link, onDragEnd }) => {
         }
         className="bg-white sm:p-4 p-3 rounded-2xl shadow-sm border flex items-center justify-between gap-3"
       >
-        <div className="flex-1 flex items-center gap-3 bg-red-200">
-          <div className="bg-blue-200 cursor-grab active:cursor-grabbing handle">
+        <div className="flex-1 flex items-center gap-3">
+          <div className="cursor-grab active:cursor-grabbing handle">
             <GripVerticalIcon />
           </div>
 
@@ -61,12 +61,14 @@ const SocialLinkCard: FC<Props> = ({ link, onDragEnd }) => {
               {Icon ? <Icon size={'auto'} /> : null}
             </div>
 
-            <div className="bg-lime-200 flex-1 w-full flex flex-col gap-0">
-              <span className="font-medium truncate w-[90%]">
+            <div className="flex-1 w-full flex flex-col gap-0">
+              <span className="font-medium text-lg truncate w-[90%]">
                 {link.platform}
               </span>
               {/* <span className="text-sm">https://localhost:3000</span> */}
-              <span className="text-sm truncate w-[90%]">{link.href}</span>
+              <span className="text-sm truncate w-[90%] text-muted-foreground">
+                {link.href}
+              </span>
             </div>
           </div>
         </div>
