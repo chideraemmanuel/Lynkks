@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 
 const generateGoogleOauthUrl = (
   successRedirectPath: string,
