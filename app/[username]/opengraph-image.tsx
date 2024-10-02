@@ -45,7 +45,10 @@ export default async function Image({
         <img
           width="256"
           height="256"
-          src={`https://firebasestorage.googleapis.com/v0/b/lynkks-af71a.appspot.com/o/profile.jpg?alt=media&token=3cc96ef2-b7a3-49c9-ab56-9f47b55ef4d2`}
+          src={
+            account.profile.image ||
+            `https://firebasestorage.googleapis.com/v0/b/lynkks-af71a.appspot.com/o/profile.jpg?alt=media&token=3cc96ef2-b7a3-49c9-ab56-9f47b55ef4d2`
+          }
           style={{
             borderRadius: 128,
             // border: '5px solid #f6f6f6',
