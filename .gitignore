@@ -36,7 +36,7 @@ yarn-error.log*
 next-env.d.ts
 
 # personal
-config/firebase.ts
+# config/firebase.ts
 chart.tsx
 aggregation.ts
 app/api/accounts/login/google/route.reference.ts

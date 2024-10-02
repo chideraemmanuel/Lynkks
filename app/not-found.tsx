@@ -1,13 +1,10 @@
+import { redirect } from 'next/navigation';
 import { FC } from 'react';
 
 interface Props {}
 
-const N: FC<Props> = () => {
-  return (
-    <>
-      <span>Not found</span>
-    </>
-  );
+const NotFoundPage: FC<Props> = () => {
+  return redirect('/');
 };
 
-export default N;
+export default NotFoundPage;
