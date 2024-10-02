@@ -211,6 +211,9 @@ const ProfileSettingsPage: FC<Props> = () => {
       last_name,
       profile: { title, bio },
     } = getPersonalDetailsChangeFormValues();
+
+    console.log('yooooo', { first_name, last_name, profile: { title, bio } });
+
     const updates: PersonalDetailsChangeFormTypes =
       {} as PersonalDetailsChangeFormTypes;
 
@@ -223,11 +226,22 @@ const ProfileSettingsPage: FC<Props> = () => {
     }
 
     if (title !== account?.profile.title) {
-      updates.profile.title = title;
+      console.log('titleee', title);
+      console.log('update title');
+
+      // updates.profile.title = title;
+      updates.profile = {
+        ...updates.profile,
+        title,
+      };
     }
 
     if (bio !== '' && bio !== account?.profile.bio) {
-      updates.profile.bio = bio;
+      // updates.profile.bio = bio;
+      updates.profile = {
+        ...updates.profile,
+        bio,
+      };
     }
 
     console.log('final updates', updates);
@@ -303,6 +317,8 @@ const ProfileSettingsPage: FC<Props> = () => {
       }
     }
   };
+
+  console.log({ isFetchingAccount, isUpdatingAccount, isDeletingProfileImage });
 
   return (
     <>

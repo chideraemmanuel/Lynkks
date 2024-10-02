@@ -444,7 +444,7 @@ export const PUT = async (request: NextRequest) => {
     );
 
     // ! delete previous profile image from firebase if any
-    if (account.profile.image) {
+    if (account.profile.image && profile_image) {
       const storage = getStorage(app);
 
       // Extract the file path from the full image URL
