@@ -535,6 +535,7 @@ const ProfileSettingsPage: FC<Props> = () => {
                       personalDetailsChangeFormErrors.profile?.bio?.message
                     }
                     // disabled={isCreatingAccount}
+                    maxLength={300}
                   />
                 </div>
               </div>

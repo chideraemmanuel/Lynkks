@@ -17,25 +17,24 @@ Check out the live demo of the application [here](https://lynkks.vercel.app/).
 - **Mobile-Friendly Design** - Fully responsive layout, optimized for both mobile and desktop users.
 - **Link Tracking** - Monitor engagement with built-in click-through tracking for each shared link.
 - **Simple User Interface** - Clean, user-friendly design that’s easy to navigate and set up.
-- **Secure Authentication** - Protect your profile with secure login and user authentication.
-- **Social Media Integration** - Seamlessly connect and share your profile across social media platforms.
+- **Secure Authentication** - Sign in using a secure and reliable session-based authentication system, including support for Google OAuth.
 - **SEO Optimized** - Optimized for search engines to improve the visibility of individual profiles.
 
 ## Techologies Used
 
 - **Frontend & Backend**:
 
-  - **Next.js**: Fullstack framework used for both frontend and backend APIs, enabling server-side rendering, static generation, and API routes for efficient data fetching.
+  - **Next.js**: Fullstack framework used for both the application's frontend, and backend APIs. It offers features such as server-side rendering, static generation, and API routes for efficient data fetching.
 
-  - **UI Components & Styling**:
+- **UI Components & Styling**:
 
-  - **Radix UI**: A library of accessible, unstyled UI primitives, giving you control over styling while maintaining accessibility.
+  - **Radix UI**: A library of accessible, unstyled UI primitives, giving control over styling while maintaining accessibility.
   - **Tailwind CSS**: Utility-first CSS framework for rapid design and responsive layouts.
 
 - **State Management & Forms**:
 
   - **React Query**: Used for managing server-side data fetching, caching, and synchronization.
-  - **React Hook Form**: Lightweight library for handling forms and validation with a flexible API.
+  - **React Hook Form**: Lightweight library for handling forms and validation.
 
 - **Authentication**:
 

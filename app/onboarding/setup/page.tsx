@@ -579,6 +579,7 @@ const ProfileConfig: FC = () => {
                 })}
                 error={errors.profile?.bio?.message}
                 // disabled={isCreatingAccount}
+                maxLength={300}
               />
             </div>
           </div>
