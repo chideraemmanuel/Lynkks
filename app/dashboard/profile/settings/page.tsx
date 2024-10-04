@@ -1,24 +1,13 @@
 'use client';
 
 import FormInput from '@/components/form-input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { passwordRegex } from '@/constants';
 import { cn } from '@/lib/utils';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-// import { Badge } from '@/components/ui/badge';
-import { RiCheckLine } from '@remixicon/react';
-// import {
-//   Breadcrumb,
-//   BreadcrumbItem,
-//   BreadcrumbLink,
-//   BreadcrumbList,
-//   BreadcrumbPage,
-//   BreadcrumbSeparator,
-// } from '@/components/ui/breadcrumb';
-import Link from 'next/link';
 import useAccount from '@/hooks/useAccount';
 import FullScreenSpinner from '@/components/full-screen-spinner';
 import useUpdateAccount from '@/hooks/useUpdateAccount';
@@ -103,8 +92,6 @@ const ProfileSettingsPage: FC<Props> = () => {
   > = async (data, e) => {
     if (!data.profile_image) return;
 
-    console.log('data', data);
-
     await updateAccount({
       profile_image: data.profile_image[0],
     });
@@ -155,46 +142,21 @@ const ProfileSettingsPage: FC<Props> = () => {
 
   useEffect(() => {
     if (watchedPersonalDetailsFormFields.first_name !== account?.first_name) {
-      console.log(
-        'watchedPersonalDetailsFormFields.first_name',
-        watchedPersonalDetailsFormFields.first_name
-      );
-      console.log('account?.first_name', account?.first_name);
-      console.log('form changed: first_name');
       setFormChanged(true);
     } else if (
       watchedPersonalDetailsFormFields.last_name !== account?.last_name
     ) {
-      console.log(
-        'watchedPersonalDetailsFormFields.last_name',
-        watchedPersonalDetailsFormFields.last_name
-      );
-      console.log('account?.last_name', account?.last_name);
-      console.log('form changed: last_name');
       setFormChanged(true);
     } else if (
       watchedPersonalDetailsFormFields.profile?.title !==
       account?.profile?.title
     ) {
-      console.log(
-        'watchedPersonalDetailsFormFields.profile.title',
-        watchedPersonalDetailsFormFields.profile.title
-      );
-      console.log('account?.profile.title', account?.profile.title);
-      console.log('form changed: profile.title');
       setFormChanged(true);
     } else if (
       watchedPersonalDetailsFormFields.profile?.bio !== account?.profile?.bio
     ) {
-      console.log(
-        'watchedPersonalDetailsFormFields.profile.bio',
-        watchedPersonalDetailsFormFields.profile.bio
-      );
-      console.log('account?.profile.bio', account?.profile.bio);
-      console.log('form changed: profile.bio');
       setFormChanged(true);
     } else {
-      // console.log('form has not changed');
       setFormChanged(false);
     }
   }, [watchedPersonalDetailsFormFields]);
@@ -204,15 +166,11 @@ const ProfileSettingsPage: FC<Props> = () => {
   > = async (data, e) => {
     if (!formChanged) return;
 
-    console.log('data', data);
-
     const {
       first_name,
       last_name,
       profile: { title, bio },
     } = getPersonalDetailsChangeFormValues();
-
-    console.log('yooooo', { first_name, last_name, profile: { title, bio } });
 
     const updates: PersonalDetailsChangeFormTypes =
       {} as PersonalDetailsChangeFormTypes;
@@ -226,9 +184,6 @@ const ProfileSettingsPage: FC<Props> = () => {
     }
 
     if (title !== account?.profile.title) {
-      console.log('titleee', title);
-      console.log('update title');
-
       // updates.profile.title = title;
       updates.profile = {
         ...updates.profile,
@@ -243,8 +198,6 @@ const ProfileSettingsPage: FC<Props> = () => {
         bio,
       };
     }
-
-    console.log('final updates', updates);
 
     await updateAccount(updates);
   };
@@ -267,13 +220,11 @@ const ProfileSettingsPage: FC<Props> = () => {
     data,
     e
   ) => {
-    console.log('data: ', data);
-
     await updateAccount({
       password: data.password,
     });
+
     resetPasswordChangeFields();
-    // resetPassword({ email, reset_string, new_password: data.password });
   };
 
   const validate = (requirement: Requirement) => {
@@ -318,8 +269,6 @@ const ProfileSettingsPage: FC<Props> = () => {
     }
   };
 
-  console.log({ isFetchingAccount, isUpdatingAccount, isDeletingProfileImage });
-
   return (
     <>
       {(isFetchingAccount || isUpdatingAccount || isDeletingProfileImage) && (
@@ -332,13 +281,8 @@ const ProfileSettingsPage: FC<Props> = () => {
             <h1 className="pb-3 pt-2 text-[#101828] font-bold text-[24px] leading-[140%] tracking-[0%]">
               Manage Profile
             </h1>
-
-            {/* <div className="text-[#1D2639] text-base leading-[140%] tracking-[0%]">
-              All clients <span className="text-[#667085]">(230)</span>
-            </div> */}
           </div>
 
-          {/* <div className="flex-1"> */}
           <div className="flex-1 flex flex-col gap-12 bg-white shadow-lg px-8 py-9 rounded-[16px] border-[#E3E7ED]">
             <form
               className="flex flex-col-reverse md:flex-row items-start gap-4 md:gap-14"
@@ -376,7 +320,6 @@ const ProfileSettingsPage: FC<Props> = () => {
                     ref={ref}
                     onChange={async (e) => {
                       console.log('selected image File:', e.target.files);
-                      // console.log('selected image value:', e.target.value);
 
                       if (e.target.files?.[0]) {
                         const reader = new FileReader();
@@ -402,21 +345,16 @@ const ProfileSettingsPage: FC<Props> = () => {
                   >
                     <div
                       className={cn(
-                        // (selectedImage?.src || account.profile.image) &&
-                        //   'group-hover:bg-black/70',
                         'absolute inset-0 z-[2] transition-colors inline-flex items-center justify-center w-full h-full rounded-[inherit] group-hover:bg-black/50'
                       )}
                     >
                       <Plus
                         className={cn(
-                          // (selectedImage?.src || account.profile.image) &&
-                          //   'hidden text-muted',
                           'hidden text-muted group-hover:inline-block w-7 h-7'
                         )}
                       />
                     </div>
 
-                    {/* {selectedImage?.src && ( */}
                     <Avatar className="absolute inset-0 w-full h-full">
                       <AvatarImage
                         // @ts-ignore
@@ -427,7 +365,6 @@ const ProfileSettingsPage: FC<Props> = () => {
                         }
                       />
                     </Avatar>
-                    {/* )} */}
                   </Label>
 
                   {account.profile.image && (
@@ -518,7 +455,6 @@ const ProfileSettingsPage: FC<Props> = () => {
                     error={
                       personalDetailsChangeFormErrors.profile?.title?.message
                     }
-                    // disabled={isCreatingAccount}
                   />
                   <TextareaInput
                     label="Bio"
@@ -534,7 +470,6 @@ const ProfileSettingsPage: FC<Props> = () => {
                     error={
                       personalDetailsChangeFormErrors.profile?.bio?.message
                     }
-                    // disabled={isCreatingAccount}
                     maxLength={300}
                   />
                 </div>
@@ -611,7 +546,6 @@ const ProfileSettingsPage: FC<Props> = () => {
                           {passwordRequirements.map((requirement) => (
                             <span
                               key={requirement}
-                              // className="inline-block py-2 px-4 bg-[#ECFDF3] text-[#027A48]   text-sm leading-[140%] tracking-[-1.44%] text-center rounded"
                               className={cn(
                                 'inline-block py-2 px-4 text-sm leading-[140%] tracking-[-1.44%] text-center rounded',
                                 validate(requirement as Requirement)
@@ -634,11 +568,9 @@ const ProfileSettingsPage: FC<Props> = () => {
                     </form>
                   </div>
                 </div>
-                {/* </div> */}
               </div>
             )}
           </div>
-          {/* </div> */}
         </div>
       )}
     </>

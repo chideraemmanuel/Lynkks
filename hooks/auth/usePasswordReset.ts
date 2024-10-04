@@ -17,8 +17,6 @@ const initiatePasswordResetFunction = async ({
     }
   );
 
-  console.log('response from initiate password reset hook', response);
-
   return response.data;
 };
 
@@ -35,8 +33,6 @@ const completePasswordResetFunction = async (
     '/api/accounts/reset-password',
     credentials
   );
-
-  console.log('response from complete reset password hook', response);
 
   return response.data;
 };

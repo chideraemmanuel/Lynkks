@@ -11,16 +11,12 @@ interface AnalyticsReturnTypes {
 const getAnalytics = async ({ queryKey }: { queryKey: any[] }) => {
   const range = queryKey[1];
 
-  console.log('range', range);
-
   const response = await axios.get<AnalyticsReturnTypes[]>(
     `/api/analytics?range=${range}`,
     {
       withCredentials: true,
     }
   );
-
-  console.log('response from use analytics hook', response);
 
   return response.data;
 };

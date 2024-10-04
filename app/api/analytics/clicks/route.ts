@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const BodySchema = z.object({
-  //   username: z.string().min(3).max(15),
   username: z.string(),
   visitor_id: z.string().min(1),
   link_id: z
@@ -51,9 +50,7 @@ export const PUT = async (request: NextRequest) => {
   } = data;
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const account = await Account.findOne<AccountInterface>({ username });
 
@@ -89,11 +86,6 @@ export const PUT = async (request: NextRequest) => {
     const analyticsRecordExists = await Analytics.findOne<AnalyticsInterface>({
       account: account._id,
     });
-
-    // link: {
-    //   link_id: mongoose.Types.ObjectId;
-    //   link_section: 'custom_links' | 'social_links';
-    // }
 
     if (!analyticsRecordExists) {
       // create new analytics record

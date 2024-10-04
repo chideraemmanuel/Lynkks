@@ -1,13 +1,8 @@
 'use client';
 
-import FormInput from '@/components/form-input';
-import FullScreenSpinner from '@/components/full-screen-spinner';
-import { emailRegex } from '@/constants';
-// import useInitiatePasswordReset from '@/hooks/auth/useInitiatePasswordReset';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-// import ArrowLeftLineIcon from 'remixicon-react/ArrowLeftLineIcon';
 import { RiArrowLeftLine } from '@remixicon/react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
@@ -46,19 +41,9 @@ const UsernameSelectionPage: FC<Props> = () => {
           }
         );
 
-        console.log(
-          'response data from verify username mutation',
-          response.data
-        );
-
         return response.data;
       },
       onSuccess: (data) => {
-        // // set cookie and route to registration page
-        // document.cookie = `lynkks_selected_username=${getValues(
-        //   'username'
-        // )};expires=${new Date(9999, 10, 10).toUTCString()}`;
-
         localStorage.setItem('lynkks_selected_username', getValues('username'));
         setSelectedUsername(getValues('username'));
 
@@ -80,17 +65,12 @@ const UsernameSelectionPage: FC<Props> = () => {
     });
 
   const onSubmit: SubmitHandler<{ username: string }> = (data, e) => {
-    console.log('data: ', data);
-
     verifyUsername(data.username);
   };
 
   return (
     <>
-      {/* {isInitiatingPasswordReset && <FullScreenSpinner />} */}
-
       <div className="bg-white">
-        {/* <span>Back Button</span> */}
         <button
           onClick={() => router.back()}
           className="p-4 rounded-full bg-secondary text-secondary-foreground mb-9 md:mb-6"
@@ -131,32 +111,16 @@ const UsernameSelectionPage: FC<Props> = () => {
                     value: true,
                     message: 'Please choose a username',
                   },
-                  // validate: (fieldValue) => {
-                  //   return fieldValue.length > 2 || 'Username is too short';
-                  // },
                   pattern: {
                     value: /^[a-z0-9]{3,15}$/i,
-                    message: 'Invalid username',
+                    // message: 'Invalid username',
+                    message:
+                      'Username must be between 3-15 characters, and can only contain letters and numbers',
                   },
                 })}
                 className="flex-1 text-[#344054] text-base leading-[140%] tracking-[-0.4%] placeholder:text-muted-foreground outline-none focus-visible:outline-none disabled:cursor-not-allowed"
                 autoComplete="off"
               />
-              {/* <FormInput
-              // label="Email address"
-              placeholder="Enter your email address"
-              {...register('email', {
-                required: {
-                  value: true,
-                  message: 'Please enter your email address',
-                },
-                pattern: {
-                  value: emailRegex,
-                  message: 'Invalid email format',
-                },
-              })}
-              error={errors.email?.message}
-            /> */}
             </label>
             {errors.username?.message && (
               <span className="text-xs text-destructive">

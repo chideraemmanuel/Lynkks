@@ -2,7 +2,6 @@ import { URLRegex } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
 import Account, { AccountInterface } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
-import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -61,9 +60,7 @@ export const PUT = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const sessionExists = await Session.findOne<SessionInterface>({
       session_id,
@@ -79,8 +76,6 @@ export const PUT = async (request: NextRequest) => {
 
       return response;
     }
-
-    // console.log('sessionExists', sessionExists);
 
     const account = await Account.findById<AccountInterface>(
       sessionExists?.account

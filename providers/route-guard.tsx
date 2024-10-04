@@ -1,9 +1,8 @@
 'use client';
 
 import ErrorComponent from '@/components/error-component';
-import useSession from '@/hooks/auth/useSession';
 import useAccount from '@/hooks/useAccount';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
 interface Props {
@@ -12,14 +11,8 @@ interface Props {
 
 const RouteGuard: FC<Props> = ({ children }) => {
   const router = useRouter();
-  const pathname = usePathname();
 
   const { data: account, isLoading, isSuccess, isError, error } = useAccount();
-
-  // console.log('isLoading', isLoading);
-  // console.log('isError', isError);
-  // console.log('account', account);
-  // console.log('errorrr', error);
 
   useEffect(() => {
     // NAVIGATE TO LOGIN PAGE IF SERVER SENDS BACK AN ERROR (USER NOT AUTHENTICATED)

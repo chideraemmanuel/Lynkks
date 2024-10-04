@@ -14,11 +14,7 @@ interface GoogleResponse {
 
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
-  // const selected_username = request.cookies.get(
-  //   'lynkks_selected_username'
-  // )?.value;
   const code = request.nextUrl.searchParams.get('code');
-  // const state = request.nextUrl.searchParams.get('state');
   const success_redirect_path = request.nextUrl.searchParams.get(
     'success_redirect_path'
   );
@@ -28,14 +24,8 @@ export const GET = async (request: NextRequest) => {
   const selected_username =
     request.nextUrl.searchParams.get('selected_username');
 
-  console.log('selected_username', selected_username);
-  console.log('code', code);
-  // console.log('state', state);
-
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     if (session_id) {
       const sessionExists = await Session.findOne<SessionInterface>({
@@ -75,6 +65,7 @@ export const GET = async (request: NextRequest) => {
     }
 
     // !!! Auth logic starts !!!
+
     // ! redundant; redirect uri must match what is in google cloud console before it gets here anyway
     if (!success_redirect_path || !error_redirect_path) {
       return NextResponse.json({
@@ -217,8 +208,6 @@ export const GET = async (request: NextRequest) => {
         maxAge: 60 * 60, // 1 hour
         httpOnly: true,
       });
-
-      // response.cookies.set('selected_username', '', { maxAge: 0 });
 
       return response;
     } catch (error: any) {

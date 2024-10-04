@@ -3,7 +3,6 @@ import Account, { AccountInterface } from '@/models/account';
 import Analytics from '@/models/analytics';
 import Session, { SessionInterface } from '@/models/session';
 import { PipelineStage } from 'mongoose';
-import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest) => {
@@ -17,9 +16,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const sessionExists = await Session.findOne<SessionInterface>({
       session_id,
@@ -35,8 +32,6 @@ export const GET = async (request: NextRequest) => {
 
       return response;
     }
-
-    // console.log('sessionExists', sessionExists);
 
     const account = await Account.findById<AccountInterface>(
       sessionExists?.account

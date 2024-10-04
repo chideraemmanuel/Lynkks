@@ -13,9 +13,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const session = await Session.findOne<SessionInterface>({
       session_id,

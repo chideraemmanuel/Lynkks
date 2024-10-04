@@ -2,18 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -23,9 +11,6 @@
 /* -------------------------------------------------------------------------- */
 /*                                   CUSTOM                                   */
 /* -------------------------------------------------------------------------- */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 @layer base {
   :root {
@@ -140,7 +125,7 @@
       #dbeff1,
       #d6edeb
     ); */
-    background: radial-gradient(
+    /* background: radial-gradient(
       circle at 10% 20%,
       rgb(222, 168, 248) 0%,
       rgb(168, 222, 248) 21.8%,
@@ -175,7 +160,7 @@
       rgb(253, 244, 210) 67.3%,
       rgb(222, 248, 226) 85.2%,
       rgb(200, 247, 242) 103.6%
-    );
+    ); */
 
     /* background: linear-gradient(to top, #09203f 0%, #537895 100%); */
     background: radial-gradient(

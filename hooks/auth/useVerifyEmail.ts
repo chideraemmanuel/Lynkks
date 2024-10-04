@@ -13,8 +13,6 @@ const verifyEmail = async (credentials: Credentials) => {
     credentials
   );
 
-  console.log('response from verify email hook', response);
-
   return response.data;
 };
 

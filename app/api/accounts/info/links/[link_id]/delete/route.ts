@@ -2,7 +2,6 @@ import { connectToDatabase } from '@/lib/database';
 import Account, { AccountInterface } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
 import mongoose from 'mongoose';
-import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -26,9 +25,7 @@ export const PUT = async (
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const sessionExists = await Session.findOne<SessionInterface>({
       session_id,
@@ -44,8 +41,6 @@ export const PUT = async (
 
       return response;
     }
-
-    // console.log('sessionExists', sessionExists);
 
     const account = await Account.findById<AccountInterface>(
       sessionExists?.account

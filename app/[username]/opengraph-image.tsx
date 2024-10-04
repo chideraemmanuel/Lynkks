@@ -29,10 +29,7 @@ export default async function Image({
         style={{
           display: 'flex',
           fontSize: 60,
-          // color: 'black',
           color: '#f6f6f6',
-          // background:
-          //   'radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%)',
           background: 'linear-gradient(to top, #09203f 0%, #537895 100%)',
           width: '100%',
           height: '100%',
@@ -51,7 +48,6 @@ export default async function Image({
           }
           style={{
             borderRadius: 128,
-            // border: '5px solid #f6f6f6',
             border: '5px solid hsl(214, 31%, 91%)',
           }}
         />
@@ -64,22 +60,4 @@ export default async function Image({
       ...size,
     }
   );
-}
-
-{
-  /* <svg
-  class="pointer-events-none fixed isolate z-50 opacity-70 mix-blend-soft-light"
-  width="100%"
-  height="100%"
->
-  <filter id="noise">
-    <feTurbulence
-      type="fractalNoise"
-      baseFrequency="0.80"
-      numOctaves="4"
-      stitchTiles="stitch"
-    ></feTurbulence>
-  </filter>
-  <rect width="100%" height="100%" filter="url(#noise)"></rect>
-</svg>; */
 }

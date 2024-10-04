@@ -1,10 +1,8 @@
 'use client';
 
-import { SOCIAL_MEDIA_PLATFORMS } from '@/constants';
 import useUpdateClicks from '@/hooks/analytics/useUpdateClicks';
 import getIconByPlatform from '@/lib/getIconByPlatform';
 import getIPAddress from '@/lib/getIPAddress';
-import { SocialLink } from '@/models/account';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
@@ -91,7 +89,6 @@ const LynkksSocialLink: FC<Props> = ({
         onClick={() => handleClick()}
         title={link_platform}
       >
-        {/* <RiWhatsappLine className="md:w-12 w-10 md:h-12 h-10" /> */}
         <Icon size={'40'} />
       </Link>
     </>

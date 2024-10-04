@@ -1,11 +1,7 @@
 'use client';
 
 import StatCard from '@/components/stat-card';
-import { cn } from '@/lib/utils';
-import { ChevronRight, Flag } from 'lucide-react';
 import { FC, useState } from 'react';
-import usaFlag from '@/assets/usa-flag.svg';
-import Image from 'next/image';
 
 import {
   ChartConfig,
@@ -60,14 +56,11 @@ const BlogAnalyticsPage: FC<Props> = () => {
 
   return (
     <>
-      {/* {isFetchingAnalyticsTotal && <FullScreenSpinner />} */}
-
       {!isFetchingAccount &&
         account &&
         !isFetchingAnalyticsTotal &&
         analyticsTotal && (
           <div className={`flex flex-col min-h-screen`}>
-            {/* <main className="flex-1 px-4 md:container mx-auto pt-6 pb-20"> */}
             <main className="flex-1">
               <div className="px-4 md:container mx-auto pt-6 pb-20 flex flex-col gap-9">
                 {/* header */}
@@ -100,7 +93,6 @@ const BlogAnalyticsPage: FC<Props> = () => {
                       // disabled={isFetchingAnalyticsTotal}
                       defautlValue={'7d'}
                       onItemSelect={(value) => {
-                        console.log('selected role value:', value);
                         setChartRange(value as Range);
                       }}
                     />
@@ -125,7 +117,7 @@ const BlogAnalyticsPage: FC<Props> = () => {
                     </>
                   )}
                 </div>
-                {/* <div className="h-[500px] border"></div> */}
+
                 <AnalyticsChart range={chartRange} />
               </div>
             </main>
@@ -160,10 +152,6 @@ const AnalyticsChart: FC<ChartProps> = ({ range }) => {
     },
   } satisfies ChartConfig;
 
-  // if (isFetchingViews) {
-  //   console.log('fetching views...');
-  // }
-
   return (
     <>
       {isFetchingAnalytics && <Skeleton className="min-h-[500px] w-full" />}
@@ -189,7 +177,7 @@ const AnalyticsChart: FC<ChartProps> = ({ range }) => {
                 axisLine={true}
                 tickMargin={8}
                 tick={false}
-                // tickFormatter={(value) => value.slice(0, 3)} // TODO: use moment to format date return..? 2024-08-03
+                // tickFormatter={(value) => value.slice(0, 3)}
               />
               <ChartTooltip
                 cursor={false}

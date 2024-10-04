@@ -1,19 +1,12 @@
 'use client';
 
 import Logo from '@/components/logo';
-import { Button } from '@/components/ui/button';
 import {
-  RiAdminLine,
   RiArrowDownSLine,
-  RiArrowGoBackLine,
-  RiArrowLeftLine,
   RiLogoutCircleLine,
-  RiMenuLine,
-  RiSearch2Line,
-  RiSearchLine,
   RiUserLine,
 } from '@remixicon/react';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import MobileNavigation from './mobile-navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -23,24 +16,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-import { Input } from '@/components/ui/input';
-import { SearchIcon } from 'lucide-react';
 import useAccount from '@/hooks/useAccount';
 import { Skeleton } from '@/components/ui/skeleton';
 import useLogout from '@/hooks/auth/useLogout';
-import { useQueryClient } from 'react-query';
 import { AccountInterface } from '@/models/account';
 
 interface Props {}
 
 const DashboardHeader: FC<Props> = () => {
-  const [mobileSearchActive, setMobileSearchActive] = useState(false);
-
   return (
     <>
       <header className="sticky top-0 z-10 h-16 md:h-20 border-b xl:ml-[min(270px,_30vw)] px-6 bg-white">
         <div className="flex items-center justify-between gap-4 h-full">
-          {/* <div className="flex items-center gap-5 lg:hidden flex-1 lg:flex-initial"> */}
           <div className="xl:hidden">
             <MobileNavigation />
           </div>
@@ -61,8 +48,6 @@ const DashboardHeader: FC<Props> = () => {
 export default DashboardHeader;
 
 const DashboardHeaderAccountDropdown: FC = () => {
-  const queryClient = useQueryClient();
-
   const { data: account, isLoading: isFetchingAccount } = useAccount();
 
   const {
@@ -71,24 +56,15 @@ const DashboardHeaderAccountDropdown: FC = () => {
     isSuccess: logoutSuccessful,
   } = useLogout();
 
-  // useEffect(() => {
-  //   if (logoutSuccessful) {
-  //     queryClient.invalidateQueries('get current user');
-  //     queryClient.invalidateQueries('get current session');
-  //   }
-  // }, [logoutSuccessful]);
+  // const getInitials = (firstName: string, lastName: string) => {
+  //   const firstNameInitial = firstName.charAt(0);
+  //   const lastNameInitial = lastName.charAt(0);
 
-  const getInitials = (firstName: string, lastName: string) => {
-    const firstNameInitial = firstName.charAt(0);
-    const lastNameInitial = lastName.charAt(0);
-
-    return `${firstNameInitial}${lastNameInitial}`;
-  };
+  //   return `${firstNameInitial}${lastNameInitial}`;
+  // };
 
   return (
     <>
-      {/* {isLoggingOut && <FullScreenSpinner />} */}
-
       <DropdownMenu>
         {isFetchingAccount && !account && (
           <Skeleton className="hidden md:inline-block h-10 md:h-14 w-10 md:w-14 rounded-full" />
@@ -97,7 +73,6 @@ const DashboardHeaderAccountDropdown: FC = () => {
         {!isFetchingAccount && account && (
           <>
             <DropdownMenuTrigger asChild>
-              {/* <button className="p-1 lg:p-2 rounded-full flex items-center gap-2 bg-[#E4F7F5]"> */}
               <button className="p-1 lg:p-2 rounded-full flex items-center gap-2 bg-secondary">
                 <Avatar className="w-8 md:w-10 md:h-10 h-8">
                   {account.profile.image ? (
@@ -107,9 +82,6 @@ const DashboardHeaderAccountDropdown: FC = () => {
                     />
                   ) : (
                     <AvatarFallback className="bg-primary text-white font-medium text-lg md:text-2xl tracking-[-3.44%]">
-                      {/* {account.first_name &&
-                      account.last_name &&
-                      getInitials(account.first_name, account.last_name)} */}
                       {account.first_name && account.first_name.charAt(0)}
                     </AvatarFallback>
                   )}
@@ -117,7 +89,6 @@ const DashboardHeaderAccountDropdown: FC = () => {
 
                 <div className="hidden lg:flex items-center gap-3">
                   <span className="text-[#123633] font-medium text-sm leading-[140%] tracking-[-0.44%] inline-block w-[70%] truncate">
-                    {/* Chidera Emmanuel */}
                     {account.first_name} {account.last_name}
                   </span>
 

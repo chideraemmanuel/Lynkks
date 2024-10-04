@@ -20,8 +20,8 @@ const GoogleSignInCallbackPage: FC<Props> = () => {
   const { selectedUsername, setSelectedUsername } =
     useSelectedUsernameContext();
 
+  // ! this might not be necessary, as the google login endpoint would return an error if it's undefined
   //   if (!code) {
-
   //   }
 
   const queryClient = useQueryClient();
@@ -31,7 +31,7 @@ const GoogleSignInCallbackPage: FC<Props> = () => {
     queryFn: async () => {
       const username = localStorage.getItem('lynkks_selected_username');
 
-      console.log('lynkks_selected_username', username);
+      // console.log('lynkks_selected_username', username);
 
       const url = username
         ? `/api/accounts/login/google?code=${code}&success_redirect_path=${success_redirect_path}&error_redirect_path=${error_redirect_path}&selected_username=${username}`
@@ -49,11 +49,6 @@ const GoogleSignInCallbackPage: FC<Props> = () => {
       router.replace(success_redirect_path || '/dashboard'); // redundant..?
     },
     onError: (error: AxiosError<{ error: string }>) => {
-      // Authentication failed
-      // if (error?.response?.data?.error === 'Authentication failed') {
-      //   router.replace(error_redirect_path || '/auth/login');
-      // }
-
       toast.error(
         `${
           error?.response?.data?.error ||
@@ -68,7 +63,6 @@ const GoogleSignInCallbackPage: FC<Props> = () => {
   });
 
   if (error?.message === 'Network Error') {
-    console.log('network error');
     return <ErrorComponent error={error} />;
   }
 
@@ -76,7 +70,6 @@ const GoogleSignInCallbackPage: FC<Props> = () => {
     error?.response?.data?.error === 'Internal Server Error' ||
     error?.response?.status === 500
   ) {
-    console.log('server error');
     return <ErrorComponent error={error} />;
   }
 

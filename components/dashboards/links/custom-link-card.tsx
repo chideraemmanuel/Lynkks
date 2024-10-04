@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { CustomLinkWithId } from '@/containers/dashboard/links/custom-links-tab-content';
-import { CustomLink, Header, Hyperlink } from '@/models/account';
+import { Header, Hyperlink } from '@/models/account';
 import { RiPencilFill } from '@remixicon/react';
-import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
+import { GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import {
   AlertDialog,
@@ -34,7 +34,7 @@ const CustomLinkCard: FC<Props> = ({ link, onDragEnd }) => {
           onDragEnd
             ? () => {
                 onDragEnd();
-                console.log('[DRAG ENDED!]');
+                // console.log('[DRAG ENDED!]');
               }
             : undefined
         }
@@ -49,7 +49,6 @@ const CustomLinkCard: FC<Props> = ({ link, onDragEnd }) => {
             <span className="font-medium text-lg truncate w-[90%]">
               {link.title}
             </span>
-            {/* <span className="text-sm">https://localhost:3000</span> */}
             {link.type === 'link' && (
               <span className="text-muted-foreground text-sm truncate w-[90%]">
                 {link.href}
@@ -65,6 +64,7 @@ const CustomLinkCard: FC<Props> = ({ link, onDragEnd }) => {
             <EditHeader link={link} />
           )}
 
+          {/* TODO: ADD LINK VISIBILITY TOGGLE..? */}
           {/* <Button size={'icon'} variant={'ghost'} className="h-9 w-9">
             <EyeIcon className="w-5 h-5" />
           </Button> */}
@@ -79,7 +79,6 @@ const CustomLinkCard: FC<Props> = ({ link, onDragEnd }) => {
 export default CustomLinkCard;
 
 interface EditLinkFormData {
-  // type: 'header' | 'link';
   title: string;
   href: string;
 }
@@ -91,8 +90,6 @@ const EditLink: FC<{
 }> = ({ link }) => {
   const [formChanged, setFormChanged] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  // console.log('formChanged', formChanged);
 
   const {
     mutateAsync: editLink,
@@ -115,10 +112,8 @@ const EditLink: FC<{
   } = form;
 
   // this sets the default value of the inputs for useForm to properly manage
-  // this is necessary because, for some reason, on page load, the defaultValue set on the inputs only shows the proper value in the ui, but doesn't have it's state managed by react hook form
+  // this is necessary because, on page load, the defaultValue set on the inputs only shows the proper value in the ui, but doesn't have it's state managed by react hook form
   useEffect(() => {
-    console.log('initial load form data:', getValues());
-
     setValue('href', link.href);
     setValue('title', link.title);
   }, []);
@@ -128,15 +123,10 @@ const EditLink: FC<{
 
   useEffect(() => {
     if (watchedFormFields.href !== link.href) {
-      console.log('watchedFormFields.href', watchedFormFields.href);
-      console.log('link.href', link.href);
-      console.log('form changed: href');
       setFormChanged(true);
     } else if (watchedFormFields.title !== link.title) {
-      console.log('form changed: title');
       setFormChanged(true);
     } else {
-      // console.log('form has not changed');
       setFormChanged(false);
     }
   }, [watchedFormFields]);
@@ -160,8 +150,6 @@ const EditLink: FC<{
     if (formValues.title !== link.title) {
       updates.title = formValues.title;
     }
-
-    console.log('final updates', updates);
 
     await editLink({
       link_id: link.id,
@@ -200,11 +188,6 @@ const EditLink: FC<{
                 <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
                   Edit link
                 </AlertDialogTitle>
-
-                {/* <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
-              Are you sure you want to disable this admin? Doing so will suspend
-              the admin access.
-            </AlertDialogDescription> */}
               </AlertDialogHeader>
 
               <div className="flex flex-col gap-3 mb-10">
@@ -267,7 +250,6 @@ const EditLink: FC<{
 };
 
 interface EditHeaderFormData {
-  // type: 'header' | 'link';
   title: string;
 }
 
@@ -278,8 +260,6 @@ const EditHeader: FC<{
 }> = ({ link }) => {
   const [formChanged, setFormChanged] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  // console.log('formChanged', formChanged);
 
   const {
     mutateAsync: editHeader,
@@ -302,10 +282,8 @@ const EditHeader: FC<{
   } = form;
 
   // this sets the default value of the inputs for useForm to properly manage
-  // this is necessary because, for some reason, on page load, the defaultValue set on the inputs only shows the proper value in the ui, but doesn't have it's state managed by react hook form
+  // this is necessary because, on page load, the defaultValue set on the inputs only shows the proper value in the ui, but doesn't have it's state managed by react hook form
   useEffect(() => {
-    console.log('initial load form data:', getValues());
-
     setValue('title', link.title);
   }, []);
 
@@ -314,10 +292,8 @@ const EditHeader: FC<{
 
   useEffect(() => {
     if (watchedFormFields.title !== link.title) {
-      console.log('form changed: title');
       setFormChanged(true);
     } else {
-      // console.log('form has not changed');
       setFormChanged(false);
     }
   }, [watchedFormFields]);
@@ -337,8 +313,6 @@ const EditHeader: FC<{
     if (formValues.title !== link.title) {
       updates.title = formValues.title;
     }
-
-    console.log('final updates', updates);
 
     await editHeader({
       link_id: link.id,
@@ -377,10 +351,6 @@ const EditHeader: FC<{
                 <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
                   Update Header
                 </AlertDialogTitle>
-
-                {/* <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
-                  Headers can be used to split your links into sections.
-                </AlertDialogDescription> */}
               </AlertDialogHeader>
 
               <div className="flex flex-col gap-3 mb-10">

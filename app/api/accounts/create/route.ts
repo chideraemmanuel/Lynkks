@@ -11,8 +11,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const BodySchema = z.object({
-  // first_name: z.string().min(3),
-  // last_name: z.string().min(3),
   username: z.string().min(3).max(15),
   email: z.string().email(),
   password: z
@@ -25,34 +23,20 @@ const BodySchema = z.object({
 
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
-  // const { first_name, last_name, username, email, password } = body;
 
-  // if (!first_name || !last_name || !username || !email || !password) {
-  //   return NextResponse.json(
-  //     { error: 'Please supply the required fields' },
-  //     { status: 400 }
-  //   );
-  // }
+  const { success, data } = BodySchema.safeParse(body);
 
-  const returnObject = BodySchema.safeParse(body);
-
-  console.log('returnObject', returnObject.error?.message);
-
-  if (!returnObject.success) {
+  if (!success) {
     return NextResponse.json(
       { error: 'Missing or Invalid body data' },
       { status: 400 }
     );
   }
 
-  // const { first_name, last_name, username, email, password } =
-  //   returnObject.data;
-  const { username, email, password } = returnObject.data;
+  const { username, email, password } = data;
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const emailInUse = await Account.findOne<AccountInterface>({
       email: email.toLowerCase().trim(),
@@ -77,8 +61,6 @@ export const POST = async (request: NextRequest) => {
     }
 
     const account = await Account.create({
-      // first_name,
-      // last_name,
       username,
       email,
       password,
@@ -105,7 +87,7 @@ export const POST = async (request: NextRequest) => {
 
     const new_session_id = nanoid();
 
-    const session = await Session.create<SessionInterface>({
+    await Session.create<SessionInterface>({
       account: account._id,
       session_id: new_session_id,
     });
@@ -118,7 +100,6 @@ export const POST = async (request: NextRequest) => {
 
     return response;
   } catch (error: any) {
-    console.log('[ERROR]', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }

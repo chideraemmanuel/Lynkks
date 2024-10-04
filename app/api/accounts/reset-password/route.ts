@@ -20,21 +20,19 @@ const BodySchema = z.object({
 export const PUT = async (request: NextRequest) => {
   const body = await request.json();
 
-  const returnObject = BodySchema.safeParse(body);
+  const { success, data } = BodySchema.safeParse(body);
 
-  if (!returnObject.success) {
+  if (!success) {
     return NextResponse.json(
       { error: 'Missing or Invalid body data' },
       { status: 400 }
     );
   }
 
-  const { email, reset_string, new_password } = returnObject.data;
+  const { email, reset_string, new_password } = data;
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     // check if email has an account in database
     const accountExists = await Account.findOne<AccountInterface>({

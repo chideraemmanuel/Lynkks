@@ -59,8 +59,6 @@ const editLink = async ({ link_id, update_details }: Params) => {
     { withCredentials: true }
   );
 
-  console.log('response from edit link hook', response);
-
   return response.data;
 };
 

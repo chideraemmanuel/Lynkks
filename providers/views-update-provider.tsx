@@ -3,7 +3,6 @@
 import useUpdateViews from '@/hooks/analytics/useUpdateViews';
 import { getCookie, setCookie } from '@/lib/cookie';
 import getIPAddress from '@/lib/getIPAddress';
-import axios from 'axios';
 import { FC, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
@@ -19,14 +18,6 @@ const ViewsUpdateProvider: FC<Props> = ({ children, username }) => {
     isError: isErrorUpdatingViews,
     error: viewsUpdateError,
   } = useUpdateViews();
-
-  // const getIpAddress = async () => {
-  //   const response = await axios.get<{ ip: string }>(
-  //     'https://api.ipify.org/?format=json'
-  //   );
-
-  //   return response.data.ip;
-  // };
 
   useEffect(() => {
     const trackView = async () => {

@@ -5,14 +5,9 @@ import Link from 'next/link';
 import { FC } from 'react';
 import {
   RiHome7Line,
-  RiUserReceived2Line,
-  RiTeamLine,
-  RiFileList2Line,
-  RiCheckboxCircleLine,
   RiBarChart2Line,
   RiSettings2Line,
 } from '@remixicon/react';
-// import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';

@@ -2,7 +2,7 @@ import { connectToDatabase } from '@/lib/database';
 import Account, { AccountInterface } from '@/models/account';
 import Analytics from '@/models/analytics';
 import Session, { SessionInterface } from '@/models/session';
-import { PipelineStage, Types } from 'mongoose';
+import { PipelineStage } from 'mongoose';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -51,9 +51,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const sessionExists = await Session.findOne<SessionInterface>({
       session_id,
@@ -69,8 +67,6 @@ export const GET = async (request: NextRequest) => {
 
       return response;
     }
-
-    // console.log('sessionExists', sessionExists);
 
     const account = await Account.findById<AccountInterface>(
       sessionExists?.account
@@ -252,8 +248,6 @@ export const GET = async (request: NextRequest) => {
     // Convert resultMap back to an array of objects
     const finalResult = Object.values(resultMap);
 
-    // console.log('finalResult', finalResult);
-
     // const new_session_id = nanoid();
 
     await Session.updateOne(
@@ -282,5 +276,3 @@ export const GET = async (request: NextRequest) => {
     );
   }
 };
-// ! 'Failed to optimize pipeline :: caused by :: $range requires a starting value that can be represented as a 32-bit integer, found value: 1726199002274';
-// ! PlanExecutor error during aggregation :: caused by :: error while multiplanner was selecting best plan :: caused by :: can't convert from BSON type array to Date;

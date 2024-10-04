@@ -20,8 +20,6 @@ const getAnalyticsTotal = async () => {
     }
   );
 
-  console.log('response from use analytics total hook', response);
-
   return response.data;
 };
 

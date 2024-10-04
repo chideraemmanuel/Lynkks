@@ -27,7 +27,7 @@ const sessionSchema: Schema<SessionInterface> = new Schema(
       expires: 0,
       // immutable: true,
     },
-    //   device/useragent
+    //   TODO: add device and useragent to model..?
   },
   { timestamps: true }
 );

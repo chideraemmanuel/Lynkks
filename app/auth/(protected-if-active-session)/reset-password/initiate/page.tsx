@@ -1,13 +1,10 @@
 'use client';
 
 import FormInput from '@/components/form-input';
-import FullScreenSpinner from '@/components/full-screen-spinner';
 import { emailRegex } from '@/constants';
-// import useInitiatePasswordReset from '@/hooks/auth/useInitiatePasswordReset';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-// import ArrowLeftLineIcon from 'remixicon-react/ArrowLeftLineIcon';
 import { RiArrowLeftLine } from '@remixicon/react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
@@ -17,11 +14,6 @@ interface Props {}
 
 const PasswordResetInitiationPage: FC<Props> = () => {
   const router = useRouter();
-
-  // const {
-  //   mutate: initiatePasswordReset,
-  //   isLoading: isInitiatingPasswordReset,
-  // } = useInitiatePasswordReset();
 
   const { initiatePasswordReset, isInitiatingPasswordReset } =
     usePasswordReset();
@@ -35,17 +27,12 @@ const PasswordResetInitiationPage: FC<Props> = () => {
   } = form;
 
   const onSubmit: SubmitHandler<{ email: string }> = (data, e) => {
-    console.log('data: ', data);
-
     initiatePasswordReset({ email: data.email });
   };
 
   return (
     <>
-      {/* {isInitiatingPasswordReset && <FullScreenSpinner />} */}
-
       <div className="bg-white">
-        {/* <span>Back Button</span> */}
         <button
           onClick={() => router.back()}
           className="p-4 rounded-full bg-secondary text-secondary-foreground mb-9 md:mb-6"

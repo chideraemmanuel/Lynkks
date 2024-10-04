@@ -1,7 +1,6 @@
 'use client';
 
 import Logo from '@/components/logo';
-// import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -14,13 +13,9 @@ import {
 import { cn } from '@/lib/utils';
 import {
   RiBarChart2Line,
-  RiCheckboxCircleLine,
-  RiFileList2Line,
   RiHome7Line,
   RiMenuLine,
   RiSettings2Line,
-  RiTeamLine,
-  RiUserReceived2Line,
 } from '@remixicon/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

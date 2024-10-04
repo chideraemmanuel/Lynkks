@@ -9,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const accountSitemaps = accounts.map((account) => ({
     url: `${process.env.CLIENT_BASE_URL}/${account.username
+      // replacing the characters to use html entities is not particularly necessary, as users won't be able to create accounts with them anyway.
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -23,11 +24,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       //   lastModified: new Date(),
       priority: 1,
     },
-    // {
-    //   url: `${process.env.CLIENT_BASE_URL}/about`,
-    //   //   lastModified: new Date(),
-    //   priority: 0.8,
-    // },
     ...accountSitemaps,
   ];
 }

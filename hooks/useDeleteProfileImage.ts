@@ -9,8 +9,6 @@ const deleteProfileImage = async () => {
     { withCredentials: true }
   );
 
-  console.log('response from delete profile image hook', response);
-
   return response.data;
 };
 

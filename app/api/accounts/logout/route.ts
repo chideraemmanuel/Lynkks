@@ -13,9 +13,7 @@ export const DELETE = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     await Session.findOneAndDelete({ session_id });
 

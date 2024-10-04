@@ -1,21 +1,16 @@
 'use client';
 
 import FormInput from '@/components/form-input';
-import FullScreenSpinner from '@/components/full-screen-spinner';
 import GoogleSignInButton from '@/components/google-sign-in-button';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { emailRegex, passwordRegex } from '@/constants';
 import { useSelectedUsernameContext } from '@/contexts/selected-username-context';
 import useRegister from '@/hooks/auth/useRegister';
-import { getCookie } from '@/lib/cookie';
-// import useRegistration from '@/hooks/auth/useRegistration';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { FcGoogle } from 'react-icons/fc';
 import { toast } from 'sonner';
 
 interface Props {}
@@ -35,22 +30,8 @@ const RegistrationPage: FC<Props> = () => {
   const params = useSearchParams();
   const error = params.get('error');
 
-  // const [username, setUsername] = useState<string>('');
-
-  // console.log('usernameState', usernameState);
-  // console.log('username', username);
-
   // ! check for username from context
   useEffect(() => {
-    // // const selected_username = getCookie('lynkks_selected_username');
-    // // if (!selected_username) {
-    // if (selectedUsername === '') {
-    //   router.replace('/auth/username-select');
-    // } else {
-    //   setUsername(selectedUsername);
-    //   router.replace(pathname);
-    // }
-
     if (selectedUsername === '') {
       router.replace('/auth/username-select');
     }
@@ -100,8 +81,6 @@ const RegistrationPage: FC<Props> = () => {
   } = form;
 
   const onSubmit: SubmitHandler<RegistrationFormTypes> = (data, e) => {
-    console.log('data: ', data);
-
     createAccount({
       ...data,
       username: selectedUsername,
@@ -189,8 +168,9 @@ const RegistrationPage: FC<Props> = () => {
               )}
               Sign up
             </Button>
-            {/* <Separator /> */}
+
             <FormBreak />
+
             <GoogleSignInButton disabled={isCreatingAccount} />
           </div>
         </form>

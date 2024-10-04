@@ -34,13 +34,13 @@ const GoogleSignInButton = React.forwardRef<
       //   queryStrings.set('username', username);
       // }
 
-      console.log('queryStrings', queryStrings.toString());
+      // console.log('queryStrings', queryStrings.toString());
 
       const response = await axios.get<{ url: string }>(
         `/api/accounts/login/google/get-url?${queryStrings.toString()}`
       );
 
-      console.log('response from get google oauth url hook', response);
+      // console.log('response from get google oauth url hook', response);
 
       return response.data;
     },

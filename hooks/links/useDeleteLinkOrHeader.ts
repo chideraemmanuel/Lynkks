@@ -15,8 +15,6 @@ const deleteLinkOrHeader = async ({ link_id, section }: Param) => {
     { withCredentials: true }
   );
 
-  console.log('response from delete link or header hook', response);
-
   return response.data;
 };
 

@@ -15,8 +15,6 @@ const login = async (credentials: Credentials) => {
     credentials
   );
 
-  console.log('response from use login hook', response);
-
   return response.data;
 };
 

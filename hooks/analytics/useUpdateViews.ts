@@ -40,8 +40,6 @@ const updateViews = async ({
     data
   );
 
-  console.log('response from update view hook', response);
-
   return response.data;
 };
 
@@ -49,12 +47,8 @@ const useUpdateViews = () => {
   return useMutation({
     mutationKey: ['update views'],
     mutationFn: updateViews,
-    onSuccess: (data) => {
-      console.log('view update success', data);
-    },
-    onError: (error: AxiosError<{ error: string }>) => {
-      console.log('view update error', error);
-    },
+    onSuccess: (data) => {},
+    onError: (error: AxiosError<{ error: string }>) => {},
   });
 };
 

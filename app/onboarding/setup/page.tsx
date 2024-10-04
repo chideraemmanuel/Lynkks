@@ -11,18 +11,10 @@ import { SOCIAL_MEDIA_PLATFORMS, Link, URLRegex } from '@/constants';
 import { useOnBoardingSetupContext } from '@/contexts/onboarding-setup-context';
 import useLogout from '@/hooks/auth/useLogout';
 import useUpdateAccount from '@/hooks/useUpdateAccount';
-import DiscordIcon from '@/icons/discord';
-import WhatsAppIcon from '@/icons/whatsapp';
 import { cn } from '@/lib/utils';
-import {
-  RiArrowLeftLine,
-  RiInstagramFill,
-  RiTwitterFill,
-  RiWhatsappFill,
-} from '@remixicon/react';
+import { RiArrowLeftLine } from '@remixicon/react';
 import { Loader2, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { title } from 'process';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useQueryClient } from 'react-query';
@@ -47,9 +39,6 @@ const OnboardingSetupPage: FC<Props> = () => {
 export default OnboardingSetupPage;
 
 const LinkSelection: FC = () => {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-
   const { step, setStep, selectedLinks, setSelectedLinks } =
     useOnBoardingSetupContext();
 
@@ -67,19 +56,11 @@ const LinkSelection: FC = () => {
     setSelectedLinks(final);
   };
 
-  console.log('selectedLinks', selectedLinks);
-
   const {
     mutate: logout,
     isLoading: isLoggingOut,
     isSuccess: isSuccessLoggingOut,
   } = useLogout();
-
-  useEffect(() => {
-    if (isSuccessLoggingOut) {
-      // router.back();
-    }
-  }, [isSuccessLoggingOut]);
 
   return (
     <>
@@ -133,7 +114,6 @@ const LinkSelection: FC = () => {
             onClick={() => setStep(2)}
             disabled={selectedLinks.length === 0}
           >
-            {/* <Loader2 className="mr-2 h-4 w-4 animate-spin" /> */}
             Continue
           </Button>
         </div>
@@ -177,10 +157,6 @@ type LinksFormData = {
   Website: string;
 };
 
-// type PopulatedLink = Pick<Link, 'name'> & {
-//   href: string
-// }
-
 const LinkPopulation: FC = () => {
   const {
     step,
@@ -199,7 +175,6 @@ const LinkPopulation: FC = () => {
   } = form;
 
   const onSubmit: SubmitHandler<LinksFormData> = (data, e) => {
-    console.log('data', data);
     const entries = Object.entries(data);
 
     const res = entries.map(([key, value]) => ({
@@ -257,9 +232,6 @@ const LinkPopulation: FC = () => {
                   },
                   validate: (fieldValue) => {
                     if (link.name === 'WhatsApp') {
-                      // return (
-                      //   fieldValue.length > 9 || 'Invalid Phone Number or Link'
-                      // );
                       if (isNaN(+fieldValue.charAt(0))) {
                         return URLRegex.test(fieldValue) || 'Invalid URL';
                       } else {
@@ -278,12 +250,8 @@ const LinkPopulation: FC = () => {
           ))}
         </div>
 
-        {/* <div className="max-w-[570px] mx-auto"> */}
         <div className="max-w-[570px] mx-auto">
-          <Button className="w-full h-12">
-            {/* <Loader2 className="mr-2 h-4 w-4 animate-spin" /> */}
-            Continue
-          </Button>
+          <Button className="w-full h-12">Continue</Button>
         </div>
       </form>
     </>
@@ -316,8 +284,6 @@ const ProfileConfig: FC = () => {
     setPopulatedLinks,
   } = useOnBoardingSetupContext();
 
-  console.log('populatedLinks', populatedLinks);
-
   const {
     mutate: updateAccount,
     isLoading: isUpdatingAccount,
@@ -336,8 +302,6 @@ const ProfileConfig: FC = () => {
   const { name, ref, onChange, onBlur } = register('profile_image');
 
   const onSubmit: SubmitHandler<ProfileDetails> = (data, e) => {
-    console.log('data', data);
-    // TODO (IMPORTANT): ADD POPULATED LINKS TO UPDATE, AND POSSIBLY USE LINKS FOR BOTH CUSTOM AND SOCIAL HERE!
     const custom_links = populatedLinks.map(({ name, href }) => {
       if (name === 'WhatsApp') {
         if (/^\d{11}$/.test(href)) {
@@ -385,14 +349,6 @@ const ProfileConfig: FC = () => {
         }
       });
 
-    console.log('FINAL DATA', {
-      ...data,
-      profile_image: data.profile_image[0],
-      links: {
-        custom_links,
-        social_links,
-      },
-    });
     updateAccount({
       ...data,
       profile_image: data.profile_image[0],
@@ -429,10 +385,6 @@ const ProfileConfig: FC = () => {
           <h1 className="font-medium text-[32px] md:text-[48px] leading-[140%] tracking-[-1%] text-[#121212]">
             Add profile details
           </h1>
-          {/* <p className="w-[90%] mx-auto text-base text-muted-foreground leading-[140%] tracking-[-0.4%]">
-            Pick at least one link to add to your Lynkks. Links can be
-            modified later.
-          </p> */}
         </div>
 
         <div className="pb-12 flex flex-col gap-7">
@@ -458,7 +410,6 @@ const ProfileConfig: FC = () => {
                   },
                 })}
                 error={errors.first_name?.message}
-                // disabled={isCreatingAccount}
               />
 
               <FormInput
@@ -472,7 +423,6 @@ const ProfileConfig: FC = () => {
                   },
                 })}
                 error={errors.last_name?.message}
-                // disabled={isCreatingAccount}
               />
             </div>
           </div>
@@ -492,7 +442,6 @@ const ProfileConfig: FC = () => {
                 ref={ref}
                 onChange={async (e) => {
                   console.log('selected image File:', e.target.files);
-                  // console.log('selected image value:', e.target.value);
 
                   if (e.target.files?.[0]) {
                     const reader = new FileReader();
@@ -514,7 +463,6 @@ const ProfileConfig: FC = () => {
 
               <Label
                 htmlFor="profile_image"
-                // className="inline-flex items-center justify-center border rounded-[50%] w-[100px] h-[100px] cursor-pointer"
                 className="group relative inline-block border rounded-[50%] w-[100px] h-[100px] cursor-pointer"
               >
                 <div
@@ -563,7 +511,6 @@ const ProfileConfig: FC = () => {
                   },
                 })}
                 error={errors.profile?.title?.message}
-                // disabled={isCreatingAccount}
               />
 
               <TextareaInput
@@ -578,7 +525,6 @@ const ProfileConfig: FC = () => {
                   // },
                 })}
                 error={errors.profile?.bio?.message}
-                // disabled={isCreatingAccount}
                 maxLength={300}
               />
             </div>

@@ -2,7 +2,6 @@
 
 import useUpdateClicks from '@/hooks/analytics/useUpdateClicks';
 import getIPAddress from '@/lib/getIPAddress';
-import { CustomLink, Hyperlink } from '@/models/account';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';

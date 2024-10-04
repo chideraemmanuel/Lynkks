@@ -1,19 +1,12 @@
 'use client';
 
-import FormInput from '@/components/form-input';
 import FullScreenSpinner from '@/components/full-screen-spinner';
-import { emailRegex } from '@/constants';
-// import useInitiatePasswordReset from '@/hooks/auth/useInitiatePasswordReset';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-// import ArrowLeftLineIcon from 'remixicon-react/ArrowLeftLineIcon';
 import { RiArrowLeftLine } from '@remixicon/react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
 import OTPInput from '@/components/otp-input';
-import useSession from '@/hooks/auth/useSession';
 import ErrorComponent from '@/components/error-component';
 import useVerifyEmail from '@/hooks/auth/useVerifyEmail';
 import useResendVerificationOTP from '@/hooks/auth/useResendVeificationOTP';
@@ -26,7 +19,6 @@ const EmailVerificationPage: FC<Props> = () => {
   const [OTP, setOTP] = useState('');
 
   const router = useRouter();
-  const pathname = usePathname();
 
   const { mutate: verifyEmail, isLoading: isVerifyingEmail } = useVerifyEmail();
   const {
@@ -49,14 +41,7 @@ const EmailVerificationPage: FC<Props> = () => {
   } = useLogout();
 
   useEffect(() => {
-    if (isSuccessLoggingOut) {
-      // router.back();
-    }
-  }, [isSuccessLoggingOut]);
-
-  useEffect(() => {
     if (account && account.email_verified) {
-      console.log('user already verified, redirecting...');
       router.replace('/dashboard');
     }
 
@@ -71,10 +56,6 @@ const EmailVerificationPage: FC<Props> = () => {
       // router.replace(`/auth/login?return_to=${pathname}`);
       router.replace(`/auth/login`);
     }
-
-    // if (account && account.email_verified && !account.completed_onboarding) {
-    //   router.replace('/onboarding/setup');
-    // }
   }, [error, account]);
 
   if (isFetchingSession) {
@@ -82,7 +63,6 @@ const EmailVerificationPage: FC<Props> = () => {
   }
 
   if (error?.message === 'Network Error') {
-    console.log('network error');
     return <ErrorComponent error={error} />;
   }
 
@@ -90,26 +70,15 @@ const EmailVerificationPage: FC<Props> = () => {
     error?.response?.data?.error === 'Internal Server Error' ||
     error?.response?.status === 500
   ) {
-    console.log('server error');
     return <ErrorComponent error={error} />;
   }
 
-  // if (
-  //   error &&
-  //   // @ts-ignore
-  //   !(error?.response?.status > 400 && error?.response?.status < 500)
-  // ) {
-  //   return <ErrorComponent error={error} />;
-  // }
-
   return (
     <>
-      {/* {isLoggingOut && <FullScreenSpinner />} */}
       {isResendingVerificationOTP && <FullScreenSpinner />}
 
       {!isFetchingSession && account && !account.email_verified && (
         <div className="bg-white">
-          {/* <span>Back Button</span> */}
           <button
             // onClick={() => router.back()}
             onClick={() => logout()}
@@ -125,7 +94,6 @@ const EmailVerificationPage: FC<Props> = () => {
 
             <p className="text-[#475267] text-lg leading-[140%] tracking-[-0.44%]">
               A 6-digit confirmation code was sent to your email address,{' '}
-              {/* <span className="text-[#121212] font-bold">test@test.com</span>. */}
               <span className="text-[#121212] font-bold">{account.email}</span>.
               Please enter below.
             </p>
@@ -148,6 +116,7 @@ const EmailVerificationPage: FC<Props> = () => {
 
           <div className="pt-5 text-center">
             <p className="text-base text-muted-foreground leading-[140%] tracking-[-0.4%]">
+              {/* TODO: add expiration timer..? */}
               {/* OTP will expire in 1:00. Didn't receive mail?{' '} */}
               Didn't receive mail?{' '}
               <button

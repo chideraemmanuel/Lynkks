@@ -16,9 +16,7 @@ export const POST = async (request: NextRequest) => {
   const body = await request.json();
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     if (session_id) {
       const sessionExists = await Session.findOne<SessionInterface>({
@@ -57,27 +55,16 @@ export const POST = async (request: NextRequest) => {
       }
     }
 
-    // const { email, password } = body;
+    const { success, data } = BodySchema.safeParse(body);
 
-    // if (!email || !password) {
-    //   return NextResponse.json(
-    //     { error: 'Please supply the required fields' },
-    //     { status: 400 }
-    //   );
-    // }
-
-    const returnObject = BodySchema.safeParse(body);
-
-    console.log('returnObject', returnObject);
-
-    if (!returnObject.success) {
+    if (!success) {
       return NextResponse.json(
         { error: 'Missing or Invalid body data' },
         { status: 400 }
       );
     }
 
-    const { email, password } = returnObject.data;
+    const { email, password } = data;
 
     const accountExists = await Account.findOne<AccountInterface>({
       email: email.toLowerCase().trim(),
@@ -112,11 +99,6 @@ export const POST = async (request: NextRequest) => {
       profile,
       links,
     } = accountExists;
-
-    console.log('accountExists', accountExists);
-    console.log('hashedPassword', hashedPassword);
-
-    console.log('password', password);
 
     const passwordMatches = await bcrypt.compare(
       password,

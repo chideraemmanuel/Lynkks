@@ -13,12 +13,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { TabsContent } from '@/components/ui/tabs';
-import { SOCIAL_MEDIA_PLATFORMS, URLRegex } from '@/constants';
+import { URLRegex } from '@/constants';
 import useAddLinkOrHeader from '@/hooks/links/useAddLinkOrHeader';
 import useUpdateAccount from '@/hooks/useUpdateAccount';
 import { AccountInterface, SocialLink } from '@/models/account';
-import { RiPencilFill } from '@remixicon/react';
-import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ReactSortable } from 'react-sortablejs';
@@ -71,7 +70,6 @@ const SocialLinksTabContent: FC<Props> = ({ account }) => {
   const [list, setList] = useState<SocialLinkWithId[]>(socialLinkListWithId);
 
   useEffect(() => {
-    console.log('account changed', account);
     const socialLinkListWithId = account?.links?.social_links.map((link) => {
       return { ...link, id: link._id.toString() };
     });
@@ -181,8 +179,6 @@ const AddSocialLink: FC<{
       return link;
     }
   });
-
-  console.log('filteredLinks', filteredLinks);
 
   const {
     mutateAsync: addSocialLink,

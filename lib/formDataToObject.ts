@@ -23,6 +23,12 @@
 //   return formDataObject;
 // }
 
+/**
+ * this function converts a FormData object into a regular JavaScript object
+ * @param formData the formdata to be modified
+ * @returns modified formData object
+ */
+
 function formDataToObject(formData: FormData): Record<string, any> {
   const obj: Record<string, any> = {};
 

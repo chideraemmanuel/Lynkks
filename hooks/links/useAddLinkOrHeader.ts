@@ -1,4 +1,4 @@
-import { AccountInterface, CustomLink } from '@/models/account';
+import { AccountInterface } from '@/models/account';
 import axios, { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
@@ -53,8 +53,6 @@ const addLinkOrHeader = async (details: Details) => {
     details,
     { withCredentials: true }
   );
-
-  console.log('response from add link or header hook', response);
 
   return response.data;
 };

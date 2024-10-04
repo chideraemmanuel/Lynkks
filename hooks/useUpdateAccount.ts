@@ -5,12 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'sonner';
 
-// interface Updates {
-
-// }
-
 const updateAccount = async (updates: Updates & { profile_image?: File }) => {
-  console.log('updatesss', updates);
   const response = await axios.put<AccountInterface>(
     '/api/accounts/info',
     updates,
@@ -22,8 +17,6 @@ const updateAccount = async (updates: Updates & { profile_image?: File }) => {
       },
     }
   );
-
-  console.log('response from update account hook', response);
 
   return response.data;
 };
@@ -41,8 +34,6 @@ const useUpdateAccount = () => {
       // toast.success('Update Successful')
     },
     onError: (error: AxiosError<{ error: string }>) => {
-      console.log('errorrr', error);
-
       toast.error(
         `${
           error?.response?.data?.error ||

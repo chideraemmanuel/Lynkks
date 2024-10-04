@@ -8,8 +8,6 @@ const resendVerificationOTP = async (email: string) => {
     { email }
   );
 
-  console.log('response from resend otp hook', response);
-
   return response.data;
 };
 

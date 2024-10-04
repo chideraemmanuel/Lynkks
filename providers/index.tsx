@@ -14,7 +14,6 @@ const Providers: FC<Props> = ({ children }) => {
   return (
     <>
       <QueryClientProvider client={client}>
-        {/* <Toaster richColors /> */}
         <Toaster richColors />
         {children}
       </QueryClientProvider>

@@ -13,26 +13,22 @@ const BodySchema = z.object({
   email: z.string().email(),
 });
 
-// TODO: only make endpoint accessible when there's an active session..? this would mean that the endpoint doesn't need to recieve the email field anymore, as that can be gotten from the active session.
-
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
 
-  const returnObject = BodySchema.safeParse(body);
+  const { success, data } = BodySchema.safeParse(body);
 
-  if (!returnObject.success) {
+  if (!success) {
     return NextResponse.json(
       { error: 'Missing or Invalid body data' },
       { status: 400 }
     );
   }
 
-  const { email } = returnObject.data;
+  const { email } = data;
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     // check if email has an account in database
     const accountExists = await Account.findOne<AccountInterface>({

@@ -12,7 +12,6 @@ const StatCard: FC<Props> = ({ title, all_time_total, today_total }) => {
       <div className="px-6 md:px-4 py-4 bg-white border shadow-sm rounded-[16px] flex flex-col">
         <span className="inline-block pb-2 text-[#98A1B3] text-base font-AeonikProMedium font-medium leading-[150%] tracking-[0%]">
           {title}
-          {/* Total views */}
         </span>
 
         <span className="text-black font-AeonikProBold font-bold text-2xl leading-[140%] tracking-[0%]">

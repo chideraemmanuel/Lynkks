@@ -50,8 +50,6 @@ const updateClicks = async ({
     data
   );
 
-  console.log('response from update click hook', response);
-
   return response.data;
 };
 
@@ -59,12 +57,8 @@ const useUpdateClicks = () => {
   return useMutation({
     mutationKey: ['update clicks'],
     mutationFn: updateClicks,
-    onSuccess: (data) => {
-      console.log('click update success', data);
-    },
-    onError: (error: AxiosError<{ error: string }>) => {
-      console.log('click update error', error);
-    },
+    onSuccess: (data) => {},
+    onError: (error: AxiosError<{ error: string }>) => {},
   });
 };
 

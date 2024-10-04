@@ -62,9 +62,7 @@ export const PUT = async (request: NextRequest) => {
     data;
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const account = await Account.findOne<AccountInterface>({ username });
 

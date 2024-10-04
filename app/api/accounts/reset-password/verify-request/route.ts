@@ -18,9 +18,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     // check if email has an account in database
     const accountExists = await Account.findOne<AccountInterface>({

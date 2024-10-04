@@ -4,13 +4,10 @@ import FormInput from '@/components/form-input';
 import FullScreenSpinner from '@/components/full-screen-spinner';
 import { Button } from '@/components/ui/button';
 import { passwordRegex } from '@/constants';
-// import useCompletePasswordReset from '@/hooks/auth/useCompletePasswordReset';
 import { cn } from '@/lib/utils';
 import { notFound, useRouter, useSearchParams } from 'next/navigation';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-// import ArrowLeftLineIcon from 'remixicon-react/ArrowLeftLineIcon';
-import { RiArrowLeftLine } from '@remixicon/react';
 import { Loader2 } from 'lucide-react';
 import usePasswordReset from '@/hooks/auth/usePasswordReset';
 import { useQuery } from 'react-query';
@@ -60,9 +57,6 @@ const PasswordResetPage: FC<Props> = () => {
         `/api/accounts/reset-password/verify-request?email=${email}`
       );
 
-      console.log('responsne from verify password reset request hook'),
-        response;
-
       return response.data;
     },
     onSuccess: (data) => {},
@@ -74,8 +68,6 @@ const PasswordResetPage: FC<Props> = () => {
   }
 
   // ! FORM VALIDATION AND SUBMISSION !
-  // const { mutate: resetPassword, isLoading: isResettingPassword } =
-  //   useCompletePasswordReset();
   const { resetPassword, isResettingPassword } = usePasswordReset();
 
   const form = useForm<PasswordResetFormTypes>();
@@ -89,8 +81,6 @@ const PasswordResetPage: FC<Props> = () => {
   } = form;
 
   const onSubmit: SubmitHandler<PasswordResetFormTypes> = (data, e) => {
-    console.log('data: ', data);
-
     resetPassword({ email, reset_string, new_password: data.password });
   };
 
@@ -144,7 +134,6 @@ const PasswordResetPage: FC<Props> = () => {
   // ! HANDLE PASSWORD REQUEST VERIFICATION ERROR !
 
   if (errorVerifyingPasswordResetRequest?.message === 'Network Error') {
-    console.log('network error');
     return <ErrorComponent error={errorVerifyingPasswordResetRequest} />;
   }
 
@@ -153,16 +142,8 @@ const PasswordResetPage: FC<Props> = () => {
       'Internal Server Error' ||
     errorVerifyingPasswordResetRequest?.response?.status === 500
   ) {
-    console.log('server error');
     return <ErrorComponent error={errorVerifyingPasswordResetRequest} />;
   }
-
-  // if (
-  //   errorVerifyingPasswordResetRequest &&
-  //   errorVerifyingPasswordResetRequest.response?.status !== 422
-  // ) {
-  //   return <ErrorComponent error={errorVerifyingPasswordResetRequest} />;
-  // }
 
   if (
     errorVerifyingPasswordResetRequest?.response?.status === 422
@@ -173,18 +154,8 @@ const PasswordResetPage: FC<Props> = () => {
 
   return (
     <>
-      {/* {isResettingPassword && <FullScreenSpinner />} */}
-
       {!isVerifyingPasswordResetRequest && data && (
         <div className="bg-white">
-          {/* <span>Back Button</span> */}
-          {/* <button
-          onClick={() => router.back()}
-          className="p-4 rounded-full bg-[#F2F4F7] text-[#083D0B] mb-9 md:mb-6"
-        >
-          <RiArrowLeftLine />
-        </button> */}
-
           <div className="pb-6 flex flex-col gap-1 text-start">
             <h1 className="font-medium text-[32px] md:text-[48px] leading-[140%] tracking-[-1%] text-[#121212]">
               Create a new password
@@ -243,7 +214,6 @@ const PasswordResetPage: FC<Props> = () => {
                 {passwordRequirements.map((requirement) => (
                   <span
                     key={requirement}
-                    // className="inline-block py-2 px-4 bg-[#ECFDF3] text-[#027A48]  text-sm leading-[140%] tracking-[-1.44%] text-center rounded"
                     className={cn(
                       'inline-block py-2 px-4 text-sm leading-[140%] tracking-[-1.44%] text-center rounded',
                       validate(requirement as Requirement)

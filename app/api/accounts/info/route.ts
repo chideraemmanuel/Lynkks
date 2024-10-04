@@ -1,11 +1,7 @@
 import { app } from '@/config/firebase';
 import { passwordRegex, URLRegex } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
-import Account, {
-  AccountInterface,
-  CustomLink,
-  SocialLink,
-} from '@/models/account';
+import Account, { AccountInterface } from '@/models/account';
 import Session, { SessionInterface } from '@/models/session';
 import {
   deleteObject,
@@ -17,9 +13,12 @@ import {
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
-import { nanoid } from 'nanoid';
 import { v4 as uuid } from 'uuid';
 import formDataToObject from '@/lib/formDataToObject';
+
+// =============================================================================
+// ! READ ROUTE
+// =============================================================================
 
 export const GET = async (request: NextRequest) => {
   const session_id = request.cookies.get('sid')?.value;
@@ -32,9 +31,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const sessionExists = await Session.findOne<SessionInterface>({
       session_id,
@@ -50,8 +47,6 @@ export const GET = async (request: NextRequest) => {
 
       return response;
     }
-
-    // console.log('sessionExists', sessionExists);
 
     const account = await Account.findById<AccountInterface>(
       sessionExists?.account
@@ -88,7 +83,6 @@ export const GET = async (request: NextRequest) => {
     });
 
     return response;
-    // return NextResponse.json(account);
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(
@@ -97,6 +91,10 @@ export const GET = async (request: NextRequest) => {
     );
   }
 };
+
+// =============================================================================
+// ! UPDATE ROUTE
+// =============================================================================
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -204,9 +202,7 @@ export const PUT = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const sessionExists = await Session.findOne<SessionInterface>({
       session_id,
@@ -222,8 +218,6 @@ export const PUT = async (request: NextRequest) => {
 
       return response;
     }
-
-    // console.log('sessionExists', sessionExists);
 
     const account = await Account.findById<AccountInterface>(
       sessionExists?.account
@@ -241,53 +235,9 @@ export const PUT = async (request: NextRequest) => {
     }
 
     // !!!!! FIELD VALIDATION STARTS !!!!!
-    //   const returnObject = BodySchema.safeParse({
-    //     links: {
-    //       custom_links: [
-    //         {
-    //           type: 'link',
-    //           title: 'Titleee',
-    //           href: 'https://google.com',
-    //         },
-    //       ],
-    //     },
-    //     completed_onboarding: 'true',
-    //   });
-
-    //   //   if (!returnObject.success) {
-    //   //     return;
-    //   //   }
-
-    //   //   const {} = returnObject.data;
-    //   return NextResponse.json(returnObject);
-    //
-    //   console.log('params', params);
-    //   const body = await request.json();
-
-    // const formData = await request.formData();
-
-    // const profile_image = formData.get('profile_image');
-
     const formData = await request.formData();
 
-    // let body: any = {};
-    // formData.forEach((value, key) => (body[key] = value));
-    // console.log('body', body);
-
     const formDataObject = formDataToObject(formData);
-
-    // console.log('formDataObject', formDataObject);
-
-    // const body = await request.json();
-
-    // const { profile_image } = body; // ! intentional separation
-
-    // console.log('body', body);
-    // console.log('profile_image', profile_image);
-    // const f = new Intl.DateTimeFormat('en-us', { timeStyle: 'full' });
-    // console.log('[DATE]', f.format(new Date(Date.now() + 1000 * 60 * 60)));
-
-    console.log('formDataObject', formDataObject);
 
     const { success, data } = BodySchema.safeParse(formDataObject);
 
@@ -298,7 +248,6 @@ export const PUT = async (request: NextRequest) => {
       );
     }
 
-    // if (Object.keys(data).length === 0 && !profile_image) {
     if (Object.keys(data).length === 0) {
       return NextResponse.json(
         { error: 'No field to be updated was supplied' },
@@ -315,8 +264,6 @@ export const PUT = async (request: NextRequest) => {
       links,
       completed_onboarding,
     } = data;
-
-    console.log('dataaaa', data);
 
     const updates: Updates = {};
 
@@ -408,10 +355,6 @@ export const PUT = async (request: NextRequest) => {
       profile_image_url = url;
     }
 
-    console.log('profile_image_url', profile_image_url);
-
-    console.log({ ...updates });
-
     const updatedAccount = await Account.findByIdAndUpdate(
       sessionExists?.account,
       // {}, // updates
@@ -453,7 +396,6 @@ export const PUT = async (request: NextRequest) => {
         .split('/o/')[1] // Get the part after '/o/'
         .split('?')[0]; // Remove the query parameters like '?alt=media'
 
-      // const previousProfileImageRef = ref(storage, `images/profile/${imageName}`);
       const previousProfileImageRef = ref(storage, filePath);
       await deleteObject(previousProfileImageRef);
     }
@@ -477,7 +419,6 @@ export const PUT = async (request: NextRequest) => {
     });
 
     return response;
-    // return NextResponse.json(updatedAccount);
   } catch (error: any) {
     console.log('[ERROR]', error);
     return NextResponse.json(

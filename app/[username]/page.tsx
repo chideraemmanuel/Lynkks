@@ -1,16 +1,12 @@
 import Image from 'next/image';
 import { FC } from 'react';
 import profileImage from '@/assets/profile.jpg';
-import Link from 'next/link';
-import { RiWhatsappLine } from '@remixicon/react';
 import Logo from '@/components/logo';
 import Account, { AccountInterface } from '@/models/account';
 import { notFound } from 'next/navigation';
-import { Link as LinkType, SOCIAL_MEDIA_PLATFORMS } from '@/constants';
 import { connectToDatabase } from '@/lib/database';
 import LynkksLink from '@/components/lynkks-link';
 import LynkksSocialLink from '@/components/lynkks-social-link';
-import { link } from 'fs';
 import { Metadata, ResolvingMetadata } from 'next';
 
 interface Props {
@@ -31,9 +27,9 @@ export async function generateMetadata(
 
   if (!account) notFound();
 
-  const previousImages = (await parent).openGraph?.images || [];
+  // const previousImages = (await parent).openGraph?.images || [];
 
-  const profile_image = account?.profile.image || profileImage.src;
+  // const profile_image = account?.profile.image || profileImage.src;
 
   const name =
     account?.first_name && account.last_name
@@ -71,15 +67,9 @@ const LynkksUserPage: FC<Props> = async ({ params: { username } }) => {
     links: { custom_links, social_links },
   } = account;
 
-  // console.log({ custom_links, social_links });
-
-  // const Icon = getIcon();
-
   return (
     <>
       <div className="bg-gradient min-h-screen py-10 flex flex-col">
-        {/* <div className="min-h-screen py-10 flex flex-col"> */}
-        {/* <div className="bg-blue-300 w-[min(700px,_90%)] mx-auto flex-1"> */}
         <div className="w-[min(700px,_90%)] mx-auto flex-1">
           <div className="flex flex-col items-center gap-1 text-center mb-7">
             <div className="rounded-[50%] shadow-lg border-slate-300 border-[4px] md:w-[120px] w-[90px] md:h-[120px] h-[90px] mb-3">
@@ -93,13 +83,10 @@ const LynkksUserPage: FC<Props> = async ({ params: { username } }) => {
             </div>
 
             <h1 className="md:text-2xl text-xl font-semibold">
-              {/* Chidera Emmanuel */}
               {profile.title}
             </h1>
 
             <p className="w-[90%] text-muted-foreground md:text-base text-sm whitespace-pre-line">
-              {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint,
-              nihil esse debitis necessitatibus fugiat sit? */}
               {profile.bio}
             </p>
           </div>

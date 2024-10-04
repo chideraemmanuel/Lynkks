@@ -2,7 +2,6 @@
 
 import CustomLinkCard from '@/components/dashboards/links/custom-link-card';
 import FormInput from '@/components/form-input';
-import SelectInput from '@/components/select-input';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -19,8 +18,7 @@ import { URLRegex } from '@/constants';
 import useAddLinkOrHeader from '@/hooks/links/useAddLinkOrHeader';
 import useUpdateAccount from '@/hooks/useUpdateAccount';
 import { AccountInterface, CustomLink } from '@/models/account';
-import { RiDeleteBin5Line, RiPencilFill } from '@remixicon/react';
-import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ReactSortable } from 'react-sortablejs';
@@ -40,7 +38,6 @@ const CustomLinksTabContent: FC<Props> = ({ account }) => {
   const [list, setList] = useState<CustomLinkWithId[]>(customLinkListWithId);
 
   useEffect(() => {
-    console.log('account changed', account);
     const customLinkListWithId = account?.links?.custom_links.map((link) => {
       return { ...link, id: link._id.toString() };
     });
@@ -110,7 +107,6 @@ const CustomLinksTabContent: FC<Props> = ({ account }) => {
 export default CustomLinksTabContent;
 
 interface AddLinkFormData {
-  // type: 'header' | 'link';
   title: string;
   href: string;
 }
@@ -138,12 +134,6 @@ const AddLink: FC<{}> = () => {
 
   const onSubmit: SubmitHandler<AddLinkFormData> = async (data, e) => {
     const { title, href } = data;
-
-    // await addLink({
-    //   type: 'link',
-    //   title,
-    //   href,
-    // });
 
     await addLink({
       section: 'custom_links',
@@ -178,11 +168,6 @@ const AddLink: FC<{}> = () => {
                 <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
                   Add new link
                 </AlertDialogTitle>
-
-                {/* <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
-              Are you sure you want to disable this admin? Doing so will suspend
-              the admin access.
-            </AlertDialogDescription> */}
               </AlertDialogHeader>
 
               <div className="flex flex-col gap-3 mb-10">
@@ -243,7 +228,6 @@ const AddLink: FC<{}> = () => {
 };
 
 interface AddHeaderFormData {
-  // type: 'header' | 'link';
   title: string;
 }
 
@@ -270,11 +254,6 @@ const AddHeader: FC<{}> = () => {
 
   const onSubmit: SubmitHandler<AddHeaderFormData> = async (data, e) => {
     const { title } = data;
-
-    // await addLink({
-    //   type: 'header',
-    //   title,
-    // });
 
     await addHeader({
       section: 'custom_links',

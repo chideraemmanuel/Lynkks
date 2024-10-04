@@ -3,26 +3,16 @@
 import FullScreenSpinner from '@/components/full-screen-spinner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SOCIAL_MEDIA_PLATFORMS } from '@/constants';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CustomLinksTabContent from '@/containers/dashboard/links/custom-links-tab-content';
 import SocialLinksTabContent from '@/containers/dashboard/links/social-links-tab-content';
 import useAccount from '@/hooks/useAccount';
-import { AccountInterface, CustomLink, SocialLink } from '@/models/account';
-import { RiPencilFill, RiWhatsappLine } from '@remixicon/react';
-import { EyeIcon, GripVertical, Trash2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
-import { ReactSortable } from 'react-sortablejs';
 import { toast } from 'sonner';
 import profileImage from '@/assets/profile.jpg';
 import Image from 'next/image';
-import LynkksSocialLink from '@/components/lynkks-social-link';
-import LynkksLink from '@/components/lynkks-link';
-import Logo from '@/components/logo';
 import getIconByPlatform from '@/lib/getIconByPlatform';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
-import Link from 'next/link';
 
 interface Props {}
 
@@ -42,8 +32,6 @@ const DashboardLinksPage: FC<Props> = () => {
 
   const updateSearchParam = (value: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
-
-    // console.log('passed value', value);
 
     if (value === '' || !value) {
       newSearchParams.delete('tab');
@@ -96,7 +84,6 @@ const DashboardLinksPage: FC<Props> = () => {
 
           <div className="fixed right-0 top-[80px] w-[500px] lg:flex hidden flex-col justify-center gap-5 sm:px-6 px-4 py-6 border-l">
             <Alert className="flex justify-between items-center p-2">
-              {/* <AlertDescription>lynkks.vercel.app/chidera</AlertDescription> */}
               <AlertDescription>
                 lynkks.vercel.app/{account.username}
               </AlertDescription>
@@ -116,8 +103,6 @@ const DashboardLinksPage: FC<Props> = () => {
 
             <div className="w-[calc(428px_*_0.65)] h-[calc(896px_*_0.65)] mx-auto rounded-[30px] border overflow-hidden">
               <div className="bg-gradient min-h-[100%] py-[calc(40px_*_0.65)] flex flex-col">
-                {/* <div className="min-h-screen py-10 flex flex-col"> */}
-                {/* <div className="bg-blue-300 w-[min(700px,_90%)] mx-auto flex-1"> */}
                 <div className="w-[90%] mx-auto flex-1">
                   <div className="flex flex-col items-center gap-[calc(4px_*_0.65)] text-center mb-[calc(28px_*_0.65)]">
                     <div className="rounded-[50%] shadow-lg border-[calc(4px_*_0.65)] md:w-[calc(120px_*_0.65)] w-[calc(90px_*_0.65)] md:h-[calc(120px_*_0.65)] h-[calc(90px_*_0.65)] mb-[calc(12px_*_0.65)]">
@@ -136,8 +121,6 @@ const DashboardLinksPage: FC<Props> = () => {
                     </h1>
 
                     <p className="w-[90%] text-muted-foreground text-[calc(14px_*_0.65)] leading-[calc(20px_*_0.65)] whitespace-pre-line">
-                      {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint,
-              nihil esse debitis necessitatibus fugiat sit? */}
                       {account.profile.bio}
                     </p>
                   </div>
@@ -199,6 +182,7 @@ const DashboardLinksPage: FC<Props> = () => {
               </a>
             </Button>
 
+            {/* TODO: Use drawer for preview on mobile */}
             {/* <Drawer>
               <DrawerTrigger asChild>
                 <Button className="fixed right-4 bottom-7 z-[5]">

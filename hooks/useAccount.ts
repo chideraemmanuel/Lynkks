@@ -10,8 +10,6 @@ const getAccount = async () => {
     }
   );
 
-  console.log('response from use account hook', response);
-
   return response.data;
 };
 
@@ -20,9 +18,7 @@ const useAccount = () => {
     queryKey: ['get current account'],
     queryFn: getAccount,
     onSuccess: (data) => {},
-    onError: (error: AxiosError<{ error: string }>) => {
-      console.log('error', error);
-    },
+    onError: (error: AxiosError<{ error: string }>) => {},
     retry: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,

@@ -4,7 +4,6 @@ import ErrorComponent from '@/components/error-component';
 import FullScreenSpinner from '@/components/full-screen-spinner';
 import Logo from '@/components/logo';
 import OnboardingContextProvider from '@/contexts/onboarding-setup-context';
-import useSession from '@/hooks/auth/useSession';
 import useAccount from '@/hooks/useAccount';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
@@ -26,7 +25,6 @@ const OnboardingSetupLayout: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (account && account.completed_onboarding) {
-      console.log('user already completed onboarding, redirecting...');
       router.replace('/dashboard');
     }
 
@@ -48,7 +46,6 @@ const OnboardingSetupLayout: FC<Props> = ({ children }) => {
   }
 
   if (error?.message === 'Network Error') {
-    console.log('network error');
     return <ErrorComponent error={error} />;
   }
 
@@ -56,7 +53,6 @@ const OnboardingSetupLayout: FC<Props> = ({ children }) => {
     error?.response?.data?.error === 'Internal Server Error' ||
     error?.response?.status === 500
   ) {
-    console.log('server error');
     return <ErrorComponent error={error} />;
   }
 
@@ -78,7 +74,6 @@ const OnboardingSetupLayout: FC<Props> = ({ children }) => {
                 <Logo />
               </div>
 
-              {/* <div className="w-[min(570px,_100%)] py-28">{children}</div> */}
               <div className="w-[min(800px,_100%)] py-28">{children}</div>
             </div>
           </div>

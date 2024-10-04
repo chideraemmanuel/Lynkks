@@ -11,13 +11,13 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { SOCIAL_MEDIA_PLATFORMS, URLRegex } from '@/constants';
+import { URLRegex } from '@/constants';
 import { SocialLinkWithId } from '@/containers/dashboard/links/social-links-tab-content';
 import useDeleteLinkOrHeader from '@/hooks/links/useDeleteLinkOrHeader';
 import useEditLink from '@/hooks/links/useEditLink';
 import getIconByPlatform from '@/lib/getIconByPlatform';
 import { RiPencilFill } from '@remixicon/react';
-import { EyeIcon, GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
+import { GripVerticalIcon, Loader2, Trash2 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -28,14 +28,6 @@ interface Props {
 }
 
 const SocialLinkCard: FC<Props> = ({ link, onDragEnd }) => {
-  // const getIcon = () => {
-  //   const res = SOCIAL_MEDIA_PLATFORMS.find((platform) => {
-  //     return platform.name === link.platform;
-  //   });
-
-  //   return res?.icon;
-  // };
-
   const Icon = getIconByPlatform(link.platform);
 
   return (
@@ -45,7 +37,7 @@ const SocialLinkCard: FC<Props> = ({ link, onDragEnd }) => {
           onDragEnd
             ? () => {
                 onDragEnd();
-                console.log('[DRAG ENDED!]');
+                // console.log('[DRAG ENDED!]');
               }
             : undefined
         }
@@ -65,7 +57,6 @@ const SocialLinkCard: FC<Props> = ({ link, onDragEnd }) => {
               <span className="font-medium text-lg truncate w-[90%]">
                 {link.platform}
               </span>
-              {/* <span className="text-sm">https://localhost:3000</span> */}
               <span className="text-sm truncate w-[90%] text-muted-foreground">
                 {link.href}
               </span>
@@ -76,6 +67,7 @@ const SocialLinkCard: FC<Props> = ({ link, onDragEnd }) => {
         <div>
           <EditSocialLink link={link} />
 
+          {/* TODO: ADD LINK VISIBILITY TOGGLE..? */}
           {/* <Button
             size={'icon'}
             variant={'ghost'}
@@ -122,8 +114,6 @@ const EditSocialLink: FC<{
   const [dialogOpen, setDialogOpen] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
 
-  // console.log('formChanged', formChanged);
-
   const links: Platform[] = [
     'Instagram',
     'Facebook',
@@ -162,10 +152,8 @@ const EditSocialLink: FC<{
   } = form;
 
   // this sets the default value of the inputs for useForm to properly manage
-  // this is necessary because, for some reason, on page load, the defaultValue set on the inputs only shows the proper value in the ui, but doesn't have it's state managed by react hook form
+  // this is necessary because, on page load, the defaultValue set on the inputs only shows the proper value in the ui, but doesn't have it's state managed by react hook form
   useEffect(() => {
-    console.log('initial load form data:', getValues());
-
     setValue('platform', link.platform);
     setValue('href', link.href);
   }, []);
@@ -175,15 +163,10 @@ const EditSocialLink: FC<{
 
   useEffect(() => {
     if (watchedFormFields.href !== link.href) {
-      console.log('watchedFormFields.href', watchedFormFields.href);
-      console.log('link.href', link.href);
-      console.log('form changed: href');
       setFormChanged(true);
     } else if (watchedFormFields.platform !== link.platform) {
-      console.log('form changed: platform');
       setFormChanged(true);
     } else {
-      // console.log('form has not changed');
       setFormChanged(false);
     }
   }, [watchedFormFields]);
@@ -207,8 +190,6 @@ const EditSocialLink: FC<{
     if (formValues.href !== link.href) {
       updates.href = formValues.href;
     }
-
-    console.log('final updates', updates);
 
     await editSocialLink({
       link_id: link.id,
@@ -250,11 +231,6 @@ const EditSocialLink: FC<{
                 <AlertDialogTitle className="pb-[9px] text-black font-medium text-2xl leading-[auto]">
                   Edit link
                 </AlertDialogTitle>
-
-                {/* <AlertDialogDescription className="text-[#475267] text-base leading-[24px] tracking-[-1%]">
-              Are you sure you want to disable this admin? Doing so will suspend
-              the admin access.
-            </AlertDialogDescription> */}
               </AlertDialogHeader>
 
               <div className="flex flex-col gap-3 mb-10">

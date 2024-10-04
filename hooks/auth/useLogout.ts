@@ -8,8 +8,6 @@ const logout = async () => {
     { withCredentials: true }
   );
 
-  console.log('response from use logout hook', response);
-
   return response.data;
 };
 

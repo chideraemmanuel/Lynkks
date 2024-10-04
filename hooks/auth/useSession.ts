@@ -1,4 +1,3 @@
-import { AccountInterface } from '@/models/account';
 import { SessionInterface } from '@/models/session';
 import axios, { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
@@ -8,8 +7,6 @@ const getSession = async () => {
     withCredentials: true,
   });
 
-  console.log('response from use session hook', response);
-
   return response.data;
 };
 
@@ -18,9 +15,7 @@ const useSession = () => {
     queryKey: ['get current session'],
     queryFn: getSession,
     onSuccess: (data) => {},
-    onError: (error: AxiosError<{ error: string }>) => {
-      console.log('error', error);
-    },
+    onError: (error: AxiosError<{ error: string }>) => {},
     retry: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,

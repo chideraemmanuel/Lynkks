@@ -17,13 +17,7 @@ export default function Home() {
           className="w-full h-full object-cover"
         />
       </div>
-      {/* <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-    </div> */}
-      <div
-        // style={{ background: `url(${bg.src}) no-repeat center center/cover` }}
-        className="bg-[#fdfdfd] bg-opacity-70 min-h-screen relative z-[5]"
-        // className="min-h-screen relative z-[5]"
-      >
+      <div className="bg-[#fdfdfd] bg-opacity-70 min-h-screen relative z-[5]">
         <div className="sm:container px-4 mx-auto pt-4 md:pt-6 flex flex-col min-h-screen">
           <div className="flex justify-between items-center">
             <Logo />

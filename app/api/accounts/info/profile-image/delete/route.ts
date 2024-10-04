@@ -16,9 +16,7 @@ export const PUT = async (request: NextRequest) => {
   }
 
   try {
-    console.log('connecting to database...');
     await connectToDatabase();
-    console.log('connected to database!');
 
     const sessionExists = await Session.findOne<SessionInterface>({
       session_id,
@@ -34,8 +32,6 @@ export const PUT = async (request: NextRequest) => {
 
       return response;
     }
-
-    // console.log('sessionExists', sessionExists);
 
     const account = await Account.findById<AccountInterface>(
       sessionExists?.account
@@ -78,7 +74,6 @@ export const PUT = async (request: NextRequest) => {
       .split('/o/')[1] // Get the part after '/o/'
       .split('?')[0]; // Remove the query parameters like '?alt=media'
 
-    // const previousProfileImageRef = ref(storage, `images/profile/${imageName}`);
     const previousProfileImageRef = ref(storage, filePath);
     await deleteObject(previousProfileImageRef);
 

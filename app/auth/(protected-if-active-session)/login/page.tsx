@@ -1,12 +1,8 @@
 'use client';
 
 import FormInput from '@/components/form-input';
-import FullScreenSpinner from '@/components/full-screen-spinner';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { emailRegex } from '@/constants';
-import { RiGoogleLine } from '@remixicon/react';
-import { FcGoogle } from 'react-icons/fc';
 import useLogin from '@/hooks/auth/useLogin';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -40,8 +36,6 @@ const LoginPage: FC<Props> = () => {
   } = form;
 
   const onSubmit: SubmitHandler<LoginFormTypes> = (data, e) => {
-    console.log('data: ', data);
-
     login(data);
   };
 
@@ -132,8 +126,9 @@ const LoginPage: FC<Props> = () => {
               {isLoggingIn && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Login
             </Button>
-            {/* <Separator /> */}
+
             <FormBreak />
+
             <GoogleSignInButton disabled={isLoggingIn} />
           </div>
         </form>

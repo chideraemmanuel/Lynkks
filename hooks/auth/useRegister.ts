@@ -16,8 +16,6 @@ const register = async (credentials: Credentials) => {
     credentials
   );
 
-  console.log('response from use register hook', response.data);
-
   return response.data;
 };
 

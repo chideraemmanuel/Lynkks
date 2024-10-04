@@ -15,7 +15,7 @@ Check out the live demo of the application [here](https://lynkks.vercel.app/).
 - **Customizable Profile** - Users can personalize their profile with custom titles, descriptions, and profile images.
 - **Unlimited Links** - Add, edit, and reorder an unlimited number of links to external websites, social media, or content.
 - **Mobile-Friendly Design** - Fully responsive layout, optimized for both mobile and desktop users.
-- **Link Tracking** - Monitor engagement with built-in click-through tracking for each shared link.
+- **Views and Clink Tracking** - Monitor engagement with built-in profile view tracking, as well as clicks tracking for each shared link.
 - **Simple User Interface** - Clean, user-friendly design that’s easy to navigate and set up.
 - **Secure Authentication** - Sign in using a secure and reliable session-based authentication system, including support for Google OAuth.
 - **SEO Optimized** - Optimized for search engines to improve the visibility of individual profiles.
@@ -40,7 +40,7 @@ Check out the live demo of the application [here](https://lynkks.vercel.app/).
 
   - **Session-based Authentication**: Implemented with Next.js and database sessions to securely manage user authentication.
 
-  - **Google OAuth**: Used for implementing secure authentication via Google accounts, allowing users to log in with their existing credentials.
+  - **Google OAuth (without any library)**: Used for implementing secure authentication via Google accounts, allowing users to log in with their existing credentials.
 
 - **Email Service**:
 
