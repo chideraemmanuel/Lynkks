@@ -1,5 +1,8 @@
+'use client';
+
 import {
   ChangeEvent,
+  ClipboardEvent,
   FC,
   KeyboardEvent,
   useEffect,
@@ -73,6 +76,26 @@ const OTPInput: FC<Props> = ({ length = 6, onOTPChange }) => {
     }
   };
 
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pasteData = e.clipboardData.getData('text').slice(0, length);
+    const newOTP = [...OTP];
+
+    pasteData.split('').forEach((char, index) => {
+      if (/^\d$/.test(char)) {
+        newOTP[index] = char;
+        inputRefs.current[index].value = char;
+      }
+    });
+
+    setOTP(newOTP);
+    inputRefs.current[Math.min(pasteData.length, length - 1)].focus();
+
+    if (onOTPChange) {
+      onOTPChange(newOTP.join(''));
+    }
+  };
+
   return (
     <>
       <div className="w-full">
@@ -95,6 +118,7 @@ const OTPInput: FC<Props> = ({ length = 6, onOTPChange }) => {
               }
               onChange={(e) => handleChange(e, index)}
               onKeyUp={(e) => handleKeyUp(e, index)}
+              onPaste={handlePaste}
               // className="h-[64px] sm:h-20 p-2 text-[36px] sm:text-[48px] tracking-[-2%] placeholder:text-[#D0D5DD] rounded-[8px] text-center focus-visible:outline focus-visible:outline-primary"
               className="h-[64px] sm:h-20 p-2 text-[36px] sm:text-[48px] tracking-[-2%] placeholder:text-[#D0D5DD] rounded-[8px] text-center"
             />
