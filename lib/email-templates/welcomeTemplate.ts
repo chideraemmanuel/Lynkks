@@ -188,7 +188,7 @@ const welcomeTemplate = (first_name: string) => {
                 <p class="text">
                   Best regards,
                   <br />
-                  Chidera, Lynkks Founder.
+                  Chidera, Lynkks Creator.
                 </p>
               </div>
             </div>

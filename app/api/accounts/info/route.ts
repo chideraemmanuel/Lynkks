@@ -77,9 +77,11 @@ export const GET = async (request: NextRequest) => {
     const response = NextResponse.json(account);
 
     response.cookies.set('sid', session_id, {
-      // maxAge: 60 * 60 * 24 * 7, // 1 week
-      maxAge: 60 * 60, // 1 hour
+      maxAge: 60 * 60 * 24, // 24 hours
       httpOnly: true,
+      ...(process.env.NODE_ENV === 'production' && {
+        secure: true,
+      }),
     });
 
     return response;
@@ -413,9 +415,11 @@ export const PUT = async (request: NextRequest) => {
     const response = NextResponse.json(updatedAccount);
 
     response.cookies.set('sid', session_id, {
-      // maxAge: 60 * 60 * 24 * 7, // 1 week
-      maxAge: 60 * 60, // 1 hour
+      maxAge: 60 * 60 * 24, // 24 hours
       httpOnly: true,
+      ...(process.env.NODE_ENV === 'production' && {
+        secure: true,
+      }),
     });
 
     return response;

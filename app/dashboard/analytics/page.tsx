@@ -22,7 +22,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 interface Props {}
 
-const BlogAnalyticsPage: FC<Props> = () => {
+const AnalyticsPage: FC<Props> = () => {
   const [chartRange, setChartRange] = useState<Range>('7d');
 
   const { data: account, isLoading: isFetchingAccount } = useAccount();
@@ -127,7 +127,7 @@ const BlogAnalyticsPage: FC<Props> = () => {
   );
 };
 
-export default BlogAnalyticsPage;
+export default AnalyticsPage;
 
 interface ChartProps {
   range: Range;

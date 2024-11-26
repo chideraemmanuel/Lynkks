@@ -45,9 +45,11 @@ export const POST = async (request: NextRequest) => {
           );
 
           response.cookies.set('sid', session_id, {
-            // maxAge: 60 * 60 * 24 * 7, // 1 week
-            maxAge: 60 * 60, // 1 hour
+            maxAge: 60 * 60 * 24, // 24 hours
             httpOnly: true,
+            ...(process.env.NODE_ENV === 'production' && {
+              secure: true,
+            }),
           });
 
           return response;
@@ -132,9 +134,11 @@ export const POST = async (request: NextRequest) => {
     });
 
     response.cookies.set('sid', new_session_id, {
-      // maxAge: 60 * 60 * 24 * 7, // 1 week
-      maxAge: 60 * 60, // 1 hour
+      maxAge: 60 * 60 * 24, // 24 hours
       httpOnly: true,
+      ...(process.env.NODE_ENV === 'production' && {
+        secure: true,
+      }),
     });
 
     return response;

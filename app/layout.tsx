@@ -21,8 +21,18 @@ export const metadata: Metadata = {
   },
   description:
     'Create your personalized link-in-bio profile and share all your important links in one place. Perfect for social media influencers, content creators, and businesses looking to streamline their online presence.',
-  keywords:
-    'link in bio, personalized profile, share links, social media links, content creators, online presence, bio links, link sharing tool, single link profile, digital portfolio',
+  keywords: [
+    `link in bio`,
+    `personalized profile`,
+    `share links`,
+    `social media links`,
+    `content creators`,
+    `online presence`,
+    `bio links`,
+    `link sharing tool`,
+    `single link profile`,
+    `digital portfolio`,
+  ],
 };
 
 export default function RootLayout({
