@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import profileImage from '@/assets/profile.jpg';
 import Image from 'next/image';
 import getIconByPlatform from '@/lib/getIconByPlatform';
+import Logo from '@/components/logo';
 
 interface Props {}
 
@@ -163,9 +164,7 @@ const DashboardLinksPage: FC<Props> = () => {
                     Made with
                   </span>
                   <div className="text-[calc(24px_*_0.65)] leading-[calc(32px_*_0.65)] font-semibold">
-                    <span>
-                      Link<span className="text-primary">N</span>est
-                    </span>
+                    <Logo />
                   </div>
                 </div>
               </div>
